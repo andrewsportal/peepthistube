@@ -6,131 +6,57 @@
   <title>Video Hub</title>
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/plyr@3/dist/plyr.css">
   <style>
-    :root {
-      --bg: #0a0a0a;
-      --surface: #121212;
-      --accent: #0a84ff;
-    }
+    :root { --bg: #0a0a0a; --surface: #121212; --accent: #0a84ff; }
     body {
-      margin: 0;
-      background: var(--bg);
-      color: #f5f5f7;
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-      padding: 20px 16px;
-      max-width: 820px;
-      margin-left: auto;
-      margin-right: auto;
-      -webkit-font-smoothing: antialiased;
+      margin: 0; background: var(--bg); color: #f5f5f7;
+      font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+      padding: 20px 16px; max-width: 820px; margin-left: auto; margin-right: auto;
     }
-    h1 {
-      font-size: 1.75rem;
-      font-weight: 600;
-      letter-spacing: -0.02em;
-      text-align: center;
-      margin: 0 0 32px;
-    }
+    h1 { font-size: 1.75rem; font-weight: 600; text-align: center; margin: 0 0 32px; }
     .player-section {
-      background: var(--surface);
-      border-radius: 20px;
-      padding: 24px 20px;
-      margin-bottom: 40px;
-      box-shadow: 0 8px 30px rgba(0, 0, 0, 0.5);
+      background: var(--surface); border-radius: 20px; padding: 24px 20px;
+      margin-bottom: 40px; box-shadow: 0 8px 30px rgba(0,0,0,0.5);
     }
     .player-header {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      margin-bottom: 16px;
-      gap: 12px;
+      display: flex; align-items: center; justify-content: space-between;
+      margin-bottom: 12px; gap: 12px;
     }
     .current-title {
-      font-size: 1.15rem;
-      font-weight: 500;
-      letter-spacing: -0.01em;
-      flex: 1;
+      font-size: 1.1rem; font-weight: 500; flex: 1;
+    }
+    .status {
+      font-size: 0.85rem; color: #888; margin-top: 4px;
     }
     .lock-btn {
-      background: #1f1f1f;
-      color: #f5f5f7;
-      border: none;
-      padding: 10px 18px;
-      border-radius: 999px;
-      font-size: 0.9rem;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      cursor: pointer;
-      transition: all 0.2s ease;
+      background: #1f1f1f; color: #f5f5f7; border: none;
+      padding: 10px 18px; border-radius: 999px; font-size: 0.9rem;
+      display: flex; align-items: center; gap: 8px; cursor: pointer;
       min-height: 44px;
     }
-    .lock-btn:active { transform: scale(0.97); }
     .lock-btn.locked { background: #1e3a8a; color: #fff; }
-    .playlist-header {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      margin-bottom: 16px;
-    }
-    .playlist-header h2 {
-      font-size: 1.1rem;
-      font-weight: 600;
-      margin: 0;
-      letter-spacing: -0.01em;
-    }
     .video-row {
-      display: flex;
-      gap: 14px;
-      overflow-x: auto;
-      padding-bottom: 12px;
-      scroll-snap-type: x mandatory;
-      -webkit-overflow-scrolling: touch;
+      display: flex; gap: 14px; overflow-x: auto; padding-bottom: 12px;
+      scroll-snap-type: x mandatory; -webkit-overflow-scrolling: touch;
     }
     .video-card {
-      min-width: 180px;
-      background: #1a1a1a;
-      border-radius: 16px;
-      padding: 18px 20px;
-      cursor: pointer;
-      scroll-snap-align: start;
-      border: 1px solid #222;
-      transition: transform 0.2s ease, border-color 0.2s ease;
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
+      min-width: 180px; background: #1a1a1a; border-radius: 16px;
+      padding: 18px 20px; cursor: pointer; scroll-snap-align: start;
+      border: 1px solid #222; transition: all 0.2s ease;
     }
-    .video-card:active {
-      transform: scale(0.985);
-    }
-    .video-card.active {
-      border-color: var(--accent);
-      background: #1f1f1f;
-    }
-    .video-number {
-      font-size: 0.8rem;
-      color: #888;
-      font-weight: 500;
-      letter-spacing: 0.5px;
-    }
-    .video-title {
-      font-size: 1.05rem;
-      line-height: 1.35;
-      font-weight: 500;
-      letter-spacing: -0.01em;
-    }
-    @media (max-width: 480px) {
-      .video-card { min-width: 160px; padding: 16px 18px; }
-      .current-title { font-size: 1.05rem; }
-      body { padding: 16px 12px; }
-    }
+    .video-card.active { border-color: var(--accent); background: #1f1f1f; }
+    .video-number { font-size: 0.8rem; color: #888; }
+    .video-title { font-size: 1.05rem; font-weight: 500; margin-top: 6px; }
   </style>
 </head>
 <body>
   <h1>Video Hub</h1>
 
-  <!-- Player -->
   <div class="player-section">
     <div class="player-header">
-      <div class="current-title" id="currentTitle">Select a video</div>
+      <div>
+        <div class="current-title" id="currentTitle">Select a video</div>
+        <div class="status" id="status"></div>
+      </div>
       <button id="lockBtn" class="lock-btn" onclick="toggleOrientationLock()">
         <span id="lockIcon">🔓</span>
         <span id="lockText">Lock</span>
@@ -139,27 +65,13 @@
     <video id="player" playsinline></video>
   </div>
 
-  <!-- Playlist -->
   <div>
-    <div class="playlist-header">
-      <h2>Playlist</h2>
-    </div>
+    <div class="playlist-header"><h2>Playlist</h2></div>
     <div class="video-row" id="videoRow"></div>
   </div>
 
   <script src="https://cdn.jsdelivr.net/npm/plyr@3/dist/plyr.min.js"></script>
   <script>
-    // =====================================================
-    // FINAL VERSION - Videos in root + supports .mp4 and .MP4
-    // =====================================================
-    // Upload these files directly in your repo root:
-    //   index.html
-    //   titles.txt          ← one title per line
-    //   video1.mp4 (or video1.MP4)
-    //   video2.mp4 (or video2.MP4)
-    //   etc.
-    // =====================================================
-
     let videos = [];
     let player;
     let currentVideoId = null;
@@ -169,81 +81,73 @@
       let titles = [];
       try {
         const res = await fetch('titles.txt');
-        if (res.ok) {
-          const text = await res.text();
-          titles = text.split('\n').map(l => l.trim()).filter(l => l.length > 0);
-        }
+        if (res.ok) titles = (await res.text()).split('\n').map(l => l.trim()).filter(Boolean);
       } catch (e) {}
 
-      const count = titles.length > 0 ? titles.length : 5;
-      videos = [];
+      const count = titles.length || 5;
       for (let i = 1; i <= count; i++) {
         videos.push({
           id: i,
-          title: titles[i - 1] || `Video ${i}`,
-          src: `video${i}.mp4`          // primary (lowercase)
+          title: titles[i-1] || `Video ${i}`,
+          src: `video${i}.mp4`
         });
       }
+    }
+
+    function setStatus(msg) {
+      document.getElementById('status').textContent = msg;
     }
 
     function initPlayer() {
       const videoEl = document.getElementById('player');
       player = new Plyr(videoEl, {
-        controls: ['play', 'progress', 'current-time', 'mute', 'volume', 'fullscreen'],
-        settings: ['speed']
+        controls: ['play', 'progress', 'current-time', 'mute', 'volume', 'fullscreen']
       });
 
-      // Smart fallback: try .MP4 if .mp4 fails
+      // Smart fallback between .mp4 and .MP4
       videoEl.addEventListener('error', () => {
-        if (videoEl.src.endsWith('.mp4') && !videoEl.src.endsWith('.MP4')) {
-          const newSrc = videoEl.src.replace('.mp4', '.MP4');
-          console.log('Trying uppercase extension:', newSrc);
+        const currentSrc = videoEl.src;
+        if (currentSrc.includes('.mp4') && !currentSrc.includes('.MP4')) {
+          const newSrc = currentSrc.replace('.mp4', '.MP4');
+          setStatus(`Trying ${newSrc.split('/').pop()}...`);
           videoEl.src = newSrc;
           videoEl.play().catch(() => {});
         } else {
-          document.getElementById('currentTitle').textContent = 
-            'Video failed to load. Check that the file exists in your repo root.';
+          setStatus('Failed to load video. Check filename and location.');
         }
       });
 
       player.on('ended', () => {
         const idx = videos.findIndex(v => v.id === currentVideoId);
-        const next = (idx + 1) % videos.length;
-        loadVideo(videos[next].id);
+        loadVideo(videos[(idx + 1) % videos.length].id);
       });
     }
 
     function renderPlaylist() {
       const row = document.getElementById('videoRow');
       row.innerHTML = '';
-      videos.forEach(video => {
+      videos.forEach(v => {
         const card = document.createElement('div');
-        card.className = `video-card ${video.id === currentVideoId ? 'active' : ''}`;
-        card.innerHTML = `
-          <div class="video-number">#${video.id}</div>
-          <div class="video-title">${video.title}</div>
-        `;
-        card.onclick = () => loadVideo(video.id);
+        card.className = `video-card ${v.id === currentVideoId ? 'active' : ''}`;
+        card.innerHTML = `<div class="video-number">#${v.id}</div><div class="video-title">${v.title}</div>`;
+        card.onclick = () => loadVideo(v.id);
         row.appendChild(card);
       });
     }
 
-    function loadVideo(videoId) {
-      const video = videos.find(v => v.id === videoId);
+    function loadVideo(id) {
+      const video = videos.find(v => v.id === id);
       if (!video) return;
 
       const videoEl = document.getElementById('player');
       const titleEl = document.getElementById('currentTitle');
 
-      videoEl.src = video.src;           // try lowercase first
+      setStatus(`Loading ${video.src}...`);
+      videoEl.src = video.src;
       titleEl.textContent = video.title;
-      currentVideoId = videoId;
+      currentVideoId = id;
 
       renderPlaylist();
-
-      const active = document.querySelector('.video-card.active');
-      if (active) active.scrollIntoView({ behavior: 'smooth', inline: 'center' });
-
       videoEl.play().catch(() => {});
     }
 
@@ -252,27 +156,20 @@
       const icon = document.getElementById('lockIcon');
       const text = document.getElementById('lockText');
 
-      if (!screen.orientation?.lock) {
-        alert("Orientation lock is not supported on this device.");
-        return;
-      }
+      if (!screen.orientation?.lock) return alert("Not supported on this device");
 
       try {
         if (!isLocked) {
           await screen.orientation.lock('landscape');
           isLocked = true;
-          btn.classList.add('locked');
-          icon.textContent = '🔒';
-          text.textContent = 'Unlock';
+          btn.classList.add('locked'); icon.textContent = '🔒'; text.textContent = 'Unlock';
         } else {
           await screen.orientation.unlock();
           isLocked = false;
-          btn.classList.remove('locked');
-          icon.textContent = '🔓';
-          text.textContent = 'Lock';
+          btn.classList.remove('locked'); icon.textContent = '🔓'; text.textContent = 'Lock';
         }
       } catch (e) {
-        alert("Try entering fullscreen first, then tap Lock.");
+        alert("Enter fullscreen first, then tap Lock");
       }
     }
 
@@ -280,6 +177,7 @@
       await loadTitlesAndVideos();
       initPlayer();
       renderPlaylist();
+      setStatus('Ready. Tap a video to play.');
     }
 
     window.onload = init;

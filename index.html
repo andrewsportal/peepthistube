@@ -42,6 +42,7 @@
     body {
       margin: 0;
       width: 100%;
+      height: 100%;
       min-height: 100%;
       background: #111111;
       color: #fff8f0;
@@ -50,6 +51,7 @@
       -webkit-font-smoothing: antialiased;
       text-rendering: optimizeLegibility;
       overflow-x: hidden;
+      overscroll-behavior: none;
     }
 
     .glass {
@@ -233,6 +235,64 @@
       pointer-events: auto;
     }
 
+    .swipe-shell {
+      position: relative;
+      height: 100svh;
+      overflow: hidden;
+      touch-action: pan-x;
+    }
+
+    .swipe-track {
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      transform: translate3d(0, 0, 0);
+      transition: transform 760ms cubic-bezier(0.22, 1, 0.36, 1);
+      will-change: transform;
+    }
+
+    .scene {
+      flex: 0 0 100%;
+      min-height: 100svh;
+      position: relative;
+    }
+
+    .scene-dots {
+      position: fixed;
+      right: 1rem;
+      top: 50%;
+      transform: translateY(-50%);
+      z-index: 45;
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+      padding: 0.5rem;
+      border-radius: 999px;
+    }
+
+    .scene-dot {
+      width: 0.44rem;
+      height: 0.44rem;
+      border-radius: 999px;
+      border: 1px solid rgba(255, 248, 240, 0.42);
+      background: transparent;
+      transition: transform 300ms cubic-bezier(0.22, 1, 0.36, 1), background 220ms ease, border-color 220ms ease;
+    }
+
+    .scene-dot.active {
+      background: rgba(255, 183, 3, 0.94);
+      border-color: rgba(255, 183, 3, 0.98);
+      transform: scale(1.22);
+    }
+
+    .card-rail {
+      scrollbar-width: none;
+    }
+
+    .card-rail::-webkit-scrollbar {
+      display: none;
+    }
+
     .tabular {
       font-variant-numeric: tabular-nums;
     }
@@ -284,6 +344,10 @@
         animation: none !important;
         transition: none !important;
       }
+
+      .swipe-track {
+        transition: none !important;
+      }
     }
   </style>
 </head>
@@ -305,15 +369,16 @@
     </a>
 
     <div class="hidden items-center gap-2 md:flex">
-      <a
-        href="#collection"
+      <button
+        id="toCollectionButton"
+        type="button"
         class="soft-btn inline-flex h-9 w-9 items-center justify-center rounded-full text-cream/70"
-        aria-label="Jump to The Collection"
+        aria-label="Swipe to The Collection"
       >
         <svg viewBox="0 0 24 24" class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
           <path d="M12 4v16M5 11l7 7 7-7"></path>
         </svg>
-      </a>
+      </button>
     </div>
 
     <button
@@ -336,17 +401,19 @@
     aria-modal="true"
     aria-hidden="true"
   >
-    <a
-      href="#collection"
+    <button
       id="mobileCollectionLink"
-      class="text-2xl font-light uppercase tracking-[0.22em] text-cream no-underline"
+      type="button"
+      class="text-2xl font-light uppercase tracking-[0.22em] text-cream"
+      style="background:none;border:none;"
     >
       The Collection
-    </a>
+    </button>
   </div>
 
-  <main>
-    <section class="relative isolate flex min-h-[100svh] items-center justify-center overflow-hidden px-6 text-center">
+  <main id="swipeShell" class="swipe-shell">
+    <div id="swipeTrack" class="swipe-track" aria-live="polite">
+    <section id="heroScene" class="scene relative isolate flex items-center justify-center overflow-hidden px-6 text-center" data-scene-index="0" aria-hidden="false">
       <!-- Swap these filenames in LANDING.media below -->
       <video
         id="heroVideo"
@@ -373,21 +440,23 @@
         <p class="optical-copy mx-auto mb-10 max-w-[33ch] text-[0.98rem] leading-[1.7] text-cream/68 md:mb-11 md:text-[1.08rem]">
           Three mixtapes shaped by golden hour, ocean air, and movement on warm sand.
         </p>
-        <a
-          href="#collection"
+        <button
+          id="heroCtaButton"
+          type="button"
           class="inline-flex items-center gap-2 rounded-full border border-cream/30 bg-cream/10 px-6 py-3 text-[0.72rem] font-medium uppercase tracking-[0.18em] text-cream no-underline transition-all duration-300 hover:scale-[1.03] hover:border-cream/45 hover:bg-cream/16 active:scale-[0.98] md:px-7"
-          aria-label="Explore The Collection"
+          aria-label="Open The Collection"
         >
           Explore the Collection
           <svg viewBox="0 0 24 24" class="h-3.5 w-3.5" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
             <path d="M5 12h14"></path>
             <path d="M13 6l6 6-6 6"></path>
           </svg>
-        </a>
+        </button>
+        <p class="mt-4 text-[0.66rem] uppercase tracking-[0.2em] text-cream/45 md:mt-5">Swipe up to explore</p>
       </div>
     </section>
 
-    <section id="collection" class="px-6 pb-40 pt-24 md:px-10 md:pb-44 md:pt-32" aria-label="The Collection">
+    <section id="collection" class="scene px-6 pb-[8rem] pt-24 md:px-10 md:pb-[9.5rem] md:pt-28" aria-label="The Collection" data-scene-index="1" aria-hidden="true">
       <div class="mx-auto max-w-6xl">
         <div class="mb-12 md:mb-[4.35rem]">
           <p class="optical-kicker mb-3 text-[0.65rem] uppercase text-gold/78 md:mb-3.5 md:text-xs">The Collection</p>
@@ -396,9 +465,15 @@
           </h2>
         </div>
 
-        <div id="collectionGrid" class="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3"></div>
+        <div id="collectionGrid" class="card-rail grid grid-flow-col auto-cols-[84%] gap-4 overflow-x-auto snap-x snap-mandatory pb-2 md:grid-flow-row md:auto-cols-auto md:grid-cols-2 md:gap-6 md:overflow-visible md:pb-0 lg:grid-cols-3"></div>
       </div>
     </section>
+    </div>
+
+    <div class="scene-dots glass" aria-label="Scene navigation">
+      <button id="sceneDot0" type="button" class="scene-dot active" aria-label="Go to hero scene"></button>
+      <button id="sceneDot1" type="button" class="scene-dot" aria-label="Go to collection scene"></button>
+    </div>
   </main>
 
   <div
@@ -530,10 +605,22 @@
     let isPlaying = false;
     let isScrubbing = false;
     let menuOpen = false;
+    let activeScene = 0;
+    let wheelLocked = false;
+    let touchStartX = 0;
+    let touchStartY = 0;
+    let touchTrackHorizontal = false;
 
     const docBody = document.body;
     const brandName = document.getElementById("brandName");
+    const toCollectionButton = document.getElementById("toCollectionButton");
+    const heroCtaButton = document.getElementById("heroCtaButton");
     const heroVideo = document.getElementById("heroVideo");
+    const swipeShell = document.getElementById("swipeShell");
+    const swipeTrack = document.getElementById("swipeTrack");
+    const scenes = Array.from(document.querySelectorAll("[data-scene-index]"));
+    const sceneDot0 = document.getElementById("sceneDot0");
+    const sceneDot1 = document.getElementById("sceneDot1");
     const collectionGrid = document.getElementById("collectionGrid");
     const playerBar = document.getElementById("playerBar");
     const playerSpacer = document.getElementById("playerSpacer");
@@ -563,6 +650,26 @@
       const min = Math.floor(seconds / 60);
       const sec = Math.floor(seconds % 60);
       return `${min}:${String(sec).padStart(2, "0")}`;
+    }
+
+    function clampSceneIndex(index) {
+      return Math.max(0, Math.min(scenes.length - 1, index));
+    }
+
+    function setScene(index) {
+      const nextScene = clampSceneIndex(index);
+      if (nextScene === activeScene) return;
+
+      activeScene = nextScene;
+      swipeTrack.style.transform = `translate3d(0, -${nextScene * 100}%, 0)`;
+
+      scenes.forEach((scene, sceneIdx) => {
+        const isActive = sceneIdx === nextScene;
+        scene.setAttribute("aria-hidden", String(!isActive));
+      });
+
+      sceneDot0.classList.toggle("active", nextScene === 0);
+      sceneDot1.classList.toggle("active", nextScene === 1);
     }
 
     function setPlayerVisible(visible) {
@@ -687,7 +794,7 @@
     function buildCards() {
       LANDING.mixtapes.forEach((mixtape, index) => {
         const card = document.createElement("article");
-        card.className = "mix-card group rounded-2xl border border-cream/10 bg-surface/92 shadow-card overflow-hidden";
+        card.className = "mix-card group snap-start rounded-2xl border border-cream/10 bg-surface/92 shadow-card overflow-hidden";
         card.setAttribute("role", "button");
         card.setAttribute("tabindex", "0");
         card.setAttribute("aria-label", `Play ${mixtape.title}`);
@@ -776,6 +883,16 @@
     }
 
     function bindEvents() {
+      brandName.addEventListener("click", (event) => {
+        event.preventDefault();
+        setScene(0);
+      });
+
+      toCollectionButton?.addEventListener("click", () => setScene(1));
+      heroCtaButton?.addEventListener("click", () => setScene(1));
+      sceneDot0?.addEventListener("click", () => setScene(0));
+      sceneDot1?.addEventListener("click", () => setScene(1));
+
       playPauseButton.addEventListener("click", togglePlayPause);
 
       rewindButton.addEventListener("click", () => {
@@ -832,12 +949,53 @@
       audio.addEventListener("pause", () => updatePlayIcon(false));
       audio.addEventListener("ended", () => updatePlayIcon(false));
 
+      swipeShell.addEventListener("wheel", (event) => {
+        if (menuOpen) return;
+        if (Math.abs(event.deltaY) < 28 || Math.abs(event.deltaY) < Math.abs(event.deltaX)) return;
+        event.preventDefault();
+        if (wheelLocked) return;
+
+        wheelLocked = true;
+        setScene(activeScene + (event.deltaY > 0 ? 1 : -1));
+        window.setTimeout(() => { wheelLocked = false; }, 760);
+      }, { passive: false });
+
+      swipeShell.addEventListener("touchstart", (event) => {
+        if (event.touches.length !== 1) return;
+        const touch = event.touches[0];
+        touchStartX = touch.clientX;
+        touchStartY = touch.clientY;
+        touchTrackHorizontal = Boolean(event.target.closest("#collectionGrid"));
+      }, { passive: true });
+
+      swipeShell.addEventListener("touchend", (event) => {
+        if (!event.changedTouches.length || menuOpen) return;
+        const touch = event.changedTouches[0];
+        const dx = touch.clientX - touchStartX;
+        const dy = touch.clientY - touchStartY;
+
+        // Preserve horizontal card rail swipe on mobile.
+        if (touchTrackHorizontal && Math.abs(dx) > Math.abs(dy)) return;
+        if (Math.abs(dy) < 54 || Math.abs(dy) < Math.abs(dx) * 1.2) return;
+
+        setScene(activeScene + (dy < 0 ? 1 : -1));
+      }, { passive: true });
+
       menuButton.addEventListener("click", () => toggleMenu());
-      mobileCollectionLink.addEventListener("click", () => toggleMenu(false));
+      mobileCollectionLink.addEventListener("click", () => {
+        toggleMenu(false);
+        setScene(1);
+      });
       document.addEventListener("keydown", (event) => {
         const typingTarget = event.target.closest("input, textarea, select, [contenteditable], button");
         if (!typingTarget) {
-          if (event.key === " ") {
+          if (event.key === "ArrowDown" || event.key === "PageDown") {
+            event.preventDefault();
+            setScene(activeScene + 1);
+          } else if (event.key === "ArrowUp" || event.key === "PageUp") {
+            event.preventDefault();
+            setScene(activeScene - 1);
+          } else if (event.key === " ") {
             event.preventDefault();
             togglePlayPause();
           } else if (event.key.toLowerCase() === "m") {

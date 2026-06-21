@@ -70,6 +70,7 @@
     }
 
     .tv {
+      position: relative;
       width: min(100%, 1020px);
       border-radius: var(--radius-xl);
       border: 1px solid rgba(255, 255, 255, 0.16);
@@ -85,6 +86,18 @@
       transform: translateZ(0);
     }
 
+    .tv:fullscreen {
+      width: 100vw;
+      height: 100vh;
+      max-width: none;
+      border: none;
+      border-radius: 0;
+      background: #000;
+      box-shadow: none;
+      backdrop-filter: none;
+      -webkit-backdrop-filter: none;
+    }
+
     .screen-wrap {
       position: relative;
       aspect-ratio: 16 / 9;
@@ -94,6 +107,14 @@
       margin-bottom: 0.55rem;
       overflow: hidden;
       box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.06);
+    }
+
+    .tv:fullscreen .screen-wrap {
+      height: 100%;
+      margin: 0;
+      border-radius: 0;
+      aspect-ratio: auto;
+      box-shadow: none;
     }
 
     video {
@@ -148,6 +169,21 @@
       display: grid;
       gap: 0.75rem;
       padding: 0.8rem 0.95rem 1rem;
+    }
+
+    .tv:fullscreen .operator {
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      z-index: 20;
+      padding: 1rem;
+      background: linear-gradient(
+        to top,
+        rgba(5, 10, 18, 0.85) 0%,
+        rgba(5, 10, 18, 0.45) 45%,
+        rgba(5, 10, 18, 0) 100%
+      );
     }
 
     .timeline {
@@ -385,7 +421,7 @@
 <body>
   <main class="app-shell">
     <section class="tv" id="tv">
-      <div class="screen-wrap">
+      <div class="screen-wrap" id="screenWrap">
         <video id="video" playsinline preload="metadata"></video>
         <div class="channel-badge" id="channelBadge" aria-live="polite">
           <span class="channel-dot" aria-hidden="true"></span>
@@ -458,10 +494,11 @@
 
   <script>
     (() => {
-      const playlist = Array.from({ length: 19 }, (_, i) => `videos/video${i + 1}.mp4`);
+      const channelCatalog = Array.from({ length: 19 }, (_, i) => `videos/video${i + 1}.mp4`);
 
       const video = document.getElementById("video");
       const tv = document.getElementById("tv");
+      const screenWrap = document.getElementById("screenWrap");
       const channelText = document.getElementById("channelText");
       const videoName = document.getElementById("videoName");
       const statusText = document.getElementById("statusText");
@@ -474,6 +511,7 @@
       const fullscreenBtn = document.getElementById("fullscreenBtn");
       const fullscreenIcon = document.getElementById("fullscreenIcon");
 
+      let playlist = [];
       let currentIndex = 0;
       let isSeeking = false;
 
@@ -497,7 +535,10 @@
       const setProgressVisual = () => {
         const percent = `${(Number(timeline.value) / Number(timeline.max)) * 100}%`;
         timeline.style.setProperty("--progress", percent);
-        timeline.setAttribute("aria-valuenow", String(Math.round((Number(timeline.value) / Number(timeline.max)) * 100)));
+        timeline.setAttribute(
+          "aria-valuenow",
+          String(Math.round((Number(timeline.value) / Number(timeline.max)) * 100))
+        );
       };
 
       const setVolumeVisual = () => {
@@ -520,18 +561,47 @@
       };
 
       const updateChannelText = () => {
+        if (!playlist.length) {
+          channelText.textContent = "No Signal";
+          return;
+        }
         channelText.textContent = `Channel ${String(currentIndex + 1).padStart(2, "0")}`;
       };
 
       const updateVideoName = () => {
         const path = playlist[currentIndex] || "";
-        videoName.textContent = path.split("/").pop() || "Unknown";
+        videoName.textContent = path.split("/").pop() || "No video found";
+      };
+
+      const discoverAvailableChannels = async () => {
+        const checks = await Promise.all(
+          channelCatalog.map(async (path) => {
+            try {
+              const response = await fetch(path, { method: "HEAD", cache: "no-store" });
+              return response.ok ? path : null;
+            } catch (err) {
+              return null;
+            }
+          })
+        );
+        return checks.filter(Boolean);
       };
 
       const loadChannel = async (index, autoPlay = true) => {
+        if (!playlist.length) {
+          video.removeAttribute("src");
+          video.load();
+          updateChannelText();
+          updateVideoName();
+          setStatus("No playable videos found in /videos", true);
+          return;
+        }
+
         currentIndex = (index + playlist.length) % playlist.length;
         video.src = playlist[currentIndex];
         video.load();
+        timeline.value = "0";
+        setProgressVisual();
         updateChannelText();
         updateVideoName();
         setStatus("Switching channel...");
@@ -541,7 +611,7 @@
             await video.play();
             setStatus("Live");
           } catch (err) {
-            setStatus("Tap play to start", false);
+            setStatus("Tap play to start");
             updatePlayIcon();
           }
         } else {
@@ -549,7 +619,10 @@
         }
       };
 
-      const changeChannel = (step) => loadChannel(currentIndex + step, true);
+      const changeChannel = (step) => {
+        if (!playlist.length) return;
+        loadChannel(currentIndex + step, true);
+      };
 
       playPauseBtn.addEventListener("click", async () => {
         try {
@@ -590,8 +663,12 @@
         try {
           if (document.fullscreenElement) {
             await document.exitFullscreen();
-          } else {
+          } else if (tv.requestFullscreen) {
             await tv.requestFullscreen();
+          } else if (screenWrap.requestFullscreen) {
+            await screenWrap.requestFullscreen();
+          } else if (video.webkitEnterFullscreen) {
+            video.webkitEnterFullscreen();
           }
         } catch (err) {
           setStatus("Fullscreen not available", true);
@@ -602,7 +679,9 @@
 
       video.addEventListener("timeupdate", () => {
         if (!video.duration || !Number.isFinite(video.duration) || isSeeking) return;
-        timeline.value = String(Math.round((video.currentTime / video.duration) * Number(timeline.max)));
+        timeline.value = String(
+          Math.round((video.currentTime / video.duration) * Number(timeline.max))
+        );
         setProgressVisual();
       });
 
@@ -614,15 +693,54 @@
       video.addEventListener("pause", updatePlayIcon);
 
       video.addEventListener("error", () => {
-        setStatus("Could not load video file. Switching...", true);
-        setTimeout(() => changeChannel(1), 1100);
+        if (!playlist.length) {
+          setStatus("No playable videos found in /videos", true);
+          return;
+        }
+
+        const failedVideo = playlist[currentIndex];
+        const failedName = failedVideo.split("/").pop();
+        playlist = playlist.filter((_, index) => index !== currentIndex);
+
+        if (!playlist.length) {
+          video.removeAttribute("src");
+          video.load();
+          updateChannelText();
+          updateVideoName();
+          setStatus(`Could not load ${failedName}. No channels left.`, true);
+          return;
+        }
+
+        if (currentIndex >= playlist.length) {
+          currentIndex = 0;
+        }
+
+        updateChannelText();
+        updateVideoName();
+        setStatus(`Skipped missing file: ${failedName}`, true);
+        setTimeout(() => loadChannel(currentIndex, true), 650);
       });
 
-      setProgressVisual();
-      setVolumeVisual();
-      updatePlayIcon();
-      updateFullscreenIcon();
-      loadChannel(0, false);
+      const initializePlayer = async () => {
+        setProgressVisual();
+        setVolumeVisual();
+        updatePlayIcon();
+        updateFullscreenIcon();
+
+        setStatus("Scanning available channels...");
+        playlist = await discoverAvailableChannels();
+
+        if (!playlist.length) {
+          updateChannelText();
+          updateVideoName();
+          setStatus("No playable videos found in /videos", true);
+          return;
+        }
+
+        await loadChannel(0, false);
+      };
+
+      initializePlayer();
     })();
   </script>
 </body>

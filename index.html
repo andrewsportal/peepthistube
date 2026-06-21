@@ -225,8 +225,8 @@
     }
 
     .now-playing-wrap {
-      position: relative;
-      z-index: 10;
+      display: grid;
+      gap: 10px;
     }
 
     .now-playing--interactive {
@@ -280,30 +280,26 @@
     }
 
     .channel-menu {
-      position: absolute;
-      left: 0;
-      right: 0;
-      top: calc(100% + 8px);
+      position: relative;
       border-radius: 13px;
       border: 1px solid rgba(103, 73, 38, 0.24);
       background: rgba(243, 228, 196, 0.82);
-      box-shadow: 0 20px 34px rgba(33, 19, 7, 0.22), inset 0 1px 1px rgba(255, 255, 255, 0.56);
+      box-shadow: 0 10px 18px rgba(33, 19, 7, 0.15), inset 0 1px 1px rgba(255, 255, 255, 0.56);
       backdrop-filter: blur(15px) saturate(140%);
       padding: 7px;
       display: grid;
       gap: 6px;
-      max-height: min(42vh, 250px);
+      max-height: min(44vh, 300px);
       overflow: auto;
-      opacity: 0;
-      transform: translateY(-3px) scale(0.98);
-      pointer-events: none;
-      transition: opacity 150ms ease, transform 150ms ease;
     }
 
-    .channel-menu.is-open {
-      opacity: 1;
-      transform: translateY(0) scale(1);
-      pointer-events: auto;
+    .control-panel.is-browsing .dial-grid,
+    .control-panel.is-browsing .speaker-grill {
+      display: none;
+    }
+
+    .control-panel.is-browsing .credit-line {
+      margin-top: 8px;
     }
 
     .channel-option {
@@ -633,7 +629,6 @@
     let fallbackAttempted = false;
     let osdTimeout;
     let channelMenuVisible = false;
-    let channelMenuHideTimer;
 
     async function loadTitles() {
       try {
@@ -741,46 +736,28 @@
     function setChannelMenuVisible(visible) {
       const menu = document.getElementById("channelMenu");
       const trigger = document.getElementById("channelMenuButton");
-      clearTimeout(channelMenuHideTimer);
+      const panel = document.querySelector(".control-panel");
 
       if (visible) {
         renderChannelMenu();
         channelMenuVisible = true;
         menu.hidden = false;
         trigger.setAttribute("aria-expanded", "true");
-        requestAnimationFrame(() => {
-          menu.classList.add("is-open");
-        });
+        panel.classList.add("is-browsing");
         return;
       }
 
       channelMenuVisible = false;
       trigger.setAttribute("aria-expanded", "false");
-      menu.classList.remove("is-open");
-      channelMenuHideTimer = window.setTimeout(() => {
-        if (!channelMenuVisible) {
-          menu.hidden = true;
-        }
-      }, 160);
+      panel.classList.remove("is-browsing");
+      menu.hidden = true;
     }
 
     function setupChannelMenu() {
       const trigger = document.getElementById("channelMenuButton");
-      const menu = document.getElementById("channelMenu");
 
       trigger.addEventListener("click", () => {
         setChannelMenuVisible(!channelMenuVisible);
-      });
-
-      document.addEventListener("click", (event) => {
-        const target = event.target;
-        if (!(target instanceof Node) || !channelMenuVisible) {
-          return;
-        }
-        if (trigger.contains(target) || menu.contains(target)) {
-          return;
-        }
-        setChannelMenuVisible(false);
       });
 
       document.addEventListener("keydown", (event) => {

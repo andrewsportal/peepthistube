@@ -15,32 +15,14 @@
       background: var(--bg);
       color: #f5f5f7;
       font-family: -apple-system, BlinkMacSystemFont, sans-serif;
-      padding: 20px 16px 32px;
+      padding: 20px 16px 40px;
       max-width: 900px;
       margin-left: auto;
       margin-right: auto;
     }
-    .title-area {
-      text-align: center;
-      margin-bottom: 12px;
-      transition: opacity 0.4s ease;
-    }
-    .title-area.hidden {
-      opacity: 0;
-      pointer-events: none;
-    }
-    .current-title {
-      font-size: 1.25rem;
-      font-weight: 600;
-      margin: 0 0 4px;
-    }
-    .next-title {
-      font-size: 0.9rem;
-      color: #8e8e93;
-    }
     .player-wrapper {
       background: #000000;
-      padding-bottom: 16px;
+      padding-bottom: 20px;
     }
     .player-container {
       background: #000000;
@@ -50,11 +32,11 @@
       background: #000000 !important;
     }
     .playlist-section {
-      margin-top: 16px;
+      margin-top: 8px;
     }
     .playlist-section h3 {
       font-size: 0.95rem;
-      margin: 0 0 10px;
+      margin: 0 0 12px;
       font-weight: 600;
     }
     .video-row {
@@ -83,18 +65,19 @@
       font-weight: 500;
       margin-top: 4px;
     }
+    .credit {
+      text-align: center;
+      margin-top: 32px;
+      font-size: 0.75rem;
+      color: #666;
+      opacity: 0.6;
+    }
     :root {
       --plyr-color-main: #E27A00;
     }
   </style>
 </head>
 <body>
-  <!-- Titles Above Player -->
-  <div class="title-area" id="titleArea">
-    <h1 class="current-title" id="currentTitle">Select a video</h1>
-    <div class="next-title" id="nextTitle"></div>
-  </div>
-
   <!-- Video Player -->
   <div class="player-wrapper">
     <div class="player-container">
@@ -106,6 +89,11 @@
   <div class="playlist-section">
     <h3>Playlist</h3>
     <div class="video-row" id="videoRow"></div>
+  </div>
+
+  <!-- Credit -->
+  <div class="credit">
+    Filmed & Edited by Andrew
   </div>
 
   <script src="https://cdn.jsdelivr.net/npm/plyr@3/dist/plyr.min.js"></script>
@@ -137,22 +125,6 @@
         controls: ['play', 'progress', 'current-time', 'mute', 'volume', 'fullscreen']
       });
 
-      // Fade titles when playing
-      player.on('play', () => {
-        document.getElementById('titleArea').classList.add('hidden');
-      });
-
-      player.on('pause', () => {
-        document.getElementById('titleArea').classList.remove('hidden');
-      });
-
-      // Tap video to toggle titles
-      videoEl.addEventListener('click', () => {
-        const titleArea = document.getElementById('titleArea');
-        titleArea.classList.toggle('hidden');
-      });
-
-      // Fallback for .mp4 / .MP4
       videoEl.addEventListener('error', () => {
         const currentSrc = videoEl.src;
         if (currentSrc.endsWith('.mp4') && !currentSrc.endsWith('.MP4')) {
@@ -182,20 +154,6 @@
       });
     }
 
-    function updateTitles() {
-      const current = videos.find(v => v.id === currentId);
-      const next = videos.find(v => v.id === (currentId % videos.length) + 1);
-
-      document.getElementById('currentTitle').textContent = current ? current.title : 'Select a video';
-      
-      const nextEl = document.getElementById('nextTitle');
-      if (next && currentId !== videos.length) {
-        nextEl.textContent = `Up next: ${next.title}`;
-      } else {
-        nextEl.textContent = '';
-      }
-    }
-
     function loadVideo(id) {
       const video = videos.find(v => v.id === id);
       if (!video) return;
@@ -205,7 +163,6 @@
 
       videoEl.src = video.src;
       renderPlaylist();
-      updateTitles();
       videoEl.play().catch(() => {});
     }
 

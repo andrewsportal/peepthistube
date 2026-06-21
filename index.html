@@ -15,19 +15,15 @@
       --tv-metal-1: #ebddc4;
       --tv-metal-2: #ccb896;
       --tv-panel: #d7c3a0;
-      --bezel: #1c1d1f;
       --accent: #d49d46;
       --control-text: rgba(65, 44, 20, 0.9);
       --label-text: rgba(80, 56, 28, 0.84);
       --plyr-color-main: var(--accent);
     }
 
-    * {
-      box-sizing: border-box;
-    }
+    * { box-sizing: border-box; }
 
-    html,
-    body {
+    html, body {
       margin: 0;
       width: 100%;
       min-height: 100%;
@@ -74,9 +70,7 @@
         linear-gradient(90deg, rgba(139, 96, 48, 0.35) 0 8px, transparent 8px 24px),
         linear-gradient(180deg, var(--desk-front-light) 0%, var(--desk-front-dark) 100%);
       border-top: 10px solid #d7af77;
-      box-shadow:
-        inset 0 20px 35px rgba(54, 32, 16, 0.25),
-        inset 0 -28px 30px rgba(67, 42, 20, 0.22);
+      box-shadow: inset 0 20px 35px rgba(54, 32, 16, 0.25), inset 0 -28px 30px rgba(67, 42, 20, 0.22);
       z-index: 1;
     }
 
@@ -137,9 +131,7 @@
       overflow: hidden;
       position: relative;
       background: #040404;
-      box-shadow:
-        inset 0 0 42px rgba(0, 0, 0, 0.9),
-        0 0 20px rgba(0, 0, 0, 0.65);
+      box-shadow: inset 0 0 42px rgba(0, 0, 0, 0.9), 0 0 20px rgba(0, 0, 0, 0.65);
       isolation: isolate;
     }
 
@@ -162,9 +154,7 @@
       background: #000;
     }
 
-    .plyr__controls {
-      display: none !important;
-    }
+    .plyr__controls { display: none !important; }
 
     .osd-title {
       position: absolute;
@@ -214,8 +204,8 @@
     }
 
     .now-playing-wrap {
-      position: relative;
-      z-index: 10;
+      display: grid;
+      gap: 10px;
     }
 
     .now-playing {
@@ -296,30 +286,26 @@
     }
 
     .channel-menu {
-      position: absolute;
-      left: 0;
-      right: 0;
-      top: calc(100% + 8px);
+      position: relative;
       border-radius: 13px;
       border: 1px solid rgba(103, 73, 38, 0.24);
       background: rgba(243, 228, 196, 0.82);
-      box-shadow: 0 20px 34px rgba(33, 19, 7, 0.22), inset 0 1px 1px rgba(255, 255, 255, 0.56);
+      box-shadow: 0 10px 18px rgba(33, 19, 7, 0.15), inset 0 1px 1px rgba(255, 255, 255, 0.56);
       backdrop-filter: blur(15px) saturate(140%);
       padding: 7px;
       display: grid;
       gap: 6px;
-      max-height: min(42vh, 250px);
+      max-height: min(44vh, 300px);
       overflow: auto;
-      opacity: 0;
-      transform: translateY(-3px) scale(0.98);
-      pointer-events: none;
-      transition: opacity 150ms ease, transform 150ms ease;
     }
 
-    .channel-menu.is-open {
-      opacity: 1;
-      transform: translateY(0) scale(1);
-      pointer-events: auto;
+    .control-panel.is-browsing .dial-grid,
+    .control-panel.is-browsing .speaker-grill {
+      display: none;
+    }
+
+    .control-panel.is-browsing .credit-line {
+      margin-top: 8px;
     }
 
     .channel-option {
@@ -478,17 +464,9 @@
     }
 
     @media (max-width: 1024px) {
-      .tv-set {
-        grid-template-columns: 1fr;
-      }
-
-      .screen-chassis {
-        border-radius: 16px;
-      }
-
-      .dial-grid {
-        grid-template-columns: repeat(6, minmax(0, 1fr));
-      }
+      .tv-set { grid-template-columns: 1fr; }
+      .screen-chassis { border-radius: 16px; }
+      .dial-grid { grid-template-columns: repeat(6, minmax(0, 1fr)); }
     }
 
     @media (max-width: 720px) {
@@ -499,17 +477,9 @@
         padding-left: max(10px, env(safe-area-inset-left, 0px));
       }
 
-      .desk {
-        height: 14svh;
-      }
-
-      .dial-grid {
-        grid-template-columns: repeat(3, minmax(0, 1fr));
-      }
-
-      .speaker-grill {
-        display: none;
-      }
+      .desk { height: 14svh; }
+      .dial-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+      .speaker-grill { display: none; }
     }
   </style>
 </head>
@@ -631,12 +601,12 @@
     const TITLE_SOURCE = "titles.txt";
 
     const videos = [];
+
     let player;
     let currentId = null;
     let fallbackAttempted = false;
     let osdTimeout;
     let channelMenuVisible = false;
-    let channelMenuHideTimer;
 
     async function loadTitles() {
       try {
@@ -646,7 +616,7 @@
           .split("\n")
           .map((line) => line.trim())
           .filter(Boolean);
-      } catch (error) {
+      } catch {
         return [];
       }
     }
@@ -681,16 +651,12 @@
       osd.textContent = text;
       osd.classList.add("is-visible");
       clearTimeout(osdTimeout);
-      osdTimeout = setTimeout(() => {
-        osd.classList.remove("is-visible");
-      }, duration);
+      osdTimeout = setTimeout(() => osd.classList.remove("is-visible"), duration);
     }
 
     function updateNowPlaying(video) {
-      const channelLabel = document.getElementById("channelLabel");
-      const titleLabel = document.getElementById("nowPlayingTitle");
-      channelLabel.textContent = `Channel ${padChannel(video.id)}`;
-      titleLabel.textContent = video.title;
+      document.getElementById("channelLabel").textContent = `Channel ${padChannel(video.id)}`;
+      document.getElementById("nowPlayingTitle").textContent = video.title;
     }
 
     function createChannelOption(video) {
@@ -700,9 +666,7 @@
       option.setAttribute("role", "option");
       option.setAttribute("aria-selected", String(video.id === currentId));
 
-      if (video.id === currentId) {
-        option.classList.add("is-active");
-      }
+      if (video.id === currentId) option.classList.add("is-active");
 
       const id = document.createElement("span");
       id.className = "channel-option-id";
@@ -735,51 +699,33 @@
     function renderChannelMenu() {
       const menu = document.getElementById("channelMenu");
       menu.innerHTML = "";
-      videos.forEach((video) => {
-        menu.appendChild(createChannelOption(video));
-      });
+      videos.forEach((video) => menu.appendChild(createChannelOption(video)));
     }
 
     function setChannelMenuVisible(visible) {
       const menu = document.getElementById("channelMenu");
       const trigger = document.getElementById("channelMenuButton");
-
-      clearTimeout(channelMenuHideTimer);
+      const panel = document.querySelector(".control-panel");
 
       if (visible) {
         renderChannelMenu();
         channelMenuVisible = true;
         menu.hidden = false;
         trigger.setAttribute("aria-expanded", "true");
-        requestAnimationFrame(() => {
-          menu.classList.add("is-open");
-        });
-        return;
+        panel.classList.add("is-browsing");
+      } else {
+        channelMenuVisible = false;
+        trigger.setAttribute("aria-expanded", "false");
+        panel.classList.remove("is-browsing");
+        menu.hidden = true;
       }
-
-      channelMenuVisible = false;
-      trigger.setAttribute("aria-expanded", "false");
-      menu.classList.remove("is-open");
-      channelMenuHideTimer = window.setTimeout(() => {
-        if (!channelMenuVisible) {
-          menu.hidden = true;
-        }
-      }, 160);
     }
 
     function setupChannelMenu() {
       const trigger = document.getElementById("channelMenuButton");
-      const menu = document.getElementById("channelMenu");
 
       trigger.addEventListener("click", () => {
         setChannelMenuVisible(!channelMenuVisible);
-      });
-
-      document.addEventListener("click", (event) => {
-        const target = event.target;
-        if (!(target instanceof Node) || !channelMenuVisible) return;
-        if (trigger.contains(target) || menu.contains(target)) return;
-        setChannelMenuVisible(false);
       });
 
       document.addEventListener("keydown", (event) => {
@@ -797,10 +743,7 @@
           { transform: `rotate(${degrees}deg) scale(0.96)` },
           { transform: "rotate(0deg) scale(1)" }
         ],
-        {
-          duration: 170,
-          easing: "cubic-bezier(0.22, 1, 0.36, 1)"
-        }
+        { duration: 170, easing: "cubic-bezier(0.22, 1, 0.36, 1)" }
       );
     }
 
@@ -883,8 +826,7 @@
       });
 
       document.addEventListener("keydown", (event) => {
-        if (event.defaultPrevented) return;
-        if (channelMenuVisible) return;
+        if (event.defaultPrevented || channelMenuVisible) return;
         if (event.target instanceof HTMLElement && /input|textarea|select/i.test(event.target.tagName)) return;
 
         if (event.key === "ArrowRight") {

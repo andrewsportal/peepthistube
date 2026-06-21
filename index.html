@@ -17,13 +17,7 @@
       --tv-metal-2: #ccb896;
       --tv-panel: #d7c3a0;
       --bezel: #1c1d1f;
-      --screen-shadow: rgba(0, 0, 0, 0.75);
       --accent: #d49d46;
-      --accent-soft: rgba(212, 157, 70, 0.28);
-      --text-primary: #f5f5f7;
-      --text-secondary: rgba(245, 245, 247, 0.7);
-      --text-tertiary: rgba(245, 245, 247, 0.55);
-      --dial-rotation: 0deg;
       --plyr-color-main: var(--accent);
     }
 
@@ -48,9 +42,10 @@
       position: relative;
       min-height: 100svh;
       width: 100%;
-      display: grid;
-      place-items: center;
-      padding: clamp(16px, 2.6vw, 42px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: clamp(10px, 2vh, 24px) clamp(12px, 2.6vw, 42px);
       background:
         radial-gradient(1200px 620px at 50% 12%, rgba(255, 255, 255, 0.35) 0%, transparent 64%),
         repeating-linear-gradient(90deg, transparent 0, transparent 32px, var(--wallpaper-line) 32px, var(--wallpaper-line) 33px),
@@ -70,7 +65,7 @@
     .desk {
       position: absolute;
       inset: auto 0 0;
-      height: clamp(180px, 25svh, 280px);
+      height: clamp(120px, 19svh, 220px);
       background:
         linear-gradient(90deg, rgba(139, 96, 48, 0.35) 0 8px, transparent 8px 24px),
         linear-gradient(180deg, var(--desk-front-light) 0%, var(--desk-front-dark) 100%);
@@ -82,10 +77,10 @@
     }
 
     .tv-stage {
-      width: min(1240px, 100%);
+      width: min(1180px, 100%);
       position: relative;
       z-index: 2;
-      transform: translateY(clamp(0px, 1.6vh, 14px));
+      transform: translateY(clamp(0px, 0.9vh, 10px));
     }
 
     .tv-stage::after {
@@ -105,10 +100,10 @@
     .tv-set {
       position: relative;
       display: grid;
-      grid-template-columns: minmax(0, 2.2fr) minmax(280px, 1fr);
-      gap: clamp(14px, 1.8vw, 22px);
-      border-radius: 28px;
-      padding: clamp(14px, 2vw, 24px);
+      grid-template-columns: minmax(0, 2.1fr) minmax(270px, 1fr);
+      gap: clamp(12px, 1.5vw, 18px);
+      border-radius: 24px;
+      padding: clamp(12px, 1.8vw, 18px);
       background:
         linear-gradient(145deg, rgba(255, 255, 255, 0.7) 0%, rgba(255, 255, 255, 0) 42%),
         linear-gradient(145deg, var(--tv-metal-1) 0%, var(--tv-metal-2) 100%);
@@ -122,8 +117,8 @@
 
     .screen-chassis {
       background: linear-gradient(180deg, #26282d 0%, #17181b 100%);
-      border-radius: 18px 28px 26px 18px;
-      padding: clamp(12px, 1.9vw, 20px);
+      border-radius: 14px 22px 22px 14px;
+      padding: clamp(10px, 1.4vw, 14px);
       box-shadow:
         inset 0 16px 26px rgba(0, 0, 0, 0.6),
         inset 0 2px 3px rgba(255, 255, 255, 0.2),
@@ -134,7 +129,7 @@
     .tv-screen {
       width: 100%;
       aspect-ratio: 4 / 3;
-      border-radius: 22% / 14%;
+      border-radius: 6px;
       overflow: hidden;
       position: relative;
       background: #040404;
@@ -190,7 +185,7 @@
 
     .control-panel {
       border-radius: 16px;
-      padding: clamp(12px, 1.5vw, 18px);
+      padding: clamp(10px, 1.3vw, 14px);
       background:
         linear-gradient(180deg, rgba(255, 255, 255, 0.22) 0%, rgba(255, 255, 255, 0) 26%),
         linear-gradient(180deg, var(--tv-panel) 0%, #c7af89 100%);
@@ -199,9 +194,9 @@
         inset 4px 0 8px rgba(0, 0, 0, 0.08),
         inset -3px 0 6px rgba(255, 255, 255, 0.42),
         0 8px 18px rgba(37, 22, 9, 0.18);
-      display: grid;
-      grid-template-rows: auto auto minmax(0, 1fr) auto;
-      gap: 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
       min-height: 100%;
     }
 
@@ -215,11 +210,12 @@
     }
 
     .now-playing {
+      position: relative;
       border-radius: 10px;
-      padding: 10px;
+      padding: 10px 40px 10px 10px;
       background: rgba(35, 24, 12, 0.12);
       border: 1px solid rgba(89, 61, 26, 0.2);
-      min-height: 62px;
+      min-height: 64px;
     }
 
     .now-playing .channel {
@@ -239,9 +235,47 @@
       font-weight: 620;
     }
 
+    .fullscreen-chip {
+      appearance: none;
+      border: 1px solid rgba(101, 71, 33, 0.35);
+      background: rgba(255, 244, 222, 0.54);
+      width: 26px;
+      height: 26px;
+      border-radius: 7px;
+      position: absolute;
+      right: 8px;
+      top: 8px;
+      display: grid;
+      place-items: center;
+      cursor: pointer;
+      color: rgba(48, 31, 9, 0.9);
+      transition: transform 140ms ease, box-shadow 140ms ease;
+    }
+
+    .fullscreen-chip:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 4px 10px rgba(54, 30, 9, 0.2);
+    }
+
+    .fullscreen-chip:focus-visible {
+      outline: none;
+      box-shadow: 0 0 0 2px rgba(56, 33, 11, 0.4), 0 0 0 4px rgba(255, 255, 255, 0.65);
+    }
+
+    .fullscreen-chip.is-active {
+      background: rgba(212, 157, 70, 0.35);
+      border-color: rgba(101, 71, 33, 0.55);
+    }
+
+    .fullscreen-chip svg {
+      width: 14px;
+      height: 14px;
+      display: block;
+    }
+
     .dial-grid {
       display: grid;
-      grid-template-columns: repeat(2, minmax(0, 1fr));
+      grid-template-columns: repeat(3, minmax(0, 1fr));
       gap: 10px;
     }
 
@@ -268,6 +302,8 @@
       position: relative;
       color: inherit;
       transition: transform 180ms ease;
+      display: grid;
+      place-items: center;
     }
 
     .dial:focus-visible {
@@ -304,6 +340,20 @@
       box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.22);
     }
 
+    .dial svg {
+      width: 16px;
+      height: 16px;
+      display: block;
+      color: rgba(20, 14, 7, 0.88);
+      z-index: 2;
+      position: relative;
+    }
+
+    .dial--big svg {
+      width: 24px;
+      height: 24px;
+    }
+
     .dial--small {
       width: 34px;
       height: 34px;
@@ -319,80 +369,9 @@
       box-shadow: 0 0 0 2px rgba(56, 33, 11, 0.56), 0 0 0 6px rgba(247, 216, 154, 0.52);
     }
 
-    .playlist-section {
-      display: grid;
-      grid-template-rows: auto minmax(0, 1fr);
-      min-height: 0;
-    }
-
-    .playlist-header {
-      margin: 0 0 8px;
-      font-size: 0.68rem;
-      color: rgba(74, 50, 23, 0.9);
-      letter-spacing: 0.08em;
-      text-transform: uppercase;
-      font-weight: 700;
-    }
-
-    .playlist-list {
-      margin: 0;
-      padding: 0;
-      list-style: none;
-      display: grid;
-      gap: 6px;
-      overflow-y: auto;
-      scrollbar-width: thin;
-    }
-
-    .playlist-item {
-      appearance: none;
-      width: 100%;
-      text-align: left;
-      border: 1px solid transparent;
-      background: rgba(30, 19, 8, 0.1);
-      color: rgba(29, 20, 12, 0.95);
-      border-radius: 9px;
-      padding: 8px;
-      cursor: pointer;
-      display: grid;
-      gap: 2px;
-      transition: border-color 140ms ease, background-color 140ms ease, transform 140ms ease;
-    }
-
-    .playlist-item:hover {
-      border-color: rgba(99, 67, 31, 0.44);
-      background: rgba(30, 19, 8, 0.16);
-      transform: translateY(-1px);
-    }
-
-    .playlist-item:focus-visible {
-      outline: none;
-      border-color: rgba(79, 46, 17, 0.72);
-      box-shadow: 0 0 0 2px rgba(255, 244, 226, 0.8);
-    }
-
-    .playlist-item.active {
-      border-color: rgba(85, 56, 23, 0.6);
-      background: rgba(34, 22, 9, 0.22);
-      box-shadow: inset 0 0 0 1px rgba(255, 227, 172, 0.5);
-    }
-
-    .playlist-id {
-      font-size: 0.62rem;
-      letter-spacing: 0.08em;
-      color: rgba(70, 46, 22, 0.78);
-      font-variant-numeric: tabular-nums;
-    }
-
-    .playlist-name {
-      font-size: 0.78rem;
-      line-height: 1.3;
-      font-weight: 610;
-    }
-
     .speaker-grill {
       width: 100%;
-      height: 74px;
+      height: clamp(56px, 8vh, 74px);
       border-radius: 9px;
       background:
         radial-gradient(circle, rgba(125, 92, 52, 0.45) 20%, transparent 21%) 0 0 / 8px 8px,
@@ -406,41 +385,29 @@
       }
 
       .screen-chassis {
-        border-radius: 20px;
-      }
-
-      .control-panel {
-        grid-template-columns: 1fr;
+        border-radius: 16px;
       }
 
       .dial-grid {
-        grid-template-columns: repeat(4, minmax(0, 1fr));
-      }
-
-      .speaker-grill {
-        display: none;
+        grid-template-columns: repeat(6, minmax(0, 1fr));
       }
     }
 
     @media (max-width: 720px) {
-      body {
-        overflow: auto;
-      }
-
       .scene {
-        padding: 12px;
+        padding: 10px;
       }
 
       .desk {
-        height: 20svh;
+        height: 14svh;
       }
 
       .dial-grid {
         grid-template-columns: repeat(3, minmax(0, 1fr));
       }
 
-      .playlist-section {
-        max-height: 180px;
+      .speaker-grill {
+        display: none;
       }
     }
   </style>
@@ -462,42 +429,79 @@
           <section class="now-playing" aria-live="polite">
             <div class="channel" id="channelLabel">Channel --</div>
             <p class="title" id="nowPlayingTitle">Loading playlist...</p>
+            <button class="fullscreen-chip" id="fullscreenChip" type="button" aria-label="Toggle fullscreen">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <polyline points="8 3 3 3 3 8"></polyline>
+                <line x1="3" y1="3" x2="9" y2="9"></line>
+                <polyline points="16 3 21 3 21 8"></polyline>
+                <line x1="21" y1="3" x2="15" y2="9"></line>
+                <polyline points="8 21 3 21 3 16"></polyline>
+                <line x1="3" y1="21" x2="9" y2="15"></line>
+                <polyline points="16 21 21 21 21 16"></polyline>
+                <line x1="21" y1="21" x2="15" y2="15"></line>
+              </svg>
+            </button>
           </section>
 
           <section class="dial-grid" aria-label="Dial controls">
             <div class="dial-stack">
-              <button class="dial dial--big" id="dial-prev" type="button" aria-label="Previous channel"></button>
+              <button class="dial dial--big" id="dial-prev" type="button" aria-label="Previous channel">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <line x1="19" y1="12" x2="5" y2="12"></line>
+                  <polyline points="11 6 5 12 11 18"></polyline>
+                </svg>
+              </button>
               <span class="dial-label">Channel -</span>
             </div>
             <div class="dial-stack">
-              <button class="dial dial--big" id="dial-next" type="button" aria-label="Next channel"></button>
+              <button class="dial dial--big" id="dial-next" type="button" aria-label="Next channel">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <line x1="5" y1="12" x2="19" y2="12"></line>
+                  <polyline points="13 6 19 12 13 18"></polyline>
+                </svg>
+              </button>
               <span class="dial-label">Channel +</span>
             </div>
             <div class="dial-stack">
-              <button class="dial dial--small" id="dial-play" type="button" aria-label="Play or pause"></button>
+              <button class="dial dial--small" id="dial-play" type="button" aria-label="Play or pause">
+                <svg class="icon-play" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                  <polygon points="8 6 19 12 8 18 8 6"></polygon>
+                </svg>
+                <svg class="icon-pause" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" style="display:none;">
+                  <rect x="7" y="6" width="4" height="12"></rect>
+                  <rect x="13" y="6" width="4" height="12"></rect>
+                </svg>
+              </button>
               <span class="dial-label">Play</span>
             </div>
             <div class="dial-stack">
-              <button class="dial dial--small" id="dial-mute" type="button" aria-label="Mute or unmute"></button>
+              <button class="dial dial--small" id="dial-rewind" type="button" aria-label="Rewind 10 seconds">
+                <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                  <polygon points="11 6 5 12 11 18 11 6"></polygon>
+                  <polygon points="19 6 13 12 19 18 19 6"></polygon>
+                </svg>
+              </button>
+              <span class="dial-label">Rew</span>
+            </div>
+            <div class="dial-stack">
+              <button class="dial dial--small" id="dial-forward" type="button" aria-label="Fast forward 10 seconds">
+                <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                  <polygon points="5 6 11 12 5 18 5 6"></polygon>
+                  <polygon points="13 6 19 12 13 18 13 6"></polygon>
+                </svg>
+              </button>
+              <span class="dial-label">Fwd</span>
+            </div>
+            <div class="dial-stack">
+              <button class="dial dial--small" id="dial-mute" type="button" aria-label="Mute or unmute audio">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <polygon points="11 5 6 9 3 9 3 15 6 15 11 19 11 5"></polygon>
+                  <line x1="16" y1="9" x2="21" y2="14"></line>
+                  <line x1="21" y1="9" x2="16" y2="14"></line>
+                </svg>
+              </button>
               <span class="dial-label">Mute</span>
             </div>
-            <div class="dial-stack">
-              <button class="dial dial--small" id="dial-vol-down" type="button" aria-label="Volume down"></button>
-              <span class="dial-label">Vol -</span>
-            </div>
-            <div class="dial-stack">
-              <button class="dial dial--small" id="dial-vol-up" type="button" aria-label="Volume up"></button>
-              <span class="dial-label">Vol +</span>
-            </div>
-            <div class="dial-stack">
-              <button class="dial dial--small" id="dial-fullscreen" type="button" aria-label="Toggle fullscreen"></button>
-              <span class="dial-label">Max</span>
-            </div>
-          </section>
-
-          <section class="playlist-section" aria-label="Playlist">
-            <h2 class="playlist-header">Playlist</h2>
-            <div class="playlist-list" id="videoRow" role="listbox" aria-label="Video playlist"></div>
           </section>
 
           <div class="speaker-grill" aria-hidden="true"></div>
@@ -511,7 +515,6 @@
   <script src="https://cdn.jsdelivr.net/npm/plyr@3/dist/plyr.min.js"></script>
   <script>
     const PLAYER_ID = "player";
-    const PLAYLIST_ID = "videoRow";
     const TITLE_SOURCE = "titles.txt";
 
     const videos = [];
@@ -579,50 +582,6 @@
       titleLabel.textContent = video.title;
     }
 
-    function createVideoCard(video) {
-      const card = document.createElement("button");
-      card.type = "button";
-      card.className = "playlist-item";
-      card.setAttribute("role", "option");
-      card.setAttribute("aria-selected", String(video.id === currentId));
-      card.dataset.id = String(video.id);
-
-      if (video.id === currentId) {
-        card.classList.add("active");
-      }
-
-      const id = document.createElement("span");
-      id.className = "playlist-id";
-      id.textContent = `CH ${padChannel(video.id)}`;
-
-      const title = document.createElement("span");
-      title.className = "playlist-name";
-      title.textContent = video.title;
-
-      card.append(id, title);
-      card.addEventListener("click", () => loadVideo(video.id, { userInitiated: true }));
-      return card;
-    }
-
-    function renderPlaylist() {
-      const row = document.getElementById(PLAYLIST_ID);
-      row.innerHTML = "";
-      videos.forEach((video) => row.appendChild(createVideoCard(video)));
-    }
-
-    function scrollActiveCardIntoView(behavior = "smooth") {
-      const row = document.getElementById(PLAYLIST_ID);
-      const activeCard = row.querySelector(".playlist-item.active");
-      if (!activeCard) {
-        return;
-      }
-      activeCard.scrollIntoView({
-        behavior,
-        block: "nearest",
-        inline: "nearest"
-      });
-    }
-
     function animateDial(element, degrees) {
       const previous = dialRotation.get(element.id) || 0;
       const next = previous + degrees;
@@ -634,21 +593,17 @@
       return videos.findIndex((video) => video.id === currentId);
     }
 
-    function loadVideo(id, options = {}) {
+    function loadVideo(id) {
       const selectedVideo = videos.find((video) => video.id === id);
       if (!selectedVideo) {
         return;
       }
-
-      const { userInitiated = false } = options;
       const videoElement = document.getElementById(PLAYER_ID);
 
       currentId = id;
       fallbackAttempted = false;
       videoElement.src = selectedVideo.src;
-      renderPlaylist();
       updateNowPlaying(selectedVideo);
-      requestAnimationFrame(() => scrollActiveCardIntoView(userInitiated ? "smooth" : "auto"));
 
       showOSD(`CH ${padChannel(selectedVideo.id)} • ${selectedVideo.title.toUpperCase()}`);
       videoElement.play().catch(() => {});
@@ -661,11 +616,11 @@
       const currentIndex = getCurrentIndex();
       const safeIndex = currentIndex >= 0 ? currentIndex : 0;
       const nextIndex = (safeIndex + step + videos.length) % videos.length;
-      loadVideo(videos[nextIndex].id, { userInitiated: true });
+      loadVideo(videos[nextIndex].id);
     }
 
     async function toggleFullscreen() {
-      const button = document.getElementById("dial-fullscreen");
+      const button = document.getElementById("fullscreenChip");
       const tvScreen = document.getElementById("tvScreen");
       const isFullscreen = Boolean(document.fullscreenElement);
 
@@ -691,10 +646,12 @@
       const dialPrev = document.getElementById("dial-prev");
       const dialNext = document.getElementById("dial-next");
       const dialPlay = document.getElementById("dial-play");
+      const playIcon = dialPlay.querySelector(".icon-play");
+      const pauseIcon = dialPlay.querySelector(".icon-pause");
       const dialMute = document.getElementById("dial-mute");
-      const dialVolUp = document.getElementById("dial-vol-up");
-      const dialVolDown = document.getElementById("dial-vol-down");
-      const dialFullscreen = document.getElementById("dial-fullscreen");
+      const dialRewind = document.getElementById("dial-rewind");
+      const dialForward = document.getElementById("dial-forward");
+      const fullscreenChip = document.getElementById("fullscreenChip");
 
       dialPrev.addEventListener("click", () => {
         animateDial(dialPrev, -38);
@@ -717,6 +674,19 @@
         }
       });
 
+      dialRewind.addEventListener("click", () => {
+        animateDial(dialRewind, -24);
+        player.currentTime = Math.max(0, player.currentTime - 10);
+        showOSD("REWIND 10s");
+      });
+
+      dialForward.addEventListener("click", () => {
+        animateDial(dialForward, 24);
+        const duration = Number.isFinite(player.duration) ? player.duration : 0;
+        player.currentTime = Math.min(duration || player.currentTime + 10, player.currentTime + 10);
+        showOSD("FORWARD 10s");
+      });
+
       dialMute.addEventListener("click", () => {
         animateDial(dialMute, 26);
         player.muted = !player.muted;
@@ -724,26 +694,12 @@
         showOSD(player.muted ? "MUTE" : "UNMUTE");
       });
 
-      dialVolUp.addEventListener("click", () => {
-        animateDial(dialVolUp, 24);
-        player.muted = false;
-        player.volume = Math.min(1, player.volume + 0.1);
-        showOSD(`VOL ${Math.round(player.volume * 100)}%`);
-      });
-
-      dialVolDown.addEventListener("click", () => {
-        animateDial(dialVolDown, -24);
-        player.volume = Math.max(0, player.volume - 0.1);
-        showOSD(`VOL ${Math.round(player.volume * 100)}%`);
-      });
-
-      dialFullscreen.addEventListener("click", () => {
-        animateDial(dialFullscreen, 30);
+      fullscreenChip.addEventListener("click", () => {
         toggleFullscreen();
       });
 
       document.addEventListener("fullscreenchange", () => {
-        dialFullscreen.classList.toggle("is-active", Boolean(document.fullscreenElement));
+        fullscreenChip.classList.toggle("is-active", Boolean(document.fullscreenElement));
       });
 
       document.addEventListener("keydown", (event) => {
@@ -763,10 +719,31 @@
         } else if (event.key === " " || event.key === "k") {
           event.preventDefault();
           dialPlay.click();
+        } else if (event.key.toLowerCase() === "j") {
+          event.preventDefault();
+          dialRewind.click();
+        } else if (event.key.toLowerCase() === "l") {
+          event.preventDefault();
+          dialForward.click();
+        } else if (event.key.toLowerCase() === "m") {
+          event.preventDefault();
+          dialMute.click();
         } else if (event.key.toLowerCase() === "f") {
           event.preventDefault();
-          dialFullscreen.click();
+          fullscreenChip.click();
         }
+      });
+
+      player.on("play", () => {
+        dialPlay.classList.add("is-active");
+        playIcon.style.display = "none";
+        pauseIcon.style.display = "block";
+      });
+
+      player.on("pause", () => {
+        dialPlay.classList.remove("is-active");
+        playIcon.style.display = "block";
+        pauseIcon.style.display = "none";
       });
     }
 
@@ -794,21 +771,12 @@
         }
         stepChannel(1);
       });
-
-      player.on("play", () => {
-        document.getElementById("dial-play").classList.add("is-active");
-      });
-
-      player.on("pause", () => {
-        document.getElementById("dial-play").classList.remove("is-active");
-      });
     }
 
     async function init() {
       await loadData();
       initPlayer();
       setupDials();
-      renderPlaylist();
 
       if (videos.length) {
         loadVideo(videos[0].id);

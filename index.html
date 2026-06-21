@@ -224,6 +224,145 @@
       min-height: 64px;
     }
 
+    .now-playing-wrap {
+      position: relative;
+      z-index: 10;
+    }
+
+    .now-playing--interactive {
+      width: 100%;
+      appearance: none;
+      text-align: left;
+      cursor: pointer;
+      transition: border-color 160ms ease, box-shadow 160ms ease, background-color 160ms ease;
+    }
+
+    .now-playing--interactive:hover {
+      border-color: rgba(89, 61, 26, 0.28);
+      background: rgba(35, 24, 12, 0.17);
+    }
+
+    .now-playing--interactive:focus-visible {
+      outline: none;
+      border-color: rgba(108, 73, 32, 0.45);
+      box-shadow: 0 0 0 2px rgba(255, 249, 240, 0.8), inset 0 1px 2px rgba(255, 255, 255, 0.22);
+    }
+
+    .now-playing-main {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .menu-indicator {
+      width: 24px;
+      height: 24px;
+      border-radius: 7px;
+      border: 1px solid rgba(89, 61, 26, 0.22);
+      background: rgba(255, 248, 234, 0.45);
+      display: grid;
+      place-items: center;
+      flex: 0 0 auto;
+      transition: transform 160ms ease, background-color 160ms ease;
+    }
+
+    .menu-indicator svg {
+      width: 14px;
+      height: 14px;
+      color: rgba(74, 50, 23, 0.9);
+      display: block;
+    }
+
+    .now-playing--interactive[aria-expanded="true"] .menu-indicator {
+      transform: rotate(180deg);
+      background: rgba(255, 236, 197, 0.68);
+    }
+
+    .channel-menu {
+      position: absolute;
+      left: 0;
+      right: 0;
+      top: calc(100% + 8px);
+      border-radius: 13px;
+      border: 1px solid rgba(103, 73, 38, 0.24);
+      background: rgba(243, 228, 196, 0.82);
+      box-shadow: 0 20px 34px rgba(33, 19, 7, 0.22), inset 0 1px 1px rgba(255, 255, 255, 0.56);
+      backdrop-filter: blur(15px) saturate(140%);
+      padding: 7px;
+      display: grid;
+      gap: 6px;
+      max-height: min(42vh, 250px);
+      overflow: auto;
+      opacity: 0;
+      transform: translateY(-3px) scale(0.98);
+      pointer-events: none;
+      transition: opacity 150ms ease, transform 150ms ease;
+    }
+
+    .channel-menu.is-open {
+      opacity: 1;
+      transform: translateY(0) scale(1);
+      pointer-events: auto;
+    }
+
+    .channel-option {
+      appearance: none;
+      border: 1px solid transparent;
+      background: rgba(46, 30, 12, 0.07);
+      color: rgba(31, 22, 12, 0.95);
+      border-radius: 10px;
+      padding: 8px 10px;
+      text-align: left;
+      cursor: pointer;
+      display: grid;
+      grid-template-columns: auto minmax(0, 1fr) auto;
+      align-items: center;
+      gap: 10px;
+      transition: background-color 140ms ease, border-color 140ms ease;
+    }
+
+    .channel-option:hover {
+      border-color: rgba(107, 71, 31, 0.36);
+      background: rgba(46, 30, 12, 0.14);
+    }
+
+    .channel-option:focus-visible {
+      outline: none;
+      border-color: rgba(107, 71, 31, 0.48);
+      box-shadow: 0 0 0 2px rgba(255, 245, 224, 0.9);
+    }
+
+    .channel-option-id {
+      font-size: 0.62rem;
+      letter-spacing: 0.08em;
+      color: rgba(74, 50, 23, 0.8);
+      font-variant-numeric: tabular-nums;
+      text-transform: uppercase;
+    }
+
+    .channel-option-title {
+      font-size: 0.76rem;
+      font-weight: 600;
+      line-height: 1.26;
+    }
+
+    .channel-option-check {
+      width: 14px;
+      height: 14px;
+      color: transparent;
+      transition: color 120ms ease;
+    }
+
+    .channel-option.is-active {
+      border-color: rgba(107, 71, 31, 0.42);
+      background: rgba(62, 41, 18, 0.16);
+    }
+
+    .channel-option.is-active .channel-option-check {
+      color: rgba(80, 56, 28, 0.9);
+    }
+
     .now-playing .channel {
       font-size: 0.7rem;
       letter-spacing: 0.07em;
@@ -389,9 +528,27 @@
         <aside class="control-panel" aria-label="Television controls">
           <h1 class="panel-title">Peep This Tube</h1>
 
-          <section class="now-playing" aria-live="polite">
-            <div class="channel" id="channelLabel">Channel --</div>
-            <p class="title" id="nowPlayingTitle">Loading playlist...</p>
+          <section class="now-playing-wrap" aria-live="polite">
+            <button
+              class="now-playing now-playing--interactive"
+              id="channelMenuButton"
+              type="button"
+              aria-label="Open channel menu"
+              aria-haspopup="listbox"
+              aria-expanded="false"
+              aria-controls="channelMenu"
+            >
+              <div class="channel" id="channelLabel">Channel --</div>
+              <div class="now-playing-main">
+                <span class="title" id="nowPlayingTitle">Loading playlist...</span>
+                <span class="menu-indicator" aria-hidden="true">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round">
+                    <polyline points="6 9 12 15 18 9"></polyline>
+                  </svg>
+                </span>
+              </div>
+            </button>
+            <div class="channel-menu" id="channelMenu" role="listbox" aria-label="Available videos" hidden></div>
           </section>
 
           <section class="dial-grid" aria-label="Dial controls">
@@ -475,6 +632,8 @@
     let currentId = null;
     let fallbackAttempted = false;
     let osdTimeout;
+    let channelMenuVisible = false;
+    let channelMenuHideTimer;
 
     async function loadTitles() {
       try {
@@ -533,6 +692,105 @@
       titleLabel.textContent = video.title;
     }
 
+    function createChannelOption(video) {
+      const option = document.createElement("button");
+      option.type = "button";
+      option.className = "channel-option";
+      option.setAttribute("role", "option");
+      option.setAttribute("aria-selected", String(video.id === currentId));
+
+      if (video.id === currentId) {
+        option.classList.add("is-active");
+      }
+
+      const id = document.createElement("span");
+      id.className = "channel-option-id";
+      id.textContent = `CH ${padChannel(video.id)}`;
+
+      const title = document.createElement("span");
+      title.className = "channel-option-title";
+      title.textContent = video.title;
+
+      const check = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+      check.setAttribute("viewBox", "0 0 24 24");
+      check.setAttribute("fill", "none");
+      check.setAttribute("stroke", "currentColor");
+      check.setAttribute("stroke-width", "2.2");
+      check.setAttribute("stroke-linecap", "round");
+      check.setAttribute("stroke-linejoin", "round");
+      check.classList.add("channel-option-check");
+      check.innerHTML = "<polyline points=\"20 6 9 17 4 12\"></polyline>";
+      check.setAttribute("aria-hidden", "true");
+
+      option.append(id, title, check);
+      option.addEventListener("click", () => {
+        loadVideo(video.id);
+        setChannelMenuVisible(false);
+      });
+      return option;
+    }
+
+    function renderChannelMenu() {
+      const menu = document.getElementById("channelMenu");
+      menu.innerHTML = "";
+      videos.forEach((video) => {
+        menu.appendChild(createChannelOption(video));
+      });
+    }
+
+    function setChannelMenuVisible(visible) {
+      const menu = document.getElementById("channelMenu");
+      const trigger = document.getElementById("channelMenuButton");
+      clearTimeout(channelMenuHideTimer);
+
+      if (visible) {
+        renderChannelMenu();
+        channelMenuVisible = true;
+        menu.hidden = false;
+        trigger.setAttribute("aria-expanded", "true");
+        requestAnimationFrame(() => {
+          menu.classList.add("is-open");
+        });
+        return;
+      }
+
+      channelMenuVisible = false;
+      trigger.setAttribute("aria-expanded", "false");
+      menu.classList.remove("is-open");
+      channelMenuHideTimer = window.setTimeout(() => {
+        if (!channelMenuVisible) {
+          menu.hidden = true;
+        }
+      }, 160);
+    }
+
+    function setupChannelMenu() {
+      const trigger = document.getElementById("channelMenuButton");
+      const menu = document.getElementById("channelMenu");
+
+      trigger.addEventListener("click", () => {
+        setChannelMenuVisible(!channelMenuVisible);
+      });
+
+      document.addEventListener("click", (event) => {
+        const target = event.target;
+        if (!(target instanceof Node) || !channelMenuVisible) {
+          return;
+        }
+        if (trigger.contains(target) || menu.contains(target)) {
+          return;
+        }
+        setChannelMenuVisible(false);
+      });
+
+      document.addEventListener("keydown", (event) => {
+        if (event.key === "Escape" && channelMenuVisible) {
+          event.preventDefault();
+          setChannelMenuVisible(false);
+        }
+      });
+    }
+
     function animateDial(element, degrees) {
       element.animate(
         [
@@ -562,6 +820,7 @@
       fallbackAttempted = false;
       videoElement.src = selectedVideo.src;
       updateNowPlaying(selectedVideo);
+      renderChannelMenu();
 
       showOSD(`CH ${padChannel(selectedVideo.id)} • ${selectedVideo.title.toUpperCase()}`);
       videoElement.play().catch(() => {});
@@ -632,6 +891,9 @@
         if (event.defaultPrevented) {
           return;
         }
+        if (channelMenuVisible) {
+          return;
+        }
         if (event.target instanceof HTMLElement && /input|textarea|select/i.test(event.target.tagName)) {
           return;
         }
@@ -699,7 +961,9 @@
     async function init() {
       await loadData();
       initPlayer();
+      setupChannelMenu();
       setupDials();
+      renderChannelMenu();
 
       if (videos.length) {
         loadVideo(videos[0].id);

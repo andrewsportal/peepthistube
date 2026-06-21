@@ -6,58 +6,110 @@
   <title>Video Hub</title>
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/plyr@3/dist/plyr.css">
   <style>
-    :root { --bg: #0a0a0a; --surface: #121212; --accent: #0a84ff; }
-    body {
-      margin: 0; background: var(--bg); color: #f5f5f7;
-      font-family: -apple-system, BlinkMacSystemFont, sans-serif;
-      padding: 20px 16px; max-width: 820px; margin-left: auto; margin-right: auto;
+    :root {
+      --bg: #0a0a0a;
+      --surface: #111;
+      --accent: #0a84ff;
     }
-    h1 { font-size: 1.75rem; font-weight: 600; text-align: center; margin: 0 0 32px; }
-    .player-section {
-      background: var(--surface); border-radius: 20px; padding: 24px 20px;
-      margin-bottom: 40px; box-shadow: 0 8px 30px rgba(0,0,0,0.5);
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: #f5f5f7;
+      font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+      padding: 24px 16px;
+      max-width: 860px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+    h1 {
+      font-size: 1.6rem;
+      font-weight: 600;
+      text-align: center;
+      margin: 0 0 28px;
+      letter-spacing: -0.02em;
+    }
+    .player-container {
+      background: #111;
+      border-radius: 20px;
+      padding: 20px;
+      margin-bottom: 32px;
+      box-shadow: 0 10px 40px rgba(0,0,0,0.6);
     }
     .player-header {
-      display: flex; align-items: center; justify-content: space-between;
-      margin-bottom: 12px; gap: 12px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 16px;
     }
     .current-title {
-      font-size: 1.1rem; font-weight: 500; flex: 1;
-    }
-    .status {
-      font-size: 0.85rem; color: #888; margin-top: 4px;
+      font-size: 1.15rem;
+      font-weight: 500;
     }
     .lock-btn {
-      background: #1f1f1f; color: #f5f5f7; border: none;
-      padding: 10px 18px; border-radius: 999px; font-size: 0.9rem;
-      display: flex; align-items: center; gap: 8px; cursor: pointer;
-      min-height: 44px;
+      background: #222;
+      color: #ddd;
+      border: none;
+      padding: 8px 16px;
+      border-radius: 999px;
+      font-size: 0.9rem;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      cursor: pointer;
     }
-    .lock-btn.locked { background: #1e3a8a; color: #fff; }
+    .playlist {
+      margin-top: 8px;
+    }
+    .playlist h2 {
+      font-size: 1rem;
+      font-weight: 500;
+      margin: 0 0 14px;
+      color: #aaa;
+    }
     .video-row {
-      display: flex; gap: 14px; overflow-x: auto; padding-bottom: 12px;
-      scroll-snap-type: x mandatory; -webkit-overflow-scrolling: touch;
+      display: flex;
+      gap: 14px;
+      overflow-x: auto;
+      padding-bottom: 16px;
+      scroll-snap-type: x mandatory;
     }
     .video-card {
-      min-width: 180px; background: #1a1a1a; border-radius: 16px;
-      padding: 18px 20px; cursor: pointer; scroll-snap-align: start;
-      border: 1px solid #222; transition: all 0.2s ease;
+      min-width: 200px;
+      background: #1a1a1a;
+      border-radius: 16px;
+      padding: 20px 22px;
+      cursor: pointer;
+      scroll-snap-align: start;
+      border: 1px solid #222;
+      transition: all 0.2s ease;
     }
-    .video-card.active { border-color: var(--accent); background: #1f1f1f; }
-    .video-number { font-size: 0.8rem; color: #888; }
-    .video-title { font-size: 1.05rem; font-weight: 500; margin-top: 6px; }
+    .video-card.active {
+      border-color: var(--accent);
+      background: #222;
+    }
+    .video-number {
+      font-size: 0.75rem;
+      color: #888;
+      margin-bottom: 6px;
+    }
+    .video-title {
+      font-size: 1.1rem;
+      font-weight: 500;
+      line-height: 1.3;
+    }
+    @media (max-width: 480px) {
+      .video-card { min-width: 170px; padding: 18px 20px; }
+    }
   </style>
 </head>
 <body>
   <h1>Video Hub</h1>
 
-  <div class="player-section">
+  <!-- Player -->
+  <div class="player-container">
     <div class="player-header">
-      <div>
-        <div class="current-title" id="currentTitle">Select a video</div>
-        <div class="status" id="status"></div>
-      </div>
-      <button id="lockBtn" class="lock-btn" onclick="toggleOrientationLock()">
+      <div class="current-title" id="currentTitle">Select a video</div>
+      <button class="lock-btn" onclick="toggleLock()">
         <span id="lockIcon">🔓</span>
         <span id="lockText">Lock</span>
       </button>
@@ -65,8 +117,9 @@
     <video id="player" playsinline></video>
   </div>
 
-  <div>
-    <div class="playlist-header"><h2>Playlist</h2></div>
+  <!-- Playlist -->
+  <div class="playlist">
+    <h2>Playlist</h2>
     <div class="video-row" id="videoRow"></div>
   </div>
 
@@ -74,28 +127,24 @@
   <script>
     let videos = [];
     let player;
-    let currentVideoId = null;
-    let isLocked = false;
+    let currentId = null;
+    let locked = false;
 
-    async function loadTitlesAndVideos() {
+    async function loadData() {
       let titles = [];
       try {
         const res = await fetch('titles.txt');
         if (res.ok) titles = (await res.text()).split('\n').map(l => l.trim()).filter(Boolean);
       } catch (e) {}
 
-      const count = titles.length || 5;
+      const count = titles.length || 4;
       for (let i = 1; i <= count; i++) {
         videos.push({
           id: i,
-          title: titles[i-1] || `Video ${i}`,
+          title: titles[i - 1] || `Video ${i}`,
           src: `video${i}.mp4`
         });
       }
-    }
-
-    function setStatus(msg) {
-      document.getElementById('status').textContent = msg;
     }
 
     function initPlayer() {
@@ -104,21 +153,8 @@
         controls: ['play', 'progress', 'current-time', 'mute', 'volume', 'fullscreen']
       });
 
-      // Smart fallback between .mp4 and .MP4
-      videoEl.addEventListener('error', () => {
-        const currentSrc = videoEl.src;
-        if (currentSrc.includes('.mp4') && !currentSrc.includes('.MP4')) {
-          const newSrc = currentSrc.replace('.mp4', '.MP4');
-          setStatus(`Trying ${newSrc.split('/').pop()}...`);
-          videoEl.src = newSrc;
-          videoEl.play().catch(() => {});
-        } else {
-          setStatus('Failed to load video. Check filename and location.');
-        }
-      });
-
       player.on('ended', () => {
-        const idx = videos.findIndex(v => v.id === currentVideoId);
+        const idx = videos.findIndex(v => v.id === currentId);
         loadVideo(videos[(idx + 1) % videos.length].id);
       });
     }
@@ -128,8 +164,11 @@
       row.innerHTML = '';
       videos.forEach(v => {
         const card = document.createElement('div');
-        card.className = `video-card ${v.id === currentVideoId ? 'active' : ''}`;
-        card.innerHTML = `<div class="video-number">#${v.id}</div><div class="video-title">${v.title}</div>`;
+        card.className = `video-card ${v.id === currentId ? 'active' : ''}`;
+        card.innerHTML = `
+          <div class="video-number">#${v.id}</div>
+          <div class="video-title">${v.title}</div>
+        `;
         card.onclick = () => loadVideo(v.id);
         row.appendChild(card);
       });
@@ -140,44 +179,42 @@
       if (!video) return;
 
       const videoEl = document.getElementById('player');
-      const titleEl = document.getElementById('currentTitle');
+      document.getElementById('currentTitle').textContent = video.title;
+      currentId = id;
 
-      setStatus(`Loading ${video.src}...`);
       videoEl.src = video.src;
-      titleEl.textContent = video.title;
-      currentVideoId = id;
-
       renderPlaylist();
       videoEl.play().catch(() => {});
     }
 
-    async function toggleOrientationLock() {
-      const btn = document.getElementById('lockBtn');
+    async function toggleLock() {
       const icon = document.getElementById('lockIcon');
       const text = document.getElementById('lockText');
+      const btn = icon.parentElement;
 
-      if (!screen.orientation?.lock) return alert("Not supported on this device");
+      if (!screen.orientation?.lock) return alert("Not supported");
 
       try {
-        if (!isLocked) {
+        if (!locked) {
           await screen.orientation.lock('landscape');
-          isLocked = true;
-          btn.classList.add('locked'); icon.textContent = '🔒'; text.textContent = 'Unlock';
+          locked = true;
+          btn.style.background = '#1e3a8a';
+          icon.textContent = '🔒';
+          text.textContent = 'Unlock';
         } else {
           await screen.orientation.unlock();
-          isLocked = false;
-          btn.classList.remove('locked'); icon.textContent = '🔓'; text.textContent = 'Lock';
+          locked = false;
+          btn.style.background = '#222';
+          icon.textContent = '🔓';
+          text.textContent = 'Lock';
         }
-      } catch (e) {
-        alert("Enter fullscreen first, then tap Lock");
-      }
+      } catch (e) {}
     }
 
     async function init() {
-      await loadTitlesAndVideos();
+      await loadData();
       initPlayer();
       renderPlaylist();
-      setStatus('Ready. Tap a video to play.');
     }
 
     window.onload = init;

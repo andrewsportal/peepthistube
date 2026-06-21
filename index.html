@@ -7,333 +7,527 @@
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/plyr@3/dist/plyr.css">
   <style>
     :root {
-      --wallpaper-bg: #ece5d3;
-      --wallpaper-pattern: #dfd4bc;
-      --desk-top: #3e2723;
-      --desk-front: #1b100b;
-      --tv-casing: #e2d5bd;
-      --tv-casing-shadow: #b3a486;
-      --tv-panel: #cebc9b;
-      --bezel: #1a1a1c;
-      --dial-gold-light: #f4e3aa;
-      --dial-gold-dark: #a38234;
-      --text-secondary: #7c7c80;
-      
-      font-synthesis: none;
-      text-rendering: optimizeLegibility;
-      -webkit-font-smoothing: antialiased;
+      --wallpaper-light: #e9e2d2;
+      --wallpaper-mid: #d8cdb8;
+      --wallpaper-line: rgba(73, 54, 28, 0.08);
+      --desk-top: #d0a56e;
+      --desk-front-light: #bc9059;
+      --desk-front-dark: #9f7545;
+      --tv-metal-1: #ebddc4;
+      --tv-metal-2: #ccb896;
+      --tv-panel: #d7c3a0;
+      --bezel: #1c1d1f;
+      --screen-shadow: rgba(0, 0, 0, 0.75);
+      --accent: #d49d46;
+      --accent-soft: rgba(212, 157, 70, 0.28);
+      --text-primary: #f5f5f7;
+      --text-secondary: rgba(245, 245, 247, 0.7);
+      --text-tertiary: rgba(245, 245, 247, 0.55);
+      --dial-rotation: 0deg;
+      --plyr-color-main: var(--accent);
     }
 
     * {
       box-sizing: border-box;
+    }
+
+    html,
+    body {
       margin: 0;
-      padding: 0;
-    }
-
-    html, body {
-      height: 100%;
-      overflow: hidden;
+      width: 100%;
+      min-height: 100%;
       font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", sans-serif;
+      font-synthesis: none;
+      text-rendering: optimizeLegibility;
+      -webkit-font-smoothing: antialiased;
+      overflow: hidden;
+      background: #111;
     }
 
-    /* Environment */
-    .room {
+    .scene {
       position: relative;
-      width: 100vw;
-      height: 100vh;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      background: var(--wallpaper-bg);
-      background-image: 
-        repeating-linear-gradient(0deg, transparent, transparent 19px, rgba(0,0,0,0.03) 19px, rgba(0,0,0,0.03) 20px),
-        repeating-linear-gradient(90deg, transparent, transparent 19px, rgba(0,0,0,0.03) 19px, rgba(0,0,0,0.03) 20px);
+      min-height: 100svh;
+      width: 100%;
+      display: grid;
+      place-items: center;
+      padding: clamp(16px, 2.6vw, 42px);
+      background:
+        radial-gradient(1200px 620px at 50% 12%, rgba(255, 255, 255, 0.35) 0%, transparent 64%),
+        repeating-linear-gradient(90deg, transparent 0, transparent 32px, var(--wallpaper-line) 32px, var(--wallpaper-line) 33px),
+        linear-gradient(180deg, var(--wallpaper-light) 0%, var(--wallpaper-mid) 100%);
+    }
+
+    .scene::after {
+      content: "";
+      position: absolute;
+      inset: auto 0 0;
+      height: 34svh;
+      pointer-events: none;
+      background: linear-gradient(180deg, transparent 0%, rgba(62, 36, 16, 0.2) 55%, rgba(40, 22, 10, 0.35) 100%);
+      z-index: 0;
     }
 
     .desk {
       position: absolute;
-      bottom: 0;
-      left: 0;
-      width: 100%;
-      height: 22vh;
-      background: linear-gradient(180deg, var(--desk-top) 0%, var(--desk-front) 100%);
-      border-top: 6px solid #54372b;
-      box-shadow: inset 0 8px 16px rgba(0,0,0,0.4);
+      inset: auto 0 0;
+      height: clamp(180px, 25svh, 280px);
+      background:
+        linear-gradient(90deg, rgba(139, 96, 48, 0.35) 0 8px, transparent 8px 24px),
+        linear-gradient(180deg, var(--desk-front-light) 0%, var(--desk-front-dark) 100%);
+      border-top: 10px solid #d7af77;
+      box-shadow:
+        inset 0 20px 35px rgba(54, 32, 16, 0.25),
+        inset 0 -28px 30px rgba(67, 42, 20, 0.22);
       z-index: 1;
     }
 
-    /* TV Enclosure */
-    .tv-set {
+    .tv-stage {
+      width: min(1240px, 100%);
       position: relative;
       z-index: 2;
-      width: min(900px, 95vw);
-      aspect-ratio: 16 / 10;
-      background: var(--tv-casing);
-      border-radius: 18px;
-      padding: 2.5%;
-      display: flex;
-      gap: 3%;
-      box-shadow: 
-        inset 0 2px 4px rgba(255,255,255,0.8),
-        inset 0 -10px 20px rgba(0,0,0,0.1),
-        0 40px 60px rgba(0,0,0,0.5),
-        0 10px 20px rgba(0,0,0,0.3);
-      border: 1px solid #f9f4ea;
-      transform: translateY(2vh);
+      transform: translateY(clamp(0px, 1.6vh, 14px));
     }
 
-    /* Screen Area */
-    .tv-screen-container {
-      flex: 1;
-      background: var(--bezel);
-      border-radius: 20px 24px 24px 20px;
-      padding: 4%;
+    .tv-stage::after {
+      content: "";
+      position: absolute;
+      left: 50%;
+      transform: translateX(-50%);
+      bottom: -28px;
+      width: min(920px, 84%);
+      height: 62px;
+      border-radius: 50%;
+      filter: blur(18px);
+      background: rgba(23, 12, 6, 0.45);
+      z-index: -1;
+    }
+
+    .tv-set {
       position: relative;
-      box-shadow: 
-        inset 0 10px 30px rgba(0,0,0,0.9),
-        inset 0 2px 4px rgba(255,255,255,0.2),
-        1px 0 2px rgba(255,255,255,0.4);
+      display: grid;
+      grid-template-columns: minmax(0, 2.2fr) minmax(280px, 1fr);
+      gap: clamp(14px, 1.8vw, 22px);
+      border-radius: 28px;
+      padding: clamp(14px, 2vw, 24px);
+      background:
+        linear-gradient(145deg, rgba(255, 255, 255, 0.7) 0%, rgba(255, 255, 255, 0) 42%),
+        linear-gradient(145deg, var(--tv-metal-1) 0%, var(--tv-metal-2) 100%);
+      border: 1px solid rgba(255, 248, 236, 0.88);
+      box-shadow:
+        inset 0 2px 0 rgba(255, 255, 255, 0.7),
+        inset 0 -2px 0 rgba(132, 106, 66, 0.36),
+        0 24px 40px rgba(31, 17, 7, 0.32),
+        0 48px 82px rgba(0, 0, 0, 0.42);
+    }
+
+    .screen-chassis {
+      background: linear-gradient(180deg, #26282d 0%, #17181b 100%);
+      border-radius: 18px 28px 26px 18px;
+      padding: clamp(12px, 1.9vw, 20px);
+      box-shadow:
+        inset 0 16px 26px rgba(0, 0, 0, 0.6),
+        inset 0 2px 3px rgba(255, 255, 255, 0.2),
+        1px 0 2px rgba(255, 255, 255, 0.16);
       display: flex;
-      align-items: center;
-      justify-content: center;
     }
 
     .tv-screen {
       width: 100%;
       aspect-ratio: 4 / 3;
-      background: #050505;
-      border-radius: 50% / 10%; /* CRT curvature */
+      border-radius: 22% / 14%;
       overflow: hidden;
       position: relative;
-      box-shadow: 0 0 20px rgba(0,0,0,1);
+      background: #040404;
+      box-shadow:
+        inset 0 0 42px rgba(0, 0, 0, 0.9),
+        0 0 20px rgba(0, 0, 0, 0.65);
+      isolation: isolate;
     }
 
-    /* Glass Reflection Overlay */
-    .tv-screen::after {
-      content: '';
+    .tv-screen::before {
+      content: "";
       position: absolute;
-      top: 0; left: 0; right: 0; bottom: 0;
-      background: linear-gradient(135deg, rgba(255,255,255,0.08) 0%, rgba(255,255,255,0) 45%);
+      inset: 0;
+      background:
+        linear-gradient(170deg, rgba(255, 255, 255, 0.14) 0 18%, rgba(255, 255, 255, 0) 40%),
+        repeating-linear-gradient(180deg, rgba(255, 255, 255, 0.04) 0 1px, transparent 1px 3px);
+      z-index: 7;
       pointer-events: none;
-      z-index: 10;
-      border-radius: inherit;
+      mix-blend-mode: screen;
     }
 
-    /* Hide Default Plyr UI entirely */
+    .plyr {
+      width: 100%;
+      height: 100%;
+      border-radius: inherit;
+      background: #000;
+    }
+
     .plyr__controls {
       display: none !important;
     }
-    .plyr {
-      height: 100%;
-      width: 100%;
-      border-radius: inherit;
-    }
 
-    /* Control Panel */
-    .tv-panel {
-      width: 22%;
-      background: var(--tv-panel);
-      border-radius: 12px;
-      padding: 15px 0;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      box-shadow: 
-        inset 4px 0 8px rgba(0,0,0,0.08),
-        inset -2px 0 4px rgba(255,255,255,0.4),
-        0 2px 4px rgba(0,0,0,0.1);
-      position: relative;
-      overflow: hidden;
-    }
-
-    /* Speaker Grill Pattern */
-    .speaker-grill {
-      flex: 1;
-      width: 80%;
-      margin-top: 15px;
-      background-image: radial-gradient(var(--tv-casing-shadow) 20%, transparent 20%);
-      background-size: 8px 8px;
-      background-position: 0 0, 4px 4px;
-      opacity: 0.7;
-      border-radius: 8px;
-    }
-
-    /* Premium Dials */
-    .dial-group {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      width: 100%;
-      gap: 15px;
-      position: relative;
-      z-index: 2;
-    }
-
-    .dial-large-wrapper {
-      position: relative;
-      width: 6vw;
-      height: 6vw;
-      min-width: 60px;
-      min-height: 60px;
-      max-width: 100px;
-      max-height: 100px;
-      border-radius: 50%;
-      background: #111;
-      padding: 4px;
-      box-shadow: 0 4px 10px rgba(0,0,0,0.3), inset 0 2px 4px rgba(255,255,255,0.2);
-      margin-bottom: 10px;
-    }
-
-    .dial-large {
-      width: 100%;
-      height: 100%;
-      border-radius: 50%;
-      background: conic-gradient(
-        var(--dial-gold-light) 0deg, var(--dial-gold-dark) 45deg, 
-        var(--dial-gold-light) 135deg, var(--dial-gold-dark) 225deg, 
-        var(--dial-gold-light) 315deg, var(--dial-gold-dark) 360deg
-      );
-      box-shadow: inset 0 0 10px rgba(0,0,0,0.5);
-      cursor: pointer;
-      position: relative;
-      transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
-    }
-
-    /* Dial indicator tick */
-    .dial-large::before {
-      content: '';
-      position: absolute;
-      top: 8%;
-      left: 50%;
-      transform: translateX(-50%);
-      width: 4px;
-      height: 12px;
-      background: #222;
-      border-radius: 2px;
-      box-shadow: inset 0 1px 1px rgba(255,255,255,0.3);
-    }
-
-    .dial-small-wrapper {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      width: 80%;
-      justify-content: flex-start;
-    }
-
-    .dial-small {
-      width: 24px;
-      height: 24px;
-      border-radius: 50%;
-      background: linear-gradient(135deg, #e4e4e6 0%, #a1a1a6 100%);
-      box-shadow: 
-        0 3px 6px rgba(0,0,0,0.4),
-        inset 0 2px 4px rgba(255,255,255,0.8),
-        inset 0 -2px 4px rgba(0,0,0,0.2);
-      cursor: pointer;
-      transition: transform 0.2s cubic-bezier(0.25, 1, 0.5, 1), box-shadow 0.2s;
-      border: 1px solid #888;
-    }
-
-    .dial-small:active {
-      transform: scale(0.95);
-      box-shadow: 0 1px 2px rgba(0,0,0,0.4), inset 0 2px 4px rgba(0,0,0,0.2);
-    }
-
-    .dial-label {
-      font-size: 0.65rem;
-      font-weight: 600;
-      color: #554b38;
-      text-transform: uppercase;
-      letter-spacing: 0.05em;
-    }
-
-    /* Playlist overlay (hidden by default, shows video title briefly) */
     .osd-title {
       position: absolute;
-      bottom: 10%;
-      left: 10%;
-      color: #00ff00; /* VCR green */
-      font-family: monospace;
-      font-size: 1.2rem;
-      text-shadow: 0 0 5px rgba(0,255,0,0.5);
+      left: clamp(12px, 2vw, 26px);
+      bottom: clamp(12px, 2.2vw, 26px);
+      z-index: 12;
+      color: #89ff8c;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
+      font-size: clamp(0.72rem, 1.2vw, 0.95rem);
+      letter-spacing: 0.06em;
+      text-shadow: 0 0 8px rgba(75, 255, 79, 0.55);
       opacity: 0;
-      transition: opacity 0.3s ease;
-      z-index: 20;
+      transform: translateY(6px);
+      transition: opacity 180ms ease, transform 180ms ease;
       pointer-events: none;
     }
 
-    @media (max-width: 768px) {
-      .tv-set { flex-direction: column; aspect-ratio: auto; gap: 15px; }
-      .tv-panel { width: 100%; flex-direction: row; padding: 15px; height: 120px; }
-      .speaker-grill { margin-top: 0; height: 100%; margin-left: 15px; }
-      .dial-group { flex-direction: row; width: auto; gap: 20px; }
-      .dial-small-wrapper { flex-direction: column; width: auto; gap: 4px; }
-      .dial-label { display: none; }
+    .osd-title.is-visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .control-panel {
+      border-radius: 16px;
+      padding: clamp(12px, 1.5vw, 18px);
+      background:
+        linear-gradient(180deg, rgba(255, 255, 255, 0.22) 0%, rgba(255, 255, 255, 0) 26%),
+        linear-gradient(180deg, var(--tv-panel) 0%, #c7af89 100%);
+      border: 1px solid rgba(129, 101, 64, 0.22);
+      box-shadow:
+        inset 4px 0 8px rgba(0, 0, 0, 0.08),
+        inset -3px 0 6px rgba(255, 255, 255, 0.42),
+        0 8px 18px rgba(37, 22, 9, 0.18);
+      display: grid;
+      grid-template-rows: auto auto minmax(0, 1fr) auto;
+      gap: 12px;
+      min-height: 100%;
+    }
+
+    .panel-title {
+      margin: 0;
+      font-size: 0.74rem;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: rgba(78, 54, 24, 0.92);
+      font-weight: 700;
+    }
+
+    .now-playing {
+      border-radius: 10px;
+      padding: 10px;
+      background: rgba(35, 24, 12, 0.12);
+      border: 1px solid rgba(89, 61, 26, 0.2);
+      min-height: 62px;
+    }
+
+    .now-playing .channel {
+      font-size: 0.7rem;
+      letter-spacing: 0.07em;
+      color: rgba(61, 41, 18, 0.84);
+      text-transform: uppercase;
+      margin-bottom: 4px;
+      font-weight: 600;
+    }
+
+    .now-playing .title {
+      margin: 0;
+      color: rgba(26, 19, 10, 0.95);
+      font-size: 0.86rem;
+      line-height: 1.3;
+      font-weight: 620;
+    }
+
+    .dial-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 10px;
+    }
+
+    .dial-stack {
+      display: grid;
+      gap: 8px;
+      justify-items: center;
+    }
+
+    .dial-stack .dial-label {
+      color: rgba(74, 50, 23, 0.9);
+      font-size: 0.62rem;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      font-weight: 700;
+    }
+
+    .dial {
+      --dial-rotation: 0deg;
+      appearance: none;
+      border: 0;
+      border-radius: 50%;
+      cursor: pointer;
+      position: relative;
+      color: inherit;
+      transition: transform 180ms ease;
+    }
+
+    .dial:focus-visible {
+      outline: none;
+      box-shadow: 0 0 0 2px rgba(56, 33, 11, 0.56), 0 0 0 5px rgba(255, 255, 255, 0.55);
+    }
+
+    .dial:active {
+      transform: scale(0.96);
+    }
+
+    .dial--big {
+      width: clamp(52px, 5vw, 84px);
+      height: clamp(52px, 5vw, 84px);
+      background: radial-gradient(circle at 35% 35%, #f4deaa 0%, #b68535 70%);
+      box-shadow:
+        0 6px 12px rgba(0, 0, 0, 0.32),
+        inset 0 2px 4px rgba(255, 255, 255, 0.45),
+        inset 0 -3px 7px rgba(68, 45, 10, 0.52);
+    }
+
+    .dial--big::before,
+    .dial--small::before {
+      content: "";
+      position: absolute;
+      left: 50%;
+      top: 8%;
+      width: 4px;
+      height: 26%;
+      transform: translateX(-50%) rotate(var(--dial-rotation));
+      transform-origin: 50% 180%;
+      border-radius: 99px;
+      background: rgba(29, 19, 7, 0.95);
+      box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.22);
+    }
+
+    .dial--small {
+      width: 34px;
+      height: 34px;
+      background: linear-gradient(145deg, #ececee 0%, #a5a5ab 100%);
+      box-shadow:
+        0 3px 6px rgba(0, 0, 0, 0.32),
+        inset 0 2px 3px rgba(255, 255, 255, 0.85),
+        inset 0 -2px 3px rgba(0, 0, 0, 0.22);
+      border: 1px solid rgba(79, 79, 82, 0.58);
+    }
+
+    .dial.is-active {
+      box-shadow: 0 0 0 2px rgba(56, 33, 11, 0.56), 0 0 0 6px rgba(247, 216, 154, 0.52);
+    }
+
+    .playlist-section {
+      display: grid;
+      grid-template-rows: auto minmax(0, 1fr);
+      min-height: 0;
+    }
+
+    .playlist-header {
+      margin: 0 0 8px;
+      font-size: 0.68rem;
+      color: rgba(74, 50, 23, 0.9);
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      font-weight: 700;
+    }
+
+    .playlist-list {
+      margin: 0;
+      padding: 0;
+      list-style: none;
+      display: grid;
+      gap: 6px;
+      overflow-y: auto;
+      scrollbar-width: thin;
+    }
+
+    .playlist-item {
+      appearance: none;
+      width: 100%;
+      text-align: left;
+      border: 1px solid transparent;
+      background: rgba(30, 19, 8, 0.1);
+      color: rgba(29, 20, 12, 0.95);
+      border-radius: 9px;
+      padding: 8px;
+      cursor: pointer;
+      display: grid;
+      gap: 2px;
+      transition: border-color 140ms ease, background-color 140ms ease, transform 140ms ease;
+    }
+
+    .playlist-item:hover {
+      border-color: rgba(99, 67, 31, 0.44);
+      background: rgba(30, 19, 8, 0.16);
+      transform: translateY(-1px);
+    }
+
+    .playlist-item:focus-visible {
+      outline: none;
+      border-color: rgba(79, 46, 17, 0.72);
+      box-shadow: 0 0 0 2px rgba(255, 244, 226, 0.8);
+    }
+
+    .playlist-item.active {
+      border-color: rgba(85, 56, 23, 0.6);
+      background: rgba(34, 22, 9, 0.22);
+      box-shadow: inset 0 0 0 1px rgba(255, 227, 172, 0.5);
+    }
+
+    .playlist-id {
+      font-size: 0.62rem;
+      letter-spacing: 0.08em;
+      color: rgba(70, 46, 22, 0.78);
+      font-variant-numeric: tabular-nums;
+    }
+
+    .playlist-name {
+      font-size: 0.78rem;
+      line-height: 1.3;
+      font-weight: 610;
+    }
+
+    .speaker-grill {
+      width: 100%;
+      height: 74px;
+      border-radius: 9px;
+      background:
+        radial-gradient(circle, rgba(125, 92, 52, 0.45) 20%, transparent 21%) 0 0 / 8px 8px,
+        linear-gradient(180deg, rgba(150, 116, 73, 0.4), rgba(113, 81, 44, 0.45));
+      border: 1px solid rgba(96, 66, 30, 0.3);
+    }
+
+    @media (max-width: 1024px) {
+      .tv-set {
+        grid-template-columns: 1fr;
+      }
+
+      .screen-chassis {
+        border-radius: 20px;
+      }
+
+      .control-panel {
+        grid-template-columns: 1fr;
+      }
+
+      .dial-grid {
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+      }
+
+      .speaker-grill {
+        display: none;
+      }
+    }
+
+    @media (max-width: 720px) {
+      body {
+        overflow: auto;
+      }
+
+      .scene {
+        padding: 12px;
+      }
+
+      .desk {
+        height: 20svh;
+      }
+
+      .dial-grid {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+      }
+
+      .playlist-section {
+        max-height: 180px;
+      }
     }
   </style>
 </head>
 <body>
+  <div class="scene">
+    <main class="tv-stage">
+      <article class="tv-set" aria-label="Retro television player">
+        <section class="screen-chassis">
+          <div class="tv-screen" id="tvScreen">
+            <video id="player" playsinline preload="metadata"></video>
+            <div id="osd" class="osd-title" aria-live="polite"></div>
+          </div>
+        </section>
 
-  <div class="room">
-    <div class="desk"></div>
-    
-    <main class="tv-set" aria-label="Retro Video Player">
-      <section class="tv-screen-container">
-        <div class="tv-screen">
-          <video id="player" playsinline preload="metadata"></video>
-          <div id="osd" class="osd-title">CH 01</div>
-        </div>
-      </section>
+        <aside class="control-panel" aria-label="Television controls">
+          <h1 class="panel-title">Peep This Tube</h1>
 
-      <aside class="tv-panel" aria-label="Controls">
-        <div class="dial-group">
-          <div class="dial-large-wrapper" aria-label="Next Channel">
-            <div class="dial-large" id="dial-channel"></div>
-          </div>
-          
-          <div class="dial-small-wrapper">
-            <button class="dial-small" id="dial-play" aria-label="Play/Pause"></button>
-            <span class="dial-label">Power</span>
-          </div>
-          <div class="dial-small-wrapper">
-            <button class="dial-small" id="dial-vol-up" aria-label="Volume Up"></button>
-            <span class="dial-label">Vol +</span>
-          </div>
-          <div class="dial-small-wrapper">
-            <button class="dial-small" id="dial-vol-down" aria-label="Volume Down"></button>
-            <span class="dial-label">Vol -</span>
-          </div>
-          <div class="dial-small-wrapper">
-            <button class="dial-small" id="dial-mute" aria-label="Mute"></button>
-            <span class="dial-label">Mute</span>
-          </div>
-        </div>
-        
-        <div class="speaker-grill"></div>
-      </aside>
+          <section class="now-playing" aria-live="polite">
+            <div class="channel" id="channelLabel">Channel --</div>
+            <p class="title" id="nowPlayingTitle">Loading playlist...</p>
+          </section>
+
+          <section class="dial-grid" aria-label="Dial controls">
+            <div class="dial-stack">
+              <button class="dial dial--big" id="dial-prev" type="button" aria-label="Previous channel"></button>
+              <span class="dial-label">Channel -</span>
+            </div>
+            <div class="dial-stack">
+              <button class="dial dial--big" id="dial-next" type="button" aria-label="Next channel"></button>
+              <span class="dial-label">Channel +</span>
+            </div>
+            <div class="dial-stack">
+              <button class="dial dial--small" id="dial-play" type="button" aria-label="Play or pause"></button>
+              <span class="dial-label">Play</span>
+            </div>
+            <div class="dial-stack">
+              <button class="dial dial--small" id="dial-mute" type="button" aria-label="Mute or unmute"></button>
+              <span class="dial-label">Mute</span>
+            </div>
+            <div class="dial-stack">
+              <button class="dial dial--small" id="dial-vol-down" type="button" aria-label="Volume down"></button>
+              <span class="dial-label">Vol -</span>
+            </div>
+            <div class="dial-stack">
+              <button class="dial dial--small" id="dial-vol-up" type="button" aria-label="Volume up"></button>
+              <span class="dial-label">Vol +</span>
+            </div>
+            <div class="dial-stack">
+              <button class="dial dial--small" id="dial-fullscreen" type="button" aria-label="Toggle fullscreen"></button>
+              <span class="dial-label">Max</span>
+            </div>
+          </section>
+
+          <section class="playlist-section" aria-label="Playlist">
+            <h2 class="playlist-header">Playlist</h2>
+            <div class="playlist-list" id="videoRow" role="listbox" aria-label="Video playlist"></div>
+          </section>
+
+          <div class="speaker-grill" aria-hidden="true"></div>
+        </aside>
+      </article>
     </main>
+
+    <div class="desk" aria-hidden="true"></div>
   </div>
 
   <script src="https://cdn.jsdelivr.net/npm/plyr@3/dist/plyr.min.js"></script>
   <script>
     const PLAYER_ID = "player";
+    const PLAYLIST_ID = "videoRow";
     const TITLE_SOURCE = "titles.txt";
 
     const videos = [];
+    const dialRotation = new Map();
+
     let player;
     let currentId = null;
     let fallbackAttempted = false;
-    
-    // UI State
-    let channelRotation = 0;
     let osdTimeout;
 
-    // Fetch data
     async function loadTitles() {
       try {
         const response = await fetch(TITLE_SOURCE);
-        if (!response.ok) return [];
+        if (!response.ok) {
+          return [];
+        }
         return (await response.text())
           .split("\n")
           .map((line) => line.trim())
@@ -346,6 +540,7 @@
     async function loadData() {
       const titles = await loadTitles();
       videos.length = 0;
+
       for (let i = 1; i <= titles.length; i += 1) {
         videos.push({
           id: i,
@@ -353,10 +548,9 @@
           src: `video${i}.mp4`
         });
       }
-      // Fallback dummy data if titles.txt is missing locally
-      if(videos.length === 0) {
-         videos.push({ id: 1, title: "Static", src: "video1.mp4" });
-         videos.push({ id: 2, title: "Test Pattern", src: "video2.mp4" });
+
+      if (!videos.length) {
+        videos.push({ id: 1, title: "Video 1", src: "video1.mp4" });
       }
     }
 
@@ -364,102 +558,249 @@
       return src.replace(/\.mp4$/i, ".MP4");
     }
 
+    function padChannel(id) {
+      return String(id).padStart(2, "0");
+    }
+
+    function showOSD(text, duration = 1700) {
+      const osd = document.getElementById("osd");
+      osd.textContent = text;
+      osd.classList.add("is-visible");
+      clearTimeout(osdTimeout);
+      osdTimeout = setTimeout(() => {
+        osd.classList.remove("is-visible");
+      }, duration);
+    }
+
+    function updateNowPlaying(video) {
+      const channelLabel = document.getElementById("channelLabel");
+      const titleLabel = document.getElementById("nowPlayingTitle");
+      channelLabel.textContent = `Channel ${padChannel(video.id)}`;
+      titleLabel.textContent = video.title;
+    }
+
+    function createVideoCard(video) {
+      const card = document.createElement("button");
+      card.type = "button";
+      card.className = "playlist-item";
+      card.setAttribute("role", "option");
+      card.setAttribute("aria-selected", String(video.id === currentId));
+      card.dataset.id = String(video.id);
+
+      if (video.id === currentId) {
+        card.classList.add("active");
+      }
+
+      const id = document.createElement("span");
+      id.className = "playlist-id";
+      id.textContent = `CH ${padChannel(video.id)}`;
+
+      const title = document.createElement("span");
+      title.className = "playlist-name";
+      title.textContent = video.title;
+
+      card.append(id, title);
+      card.addEventListener("click", () => loadVideo(video.id, { userInitiated: true }));
+      return card;
+    }
+
+    function renderPlaylist() {
+      const row = document.getElementById(PLAYLIST_ID);
+      row.innerHTML = "";
+      videos.forEach((video) => row.appendChild(createVideoCard(video)));
+    }
+
+    function scrollActiveCardIntoView(behavior = "smooth") {
+      const row = document.getElementById(PLAYLIST_ID);
+      const activeCard = row.querySelector(".playlist-item.active");
+      if (!activeCard) {
+        return;
+      }
+      activeCard.scrollIntoView({
+        behavior,
+        block: "nearest",
+        inline: "nearest"
+      });
+    }
+
+    function animateDial(element, degrees) {
+      const previous = dialRotation.get(element.id) || 0;
+      const next = previous + degrees;
+      dialRotation.set(element.id, next);
+      element.style.setProperty("--dial-rotation", `${next}deg`);
+    }
+
+    function getCurrentIndex() {
+      return videos.findIndex((video) => video.id === currentId);
+    }
+
+    function loadVideo(id, options = {}) {
+      const selectedVideo = videos.find((video) => video.id === id);
+      if (!selectedVideo) {
+        return;
+      }
+
+      const { userInitiated = false } = options;
+      const videoElement = document.getElementById(PLAYER_ID);
+
+      currentId = id;
+      fallbackAttempted = false;
+      videoElement.src = selectedVideo.src;
+      renderPlaylist();
+      updateNowPlaying(selectedVideo);
+      requestAnimationFrame(() => scrollActiveCardIntoView(userInitiated ? "smooth" : "auto"));
+
+      showOSD(`CH ${padChannel(selectedVideo.id)} • ${selectedVideo.title.toUpperCase()}`);
+      videoElement.play().catch(() => {});
+    }
+
+    function stepChannel(step) {
+      if (!videos.length) {
+        return;
+      }
+      const currentIndex = getCurrentIndex();
+      const safeIndex = currentIndex >= 0 ? currentIndex : 0;
+      const nextIndex = (safeIndex + step + videos.length) % videos.length;
+      loadVideo(videos[nextIndex].id, { userInitiated: true });
+    }
+
+    async function toggleFullscreen() {
+      const button = document.getElementById("dial-fullscreen");
+      const tvScreen = document.getElementById("tvScreen");
+      const isFullscreen = Boolean(document.fullscreenElement);
+
+      try {
+        if (isFullscreen) {
+          await document.exitFullscreen();
+          showOSD("WINDOW MODE");
+        } else if (tvScreen.requestFullscreen) {
+          await tvScreen.requestFullscreen();
+          showOSD("MAXIMIZED");
+        } else if (player?.fullscreen?.supported) {
+          player.fullscreen.toggle();
+          showOSD(player.fullscreen.active ? "MAXIMIZED" : "WINDOW MODE");
+        }
+      } catch (error) {
+        showOSD("FULLSCREEN BLOCKED");
+      } finally {
+        button.classList.toggle("is-active", Boolean(document.fullscreenElement));
+      }
+    }
+
+    function setupDials() {
+      const dialPrev = document.getElementById("dial-prev");
+      const dialNext = document.getElementById("dial-next");
+      const dialPlay = document.getElementById("dial-play");
+      const dialMute = document.getElementById("dial-mute");
+      const dialVolUp = document.getElementById("dial-vol-up");
+      const dialVolDown = document.getElementById("dial-vol-down");
+      const dialFullscreen = document.getElementById("dial-fullscreen");
+
+      dialPrev.addEventListener("click", () => {
+        animateDial(dialPrev, -38);
+        stepChannel(-1);
+      });
+
+      dialNext.addEventListener("click", () => {
+        animateDial(dialNext, 38);
+        stepChannel(1);
+      });
+
+      dialPlay.addEventListener("click", () => {
+        animateDial(dialPlay, 32);
+        if (player.playing) {
+          player.pause();
+          showOSD("PAUSE");
+        } else {
+          player.play();
+          showOSD("PLAY");
+        }
+      });
+
+      dialMute.addEventListener("click", () => {
+        animateDial(dialMute, 26);
+        player.muted = !player.muted;
+        dialMute.classList.toggle("is-active", player.muted);
+        showOSD(player.muted ? "MUTE" : "UNMUTE");
+      });
+
+      dialVolUp.addEventListener("click", () => {
+        animateDial(dialVolUp, 24);
+        player.muted = false;
+        player.volume = Math.min(1, player.volume + 0.1);
+        showOSD(`VOL ${Math.round(player.volume * 100)}%`);
+      });
+
+      dialVolDown.addEventListener("click", () => {
+        animateDial(dialVolDown, -24);
+        player.volume = Math.max(0, player.volume - 0.1);
+        showOSD(`VOL ${Math.round(player.volume * 100)}%`);
+      });
+
+      dialFullscreen.addEventListener("click", () => {
+        animateDial(dialFullscreen, 30);
+        toggleFullscreen();
+      });
+
+      document.addEventListener("fullscreenchange", () => {
+        dialFullscreen.classList.toggle("is-active", Boolean(document.fullscreenElement));
+      });
+
+      document.addEventListener("keydown", (event) => {
+        if (event.defaultPrevented) {
+          return;
+        }
+        if (event.target instanceof HTMLElement && /input|textarea|select/i.test(event.target.tagName)) {
+          return;
+        }
+
+        if (event.key === "ArrowRight") {
+          event.preventDefault();
+          dialNext.click();
+        } else if (event.key === "ArrowLeft") {
+          event.preventDefault();
+          dialPrev.click();
+        } else if (event.key === " " || event.key === "k") {
+          event.preventDefault();
+          dialPlay.click();
+        } else if (event.key.toLowerCase() === "f") {
+          event.preventDefault();
+          dialFullscreen.click();
+        }
+      });
+    }
+
     function initPlayer() {
       const videoElement = document.getElementById(PLAYER_ID);
-      
-      // Initialize Plyr without default controls
       player = new Plyr(videoElement, {
-        controls: [], 
+        controls: [],
         ratio: "4:3",
-        clickToPlay: false // Force use of our physical dials
+        clickToPlay: false
       });
 
       videoElement.addEventListener("error", () => {
         const currentVideo = videos.find((video) => video.id === currentId);
-        if (!currentVideo || fallbackAttempted) return;
+        if (!currentVideo || fallbackAttempted) {
+          return;
+        }
         fallbackAttempted = true;
         videoElement.src = getUppercaseSource(currentVideo.src);
         videoElement.play().catch(() => {});
       });
 
       player.on("ended", () => {
-        if (!videos.length || currentId === null) return;
-        const currentIndex = videos.findIndex((video) => video.id === currentId);
-        if (currentIndex === -1) return;
-        const nextVideo = videos[(currentIndex + 1) % videos.length];
-        loadVideo(nextVideo.id);
-      });
-    }
-
-    function showOSD(text) {
-      const osd = document.getElementById('osd');
-      osd.textContent = text;
-      osd.style.opacity = '1';
-      clearTimeout(osdTimeout);
-      osdTimeout = setTimeout(() => {
-        osd.style.opacity = '0';
-      }, 2000);
-    }
-
-    function loadVideo(id) {
-      const selectedVideo = videos.find((video) => video.id === id);
-      if (!selectedVideo) return;
-
-      const videoElement = document.getElementById(PLAYER_ID);
-      currentId = id;
-      fallbackAttempted = false;
-      videoElement.src = selectedVideo.src;
-
-      showOSD(`CH 0${id}: ${selectedVideo.title}`);
-      videoElement.play().catch(() => {});
-    }
-
-    function setupDials() {
-      // Big Dial: Next Channel
-      const channelDial = document.getElementById('dial-channel');
-      channelDial.addEventListener('click', () => {
-        if (!videos.length) return;
-        
-        // Rotate animation
-        channelRotation += 36; // 10 stops on the dial
-        channelDial.style.transform = `rotate(${channelRotation}deg)`;
-        
-        // Logic
-        const currentIndex = videos.findIndex((video) => video.id === currentId);
-        const nextVideo = videos[(currentIndex + 1) % videos.length];
-        loadVideo(nextVideo.id);
-      });
-
-      // Small Dials
-      document.getElementById('dial-play').addEventListener('click', () => {
-        if(player.playing) {
-           player.pause();
-           showOSD("PAUSE");
-        } else {
-           player.play();
-           showOSD("PLAY");
+        if (!videos.length) {
+          return;
         }
+        stepChannel(1);
       });
 
-      document.getElementById('dial-vol-up').addEventListener('click', (e) => {
-        player.volume = Math.min(1, player.volume + 0.1);
-        player.muted = false;
-        showOSD(`VOL ${Math.round(player.volume * 10)}`);
-        // Spin dial slightly
-        e.target.style.transform = `rotate(30deg) scale(0.95)`;
-        setTimeout(() => e.target.style.transform = '', 150);
+      player.on("play", () => {
+        document.getElementById("dial-play").classList.add("is-active");
       });
 
-      document.getElementById('dial-vol-down').addEventListener('click', (e) => {
-        player.volume = Math.max(0, player.volume - 0.1);
-        showOSD(`VOL ${Math.round(player.volume * 10)}`);
-        e.target.style.transform = `rotate(-30deg) scale(0.95)`;
-        setTimeout(() => e.target.style.transform = '', 150);
-      });
-
-      document.getElementById('dial-mute').addEventListener('click', () => {
-        player.muted = !player.muted;
-        showOSD(player.muted ? "MUTE" : "UNMUTE");
+      player.on("pause", () => {
+        document.getElementById("dial-play").classList.remove("is-active");
       });
     }
 
@@ -467,9 +808,12 @@
       await loadData();
       initPlayer();
       setupDials();
+      renderPlaylist();
 
-      if (videos.length > 0) {
+      if (videos.length) {
         loadVideo(videos[0].id);
+      } else {
+        showOSD("NO MEDIA");
       }
     }
 

@@ -18,6 +18,8 @@
       --tv-panel: #d7c3a0;
       --bezel: #1c1d1f;
       --accent: #d49d46;
+      --control-text: rgba(65, 44, 20, 0.9);
+      --label-text: rgba(80, 56, 28, 0.84);
       --plyr-color-main: var(--accent);
     }
 
@@ -45,9 +47,12 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      padding: clamp(10px, 2vh, 24px) clamp(12px, 2.6vw, 42px);
+      padding-top: calc(clamp(10px, 2vh, 24px) + env(safe-area-inset-top, 0px));
+      padding-right: max(12px, env(safe-area-inset-right, 0px));
+      padding-bottom: calc(clamp(10px, 2vh, 24px) + env(safe-area-inset-bottom, 0px));
+      padding-left: max(12px, env(safe-area-inset-left, 0px));
       background:
-        radial-gradient(1200px 620px at 50% 12%, rgba(255, 255, 255, 0.35) 0%, transparent 64%),
+        radial-gradient(1200px 620px at 50% 12%, rgba(255, 255, 255, 0.28) 0%, transparent 64%),
         repeating-linear-gradient(90deg, transparent 0, transparent 32px, var(--wallpaper-line) 32px, var(--wallpaper-line) 33px),
         linear-gradient(180deg, var(--wallpaper-light) 0%, var(--wallpaper-mid) 100%);
     }
@@ -101,18 +106,18 @@
       position: relative;
       display: grid;
       grid-template-columns: minmax(0, 2.1fr) minmax(270px, 1fr);
-      gap: clamp(12px, 1.5vw, 18px);
-      border-radius: 24px;
+      gap: clamp(12px, 1.6vw, 19px);
+      border-radius: 26px;
       padding: clamp(12px, 1.8vw, 18px);
       background:
-        linear-gradient(145deg, rgba(255, 255, 255, 0.7) 0%, rgba(255, 255, 255, 0) 42%),
+        linear-gradient(150deg, rgba(255, 255, 255, 0.72) 0%, rgba(255, 255, 255, 0) 42%),
         linear-gradient(145deg, var(--tv-metal-1) 0%, var(--tv-metal-2) 100%);
       border: 1px solid rgba(255, 248, 236, 0.88);
       box-shadow:
-        inset 0 2px 0 rgba(255, 255, 255, 0.7),
+        inset 0 2px 0 rgba(255, 255, 255, 0.78),
         inset 0 -2px 0 rgba(132, 106, 66, 0.36),
-        0 24px 40px rgba(31, 17, 7, 0.32),
-        0 48px 82px rgba(0, 0, 0, 0.42);
+        0 20px 36px rgba(31, 17, 7, 0.28),
+        0 44px 76px rgba(0, 0, 0, 0.38);
     }
 
     .screen-chassis {
@@ -185,18 +190,18 @@
 
     .control-panel {
       border-radius: 16px;
-      padding: clamp(10px, 1.3vw, 14px);
+      padding: clamp(11px, 1.3vw, 15px);
       background:
-        linear-gradient(180deg, rgba(255, 255, 255, 0.22) 0%, rgba(255, 255, 255, 0) 26%),
-        linear-gradient(180deg, var(--tv-panel) 0%, #c7af89 100%);
-      border: 1px solid rgba(129, 101, 64, 0.22);
+        linear-gradient(180deg, rgba(255, 255, 255, 0.32) 0%, rgba(255, 255, 255, 0.02) 28%),
+        linear-gradient(180deg, #d8c6a5 0%, #cab28d 100%);
+      border: 1px solid rgba(129, 101, 64, 0.2);
       box-shadow:
-        inset 4px 0 8px rgba(0, 0, 0, 0.08),
-        inset -3px 0 6px rgba(255, 255, 255, 0.42),
-        0 8px 18px rgba(37, 22, 9, 0.18);
+        inset 4px 0 8px rgba(0, 0, 0, 0.06),
+        inset -2px 0 5px rgba(255, 255, 255, 0.4),
+        0 7px 16px rgba(37, 22, 9, 0.14);
       display: flex;
       flex-direction: column;
-      gap: 10px;
+      gap: 11px;
       min-height: 100%;
     }
 
@@ -205,34 +210,35 @@
       font-size: 0.74rem;
       letter-spacing: 0.14em;
       text-transform: uppercase;
-      color: rgba(78, 54, 24, 0.92);
-      font-weight: 700;
+      color: var(--control-text);
+      font-weight: 650;
     }
 
     .now-playing {
       position: relative;
       border-radius: 10px;
-      padding: 10px;
+      padding: 11px 12px;
       background: rgba(35, 24, 12, 0.12);
-      border: 1px solid rgba(89, 61, 26, 0.2);
+      border: 1px solid rgba(89, 61, 26, 0.16);
+      box-shadow: inset 0 1px 2px rgba(255, 255, 255, 0.22);
       min-height: 64px;
     }
 
     .now-playing .channel {
       font-size: 0.7rem;
       letter-spacing: 0.07em;
-      color: rgba(61, 41, 18, 0.84);
+      color: rgba(61, 41, 18, 0.8);
       text-transform: uppercase;
       margin-bottom: 4px;
-      font-weight: 600;
+      font-weight: 610;
     }
 
     .now-playing .title {
       margin: 0;
-      color: rgba(26, 19, 10, 0.95);
-      font-size: 0.86rem;
+      color: rgba(30, 21, 11, 0.96);
+      font-size: 0.88rem;
       line-height: 1.3;
-      font-weight: 620;
+      font-weight: 610;
     }
 
     .dial-grid {
@@ -248,11 +254,11 @@
     }
 
     .dial-stack .dial-label {
-      color: rgba(74, 50, 23, 0.9);
+      color: var(--label-text);
       font-size: 0.62rem;
-      letter-spacing: 0.06em;
+      letter-spacing: 0.075em;
       text-transform: uppercase;
-      font-weight: 700;
+      font-weight: 630;
     }
 
     .dial {
@@ -262,14 +268,14 @@
       cursor: pointer;
       position: relative;
       color: inherit;
-      transition: transform 180ms ease;
+      transition: transform 180ms ease, box-shadow 180ms ease;
       display: grid;
       place-items: center;
     }
 
     .dial:focus-visible {
       outline: none;
-      box-shadow: 0 0 0 2px rgba(56, 33, 11, 0.56), 0 0 0 5px rgba(255, 255, 255, 0.55);
+      box-shadow: 0 0 0 2px rgba(56, 33, 11, 0.5), 0 0 0 5px rgba(255, 255, 255, 0.56);
     }
 
     .dial:active {
@@ -285,7 +291,7 @@
       width: 16px;
       height: 16px;
       display: block;
-      color: rgba(20, 14, 7, 0.88);
+      color: rgba(25, 17, 8, 0.9);
       z-index: 2;
       position: relative;
     }
@@ -302,16 +308,16 @@
 
     .dial--big,
     .dial--small {
-      background: radial-gradient(circle at 32% 26%, #f8e5b8 0%, #d7a353 52%, #b98433 100%);
+      background: radial-gradient(circle at 32% 26%, #f9e8c0 0%, #d9a95d 52%, #b88436 100%);
       box-shadow:
-        0 4px 9px rgba(0, 0, 0, 0.24),
-        inset 0 1px 3px rgba(255, 255, 255, 0.58),
-        inset 0 -2px 6px rgba(73, 46, 12, 0.42);
-      border: 1px solid rgba(123, 82, 31, 0.52);
+        0 4px 8px rgba(0, 0, 0, 0.22),
+        inset 0 1px 3px rgba(255, 255, 255, 0.56),
+        inset 0 -2px 6px rgba(73, 46, 12, 0.36);
+      border: 1px solid rgba(123, 82, 31, 0.46);
     }
 
     .dial.is-active {
-      box-shadow: 0 0 0 2px rgba(56, 33, 11, 0.56), 0 0 0 6px rgba(247, 216, 154, 0.52);
+      box-shadow: 0 0 0 2px rgba(56, 33, 11, 0.44), 0 0 0 6px rgba(247, 216, 154, 0.42);
     }
 
     .speaker-grill {
@@ -325,12 +331,12 @@
     }
 
     .credit-line {
-      margin: 2px 0 0;
+      margin: 14px 0 0;
       text-align: center;
       font-size: 0.64rem;
-      letter-spacing: 0.08em;
-      color: rgba(66, 45, 20, 0.85);
-      font-weight: 600;
+      letter-spacing: 0.09em;
+      color: rgba(68, 47, 22, 0.72);
+      font-weight: 560;
     }
 
     @media (max-width: 1024px) {
@@ -349,7 +355,10 @@
 
     @media (max-width: 720px) {
       .scene {
-        padding: 10px;
+        padding-top: calc(10px + env(safe-area-inset-top, 0px));
+        padding-right: max(10px, env(safe-area-inset-right, 0px));
+        padding-bottom: calc(10px + env(safe-area-inset-bottom, 0px));
+        padding-left: max(10px, env(safe-area-inset-left, 0px));
       }
 
       .desk {
@@ -387,7 +396,16 @@
 
           <section class="dial-grid" aria-label="Dial controls">
             <div class="dial-stack">
-              <button class="dial dial--small" id="dial-play" type="button" aria-label="Play or pause">
+              <button class="dial dial--small" id="dial-prev" type="button" aria-label="Previous channel">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <line x1="19" y1="12" x2="5" y2="12"></line>
+                  <polyline points="11 6 5 12 11 18"></polyline>
+                </svg>
+              </button>
+              <span class="dial-label">Prev</span>
+            </div>
+            <div class="dial-stack">
+              <button class="dial dial--big" id="dial-play" type="button" aria-label="Play or pause">
                 <svg class="icon-play" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
                   <polygon points="8 6 19 12 8 18 8 6"></polygon>
                 </svg>
@@ -399,22 +417,13 @@
               <span class="dial-label">Play</span>
             </div>
             <div class="dial-stack">
-              <button class="dial dial--big" id="dial-next" type="button" aria-label="Next channel">
+              <button class="dial dial--small" id="dial-next" type="button" aria-label="Next channel">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
                   <line x1="5" y1="12" x2="19" y2="12"></line>
                   <polyline points="13 6 19 12 13 18"></polyline>
                 </svg>
               </button>
               <span class="dial-label">Next</span>
-            </div>
-            <div class="dial-stack">
-              <button class="dial dial--small" id="dial-prev" type="button" aria-label="Previous channel">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-                  <line x1="19" y1="12" x2="5" y2="12"></line>
-                  <polyline points="11 6 5 12 11 18"></polyline>
-                </svg>
-              </button>
-              <span class="dial-label">Prev</span>
             </div>
             <div class="dial-stack">
               <button class="dial dial--small" id="dial-rewind" type="button" aria-label="Rewind 10 seconds">

@@ -46,7 +46,6 @@
         if (res.ok) titles = (await res.text()).split('\n').map(l => l.trim()).filter(Boolean);
       } catch (e) {}
 
-      // Only create as many videos as you have titles for
       const count = titles.length;
       for (let i = 1; i <= count; i++) {
         videos.push({
@@ -63,8 +62,17 @@
         controls: ['play', 'progress', 'current-time', 'mute', 'volume', 'fullscreen']
       });
 
+      // Smart fallback: try .MP4 if .mp4 fails
       videoEl.addEventListener('error', () => {
-        console.log('Failed to load:', videoEl.src);
+        const currentSrc = videoEl.src;
+        if (currentSrc.endsWith('.mp4') && !currentSrc.endsWith('.MP4')) {
+          const newSrc = currentSrc.replace('.mp4', '.MP4');
+          console.log('Trying uppercase:', newSrc);
+          videoEl.src = newSrc;
+          videoEl.play().catch(() => {});
+        } else {
+          console.log('Both .mp4 and .MP4 failed for:', currentSrc);
+        }
       });
 
       player.on('ended', () => {
@@ -94,7 +102,8 @@
 
       const videoEl = document.getElementById('player');
       currentId = id;
-      videoEl.src = video.src;
+
+      videoEl.src = video.src;           // Try lowercase first
       renderPlaylist();
       videoEl.play().catch(() => {});
     }

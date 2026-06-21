@@ -293,13 +293,21 @@
       overflow: auto;
     }
 
+    .channel-menu[hidden] {
+      display: none !important;
+    }
+
     .control-panel.is-browsing .dial-grid,
     .control-panel.is-browsing .speaker-grill {
       display: none;
     }
 
     .control-panel.is-browsing .credit-line {
-      margin-top: 8px;
+      display: none;
+    }
+
+    .control-panel.is-browsing .channel-menu {
+      max-height: min(40vh, 280px);
     }
 
     .channel-option {

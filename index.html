@@ -6,88 +6,28 @@
   <title>Video</title>
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/plyr@3/dist/plyr.css">
   <style>
-    :root {
-      --bg: #000000;
-      --surface: #111111;
-      --accent: #0a84ff;
-    }
-    body {
-      margin: 0;
-      background: var(--bg);
-      color: #f5f5f7;
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-      padding: 0;
-      -webkit-font-smoothing: antialiased;
-    }
-    .player-wrapper {
-      background: #000;
-      padding: 16px 16px 24px;
-    }
-    .player-container {
-      background: #000;
-      border-radius: 16px;
-      overflow: hidden;
-      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.8);
-    }
-    .playlist-section {
-      padding: 24px 16px 40px;
-    }
-    .playlist-section h2 {
-      font-size: 1.1rem;
-      font-weight: 600;
-      margin: 0 0 16px;
-      color: #f5f5f7;
-    }
-    .video-row {
-      display: flex;
-      gap: 14px;
-      overflow-x: auto;
-      padding-bottom: 8px;
-      scroll-snap-type: x mandatory;
-      -webkit-overflow-scrolling: touch;
-    }
+    body { margin:0; background:#000; color:#f5f5f7; font-family:-apple-system, BlinkMacSystemFont, sans-serif; }
+    .player-wrapper { background:#000; padding:16px; }
+    .player-container { background:#000; border-radius:16px; overflow:hidden; }
+    .playlist-section { padding:24px 16px; }
+    .playlist-section h2 { font-size:1.1rem; margin:0 0 16px; }
+    .video-row { display:flex; gap:14px; overflow-x:auto; padding-bottom:8px; }
     .video-card {
-      min-width: 200px;
-      background: #1c1c1e;
-      border-radius: 14px;
-      padding: 18px 20px;
-      cursor: pointer;
-      scroll-snap-align: start;
-      border: 1px solid #2c2c2e;
-      transition: transform 0.2s ease, border-color 0.2s ease;
+      min-width:200px; background:#1c1c1e; border-radius:14px;
+      padding:18px 20px; cursor:pointer; border:1px solid #2c2c2e;
     }
-    .video-card:active {
-      transform: scale(0.985);
-    }
-    .video-card.active {
-      border-color: var(--accent);
-      background: #2c2c2e;
-    }
-    .video-number {
-      font-size: 0.75rem;
-      color: #8e8e93;
-      margin-bottom: 6px;
-    }
-    .video-title {
-      font-size: 1.05rem;
-      font-weight: 500;
-      line-height: 1.35;
-      color: #f5f5f7;
-    }
-    @media (max-width: 480px) {
-      .video-card { min-width: 170px; padding: 16px 18px; }
-    }
+    .video-card.active { border-color:#0a84ff; }
+    .video-number { font-size:0.75rem; color:#8e8e93; margin-bottom:6px; }
+    .video-title { font-size:1.05rem; font-weight:500; }
   </style>
 </head>
 <body>
-  <!-- Video Player -->
   <div class="player-wrapper">
     <div class="player-container">
       <video id="player" playsinline></video>
     </div>
   </div>
 
-  <!-- Playlist -->
   <div class="playlist-section">
     <h2>Playlist</h2>
     <div class="video-row" id="videoRow"></div>
@@ -106,7 +46,8 @@
         if (res.ok) titles = (await res.text()).split('\n').map(l => l.trim()).filter(Boolean);
       } catch (e) {}
 
-      const count = titles.length || 4;
+      // Only create as many videos as you have titles for
+      const count = titles.length;
       for (let i = 1; i <= count; i++) {
         videos.push({
           id: i,
@@ -119,13 +60,16 @@
     function initPlayer() {
       const videoEl = document.getElementById('player');
       player = new Plyr(videoEl, {
-        controls: ['play', 'progress', 'current-time', 'mute', 'volume', 'fullscreen'],
-        settings: ['speed']
+        controls: ['play', 'progress', 'current-time', 'mute', 'volume', 'fullscreen']
+      });
+
+      videoEl.addEventListener('error', () => {
+        console.log('Failed to load:', videoEl.src);
       });
 
       player.on('ended', () => {
         const idx = videos.findIndex(v => v.id === currentId);
-        loadVideo(videos[(idx + 1) % videos.length].id);
+        if (idx !== -1) loadVideo(videos[(idx + 1) % videos.length].id);
       });
     }
 
@@ -150,7 +94,6 @@
 
       const videoEl = document.getElementById('player');
       currentId = id;
-
       videoEl.src = video.src;
       renderPlaylist();
       videoEl.play().catch(() => {});
@@ -161,7 +104,6 @@
       initPlayer();
       renderPlaylist();
 
-      // Auto-load first video
       if (videos.length > 0) {
         loadVideo(videos[0].id);
       }

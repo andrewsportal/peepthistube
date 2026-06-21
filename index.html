@@ -46,6 +46,7 @@
       background: #111111;
       color: #fff8f0;
       font-family: "Inter", -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", sans-serif;
+      line-height: 1.5;
       -webkit-font-smoothing: antialiased;
       text-rendering: optimizeLegibility;
       overflow-x: hidden;
@@ -236,6 +237,48 @@
       font-variant-numeric: tabular-nums;
     }
 
+    .optical-kicker {
+      letter-spacing: 0.29em;
+    }
+
+    .optical-hero {
+      letter-spacing: -0.028em;
+    }
+
+    .optical-copy {
+      letter-spacing: -0.002em;
+    }
+
+    .optical-h2 {
+      letter-spacing: -0.021em;
+    }
+
+    .optical-card-title {
+      letter-spacing: -0.012em;
+    }
+
+    .optical-card-copy {
+      letter-spacing: 0.003em;
+    }
+
+    .nav-brand {
+      letter-spacing: 0.26em;
+    }
+
+    @media (min-width: 768px) {
+      .optical-hero {
+        letter-spacing: -0.032em;
+      }
+
+      .optical-copy {
+        letter-spacing: 0;
+      }
+
+      .optical-h2 {
+        letter-spacing: -0.024em;
+      }
+    }
+
     @media (prefers-reduced-motion: reduce) {
       *, *::before, *::after {
         animation: none !important;
@@ -257,7 +300,7 @@
     class="glass fixed inset-x-0 top-0 z-50 mx-auto flex h-14 w-full items-center justify-between px-5 md:px-10"
     aria-label="Main navigation"
   >
-    <a id="brandName" href="#" class="text-[0.72rem] tracking-[0.28em] font-semibold uppercase text-cream/90 no-underline">
+    <a id="brandName" href="#" class="nav-brand text-[0.72rem] font-semibold uppercase text-cream/90 no-underline">
       Sunset House
     </a>
 
@@ -320,19 +363,19 @@
       </video>
       <div class="hero-mask absolute inset-0 -z-10" aria-hidden="true"></div>
 
-      <div class="glass mt-16 max-w-[42rem] rounded-3xl px-7 py-10 md:px-12 md:py-12">
-        <p class="mb-4 text-[0.65rem] uppercase tracking-[0.3em] text-gold/85 md:text-xs">
+      <div class="glass mt-16 max-w-[43.5rem] rounded-3xl px-7 py-11 md:px-14 md:py-14">
+        <p class="optical-kicker mb-4 text-[0.65rem] uppercase text-gold/85 md:mb-5 md:text-xs">
           Curated House Session
         </p>
-        <h1 class="mb-4 text-[clamp(2.8rem,9vw,6.1rem)] font-semibold leading-[0.95] tracking-[-0.03em] text-cream">
+        <h1 class="optical-hero mb-4 text-[clamp(2.9rem,9.2vw,6.25rem)] font-semibold leading-[0.94] text-cream md:mb-5">
           Sunset House
         </h1>
-        <p class="mx-auto mb-9 max-w-[32ch] text-[0.98rem] leading-relaxed text-cream/68 md:text-[1.08rem]">
+        <p class="optical-copy mx-auto mb-10 max-w-[33ch] text-[0.98rem] leading-[1.7] text-cream/68 md:mb-11 md:text-[1.08rem]">
           Three mixtapes shaped by golden hour, ocean air, and movement on warm sand.
         </p>
         <a
           href="#collection"
-          class="inline-flex items-center gap-2 rounded-full border border-cream/30 bg-cream/10 px-6 py-3 text-[0.72rem] font-medium uppercase tracking-[0.18em] text-cream no-underline transition-all duration-300 hover:scale-[1.03] hover:border-cream/45 hover:bg-cream/16 active:scale-[0.98]"
+          class="inline-flex items-center gap-2 rounded-full border border-cream/30 bg-cream/10 px-6 py-3 text-[0.72rem] font-medium uppercase tracking-[0.18em] text-cream no-underline transition-all duration-300 hover:scale-[1.03] hover:border-cream/45 hover:bg-cream/16 active:scale-[0.98] md:px-7"
           aria-label="Explore The Collection"
         >
           Explore the Collection
@@ -344,11 +387,11 @@
       </div>
     </section>
 
-    <section id="collection" class="px-6 pb-36 pt-20 md:px-10 md:pt-28" aria-label="The Collection">
+    <section id="collection" class="px-6 pb-40 pt-24 md:px-10 md:pb-44 md:pt-32" aria-label="The Collection">
       <div class="mx-auto max-w-6xl">
-        <div class="mb-12 md:mb-16">
-          <p class="mb-3 text-[0.65rem] uppercase tracking-[0.28em] text-gold/78 md:text-xs">The Collection</p>
-          <h2 class="text-[clamp(1.8rem,4.4vw,2.9rem)] font-semibold tracking-[-0.02em] text-cream">
+        <div class="mb-12 md:mb-[4.35rem]">
+          <p class="optical-kicker mb-3 text-[0.65rem] uppercase text-gold/78 md:mb-3.5 md:text-xs">The Collection</p>
+          <h2 class="optical-h2 text-[clamp(1.8rem,4.4vw,2.95rem)] font-semibold text-cream leading-[1.08]">
             Three movements for one perfect horizon.
           </h2>
         </div>
@@ -366,14 +409,14 @@
   >
     <div class="h-px bg-gradient-to-r from-transparent via-gold/55 to-transparent"></div>
     <div class="mx-auto flex h-[88px] max-w-7xl items-center gap-3 px-4 md:gap-6 md:px-8">
-      <div class="min-w-0 flex-1 md:max-w-[240px]">
+      <div class="min-w-0 flex-1 md:max-w-[250px]">
         <div class="flex items-center gap-3">
           <div class="h-11 w-11 overflow-hidden rounded-lg ring-1 ring-cream/15 shadow-card">
             <img id="playerArtwork" src="artwork-1.jpg" alt="" class="h-full w-full object-cover" />
           </div>
           <div class="min-w-0">
-            <p id="playerTitle" class="truncate text-sm font-medium text-cream"></p>
-            <p id="playerSubtitle" class="truncate text-[0.68rem] text-cream/55"></p>
+            <p id="playerTitle" class="truncate text-[0.9rem] font-medium tracking-[-0.01em] text-cream"></p>
+            <p id="playerSubtitle" class="truncate text-[0.69rem] tracking-[0.005em] text-cream/55"></p>
           </div>
         </div>
       </div>
@@ -405,7 +448,7 @@
         </div>
 
         <div class="flex w-full max-w-[460px] items-center gap-2">
-          <span id="currentTime" class="tabular w-9 text-right text-[0.66rem] text-cream/55">0:00</span>
+          <span id="currentTime" class="tabular w-9 text-right text-[0.67rem] text-cream/55">0:00</span>
           <div
             id="progressTrack"
             class="progress flex-1"
@@ -419,7 +462,7 @@
             <div id="progressFill" class="progress-fill"></div>
             <div id="progressThumb" class="progress-thumb"></div>
           </div>
-          <span id="durationTime" class="tabular w-9 text-[0.66rem] text-cream/55">0:00</span>
+          <span id="durationTime" class="tabular w-9 text-[0.67rem] text-cream/55">0:00</span>
         </div>
       </div>
 
@@ -667,8 +710,8 @@
           </div>
           <div class="flex items-start justify-between gap-4 px-5 pb-5 pt-4">
             <div>
-              <h3 class="mb-1 text-base font-semibold tracking-[-0.01em] text-cream">${mixtape.title}</h3>
-              <p class="max-w-[30ch] text-xs leading-relaxed text-cream/57">${mixtape.description}</p>
+              <h3 class="optical-card-title mb-1 text-[1.02rem] font-semibold text-cream">${mixtape.title}</h3>
+              <p class="optical-card-copy max-w-[31ch] text-[0.78rem] leading-[1.62] text-cream/57">${mixtape.description}</p>
             </div>
             <div class="mt-1 flex min-h-[20px] min-w-[22px] items-center justify-center">
               <div class="now-playing-bars" aria-hidden="true">

@@ -16,7 +16,7 @@
       background: var(--bg);
       color: #f5f5f7;
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-      padding: 20px 16px 40px;
+      padding: 60px 16px 40px; /* Increased top padding for better centering */
       max-width: 860px;
       margin-left: auto;
       margin-right: auto;
@@ -30,7 +30,6 @@
       background: #000000;
       overflow: hidden;
     }
-    /* Force pure black on the actual video element */
     #player {
       background: #000000 !important;
       display: block;
@@ -82,7 +81,12 @@
     }
     @media (max-width: 480px) {
       .video-card { min-width: 170px; padding: 16px 18px; }
-      body { padding: 16px 12px 32px; }
+      body { padding: 40px 12px 32px; }
+    }
+
+    /* === Plyr Theme - Orange (#E27A00) === */
+    :root {
+      --plyr-color-main: #E27A00;
     }
   </style>
 </head>
@@ -129,7 +133,6 @@
         controls: ['play', 'progress', 'current-time', 'mute', 'volume', 'fullscreen']
       });
 
-      // Fallback for .mp4 vs .MP4
       videoEl.addEventListener('error', () => {
         const currentSrc = videoEl.src;
         if (currentSrc.endsWith('.mp4') && !currentSrc.endsWith('.MP4')) {

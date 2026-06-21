@@ -2,6 +2,15 @@
 
 Single-page premium landing experience for three House music mixtapes.
 
+## Interaction model
+
+The landing page is swipe-first and scene-based:
+
+- Scene 1: Hero video
+- Scene 2: The Collection
+
+Navigation works via vertical swipe, mouse wheel/trackpad, scene dots, and keyboard (Arrow Up/Down or Page Up/Down).
+
 ## Files to add
 
 Place these files either in the project root (`/workspace`) or update paths in `index.html` to point to `/assets/...`.

@@ -19,8 +19,8 @@ Place these files either in the project root (`/workspace`) or update paths in `
 
 Open `index.html` and edit:
 
-1. `SITE_CONFIG` for brand text and hero copy
-2. `MEDIA_CONFIG` for hero video/poster paths
-3. `MIXTAPES` array for titles, descriptions, artwork, and audio
+1. `LANDING.site` for brand text and hero copy
+2. `LANDING.media` for hero video/poster paths
+3. `LANDING.mixtapes` for titles, descriptions, artwork, and audio
 
-The `MIXTAPES` block is the single source of truth for mixtape content.
+The `LANDING` object is the single source of truth for all editable content.

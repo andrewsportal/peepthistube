@@ -235,14 +235,21 @@
     .tabular {
       font-variant-numeric: tabular-nums;
     }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation: none !important;
+        transition: none !important;
+      }
+    }
   </style>
 </head>
 <body>
   <!--
     QUICK SWAP GUIDE
-    1) Update brand text inside SITE_CONFIG in the script.
-    2) Replace video + poster paths in MEDIA_CONFIG.
-    3) Replace titles/descriptions/audio/artwork in MIXTAPES.
+    1) Update brand text in LANDING.site.
+    2) Replace video + poster paths in LANDING.media.
+    3) Replace titles/descriptions/audio/artwork in LANDING.mixtapes.
     4) Files can be in root (e.g. mixtape1.mp3) or /assets (e.g. assets/mixtape1.mp3).
   -->
 
@@ -263,12 +270,6 @@
         <svg viewBox="0 0 24 24" class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
           <path d="M12 4v16M5 11l7 7 7-7"></path>
         </svg>
-      </a>
-      <a
-        href="#collection"
-        class="text-[0.72rem] tracking-[0.18em] uppercase text-cream/66 no-underline transition-colors duration-200 hover:text-cream"
-      >
-        Collection
       </a>
     </div>
 
@@ -302,8 +303,8 @@
   </div>
 
   <main>
-    <section class="relative isolate flex min-h-[92svh] items-center justify-center overflow-hidden px-6 text-center">
-      <!-- Swap these filenames in MEDIA_CONFIG below -->
+    <section class="relative isolate flex min-h-[100svh] items-center justify-center overflow-hidden px-6 text-center">
+      <!-- Swap these filenames in LANDING.media below -->
       <video
         id="heroVideo"
         class="absolute inset-0 -z-20 h-full w-full object-cover"
@@ -443,49 +444,41 @@
 
   <script>
     // -------------------------------------------------------------
-    // SITE / BRAND CONFIG
+    // LANDING DATA (single source of truth)
     // -------------------------------------------------------------
-    // Change these strings to update branding and hero copy quickly.
-    const SITE_CONFIG = {
-      brand: "Sunset House",
-      heroTitle: "Sunset House",
-      heroTagline: "Three mixtapes shaped by golden hour, ocean air, and movement on warm sand.",
+    // Update brand text, hero media, and all mixtape metadata here.
+    // Paths can point to root files or /assets/... files.
+    const LANDING = {
+      site: {
+        brand: "Sunset House",
+        heroTitle: "Sunset House",
+        heroTagline: "Three mixtapes shaped by golden hour, ocean air, and movement on warm sand.",
+      },
+      media: {
+        heroVideo: "sunset-dance-loop.mp4",
+        heroPoster: "hero-poster.jpg",
+      },
+      mixtapes: [
+        {
+          title: "Golden Reverie",
+          description: "The sun begins its descent over the Andaman Sea.",
+          artwork: "artwork-1.jpg",
+          audio: "mixtape1.mp3",
+        },
+        {
+          title: "Palm Sway",
+          description: "Barefoot rhythms under the palms as dusk deepens.",
+          artwork: "artwork-2.jpg",
+          audio: "mixtape2.mp3",
+        },
+        {
+          title: "Afterglow",
+          description: "The full embrace of night.",
+          artwork: "artwork-3.jpg",
+          audio: "mixtape3.mp3",
+        },
+      ],
     };
-
-    // -------------------------------------------------------------
-    // MEDIA CONFIG
-    // -------------------------------------------------------------
-    // Swap these paths with your final optimized media files.
-    // You can keep files in project root OR use /assets paths.
-    const MEDIA_CONFIG = {
-      heroVideo: "sunset-dance-loop.mp4",
-      heroPoster: "hero-poster.jpg",
-    };
-
-    // -------------------------------------------------------------
-    // MIXTAPE DATA (single source of truth)
-    // -------------------------------------------------------------
-    // Replace title, description, artwork, and audio paths here.
-    const MIXTAPES = [
-      {
-        title: "Golden Reverie",
-        description: "The sun begins its descent over the Andaman Sea.",
-        artwork: "artwork-1.jpg",
-        audio: "mixtape1.mp3",
-      },
-      {
-        title: "Palm Sway",
-        description: "Barefoot rhythms under the palms as dusk deepens.",
-        artwork: "artwork-2.jpg",
-        audio: "mixtape2.mp3",
-      },
-      {
-        title: "Afterglow",
-        description: "The full embrace of night.",
-        artwork: "artwork-3.jpg",
-        audio: "mixtape3.mp3",
-      },
-    ];
 
     const audio = new Audio();
     audio.preload = "metadata";
@@ -622,7 +615,7 @@
 
     function selectMixtape(index, options = {}) {
       const { autoplay = true, forceReload = false } = options;
-      const mixtape = MIXTAPES[index];
+      const mixtape = LANDING.mixtapes[index];
       if (!mixtape) return;
 
       const sameTrack = index === activeIndex && !forceReload;
@@ -649,7 +642,7 @@
     }
 
     function buildCards() {
-      MIXTAPES.forEach((mixtape, index) => {
+      LANDING.mixtapes.forEach((mixtape, index) => {
         const card = document.createElement("article");
         card.className = "mix-card group rounded-2xl border border-cream/10 bg-surface/92 shadow-card overflow-hidden";
         card.setAttribute("role", "button");
@@ -719,20 +712,24 @@
     }
 
     function applyConfig() {
-      brandName.textContent = SITE_CONFIG.brand;
-      document.title = SITE_CONFIG.heroTitle;
+      brandName.textContent = LANDING.site.brand;
+      document.title = LANDING.site.heroTitle;
 
       const heroTitleNode = document.querySelector("h1");
       const heroTaglineNode = heroTitleNode?.nextElementSibling;
-      if (heroTitleNode) heroTitleNode.textContent = SITE_CONFIG.heroTitle;
-      if (heroTaglineNode) heroTaglineNode.textContent = SITE_CONFIG.heroTagline;
+      if (heroTitleNode) heroTitleNode.textContent = LANDING.site.heroTitle;
+      if (heroTaglineNode) heroTaglineNode.textContent = LANDING.site.heroTagline;
 
-      heroVideo.poster = MEDIA_CONFIG.heroPoster;
+      heroVideo.poster = LANDING.media.heroPoster;
       const source = heroVideo.querySelector("source");
       if (source) {
-        source.src = MEDIA_CONFIG.heroVideo;
+        source.src = LANDING.media.heroVideo;
       }
       heroVideo.load();
+
+      if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+        heroVideo.pause();
+      }
     }
 
     function bindEvents() {

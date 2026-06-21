@@ -3,122 +3,92 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Video Hub</title>
+  <title>Video</title>
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/plyr@3/dist/plyr.css">
   <style>
     :root {
-      --bg: #0a0a0a;
-      --surface: #111;
+      --bg: #000000;
+      --surface: #111111;
       --accent: #0a84ff;
     }
     body {
       margin: 0;
       background: var(--bg);
       color: #f5f5f7;
-      font-family: -apple-system, BlinkMacSystemFont, sans-serif;
-      padding: 24px 16px;
-      max-width: 860px;
-      margin-left: auto;
-      margin-right: auto;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      padding: 0;
+      -webkit-font-smoothing: antialiased;
     }
-    h1 {
-      font-size: 1.6rem;
-      font-weight: 600;
-      text-align: center;
-      margin: 0 0 28px;
-      letter-spacing: -0.02em;
+    .player-wrapper {
+      background: #000;
+      padding: 16px 16px 24px;
     }
     .player-container {
-      background: #111;
-      border-radius: 20px;
-      padding: 20px;
-      margin-bottom: 32px;
-      box-shadow: 0 10px 40px rgba(0,0,0,0.6);
+      background: #000;
+      border-radius: 16px;
+      overflow: hidden;
+      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.8);
     }
-    .player-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 16px;
+    .playlist-section {
+      padding: 24px 16px 40px;
     }
-    .current-title {
-      font-size: 1.15rem;
-      font-weight: 500;
-    }
-    .lock-btn {
-      background: #222;
-      color: #ddd;
-      border: none;
-      padding: 8px 16px;
-      border-radius: 999px;
-      font-size: 0.9rem;
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      cursor: pointer;
-    }
-    .playlist {
-      margin-top: 8px;
-    }
-    .playlist h2 {
-      font-size: 1rem;
-      font-weight: 500;
-      margin: 0 0 14px;
-      color: #aaa;
+    .playlist-section h2 {
+      font-size: 1.1rem;
+      font-weight: 600;
+      margin: 0 0 16px;
+      color: #f5f5f7;
     }
     .video-row {
       display: flex;
       gap: 14px;
       overflow-x: auto;
-      padding-bottom: 16px;
+      padding-bottom: 8px;
       scroll-snap-type: x mandatory;
+      -webkit-overflow-scrolling: touch;
     }
     .video-card {
       min-width: 200px;
-      background: #1a1a1a;
-      border-radius: 16px;
-      padding: 20px 22px;
+      background: #1c1c1e;
+      border-radius: 14px;
+      padding: 18px 20px;
       cursor: pointer;
       scroll-snap-align: start;
-      border: 1px solid #222;
-      transition: all 0.2s ease;
+      border: 1px solid #2c2c2e;
+      transition: transform 0.2s ease, border-color 0.2s ease;
+    }
+    .video-card:active {
+      transform: scale(0.985);
     }
     .video-card.active {
       border-color: var(--accent);
-      background: #222;
+      background: #2c2c2e;
     }
     .video-number {
       font-size: 0.75rem;
-      color: #888;
+      color: #8e8e93;
       margin-bottom: 6px;
     }
     .video-title {
-      font-size: 1.1rem;
+      font-size: 1.05rem;
       font-weight: 500;
-      line-height: 1.3;
+      line-height: 1.35;
+      color: #f5f5f7;
     }
     @media (max-width: 480px) {
-      .video-card { min-width: 170px; padding: 18px 20px; }
+      .video-card { min-width: 170px; padding: 16px 18px; }
     }
   </style>
 </head>
 <body>
-  <h1>Video Hub</h1>
-
-  <!-- Player -->
-  <div class="player-container">
-    <div class="player-header">
-      <div class="current-title" id="currentTitle">Select a video</div>
-      <button class="lock-btn" onclick="toggleLock()">
-        <span id="lockIcon">🔓</span>
-        <span id="lockText">Lock</span>
-      </button>
+  <!-- Video Player -->
+  <div class="player-wrapper">
+    <div class="player-container">
+      <video id="player" playsinline></video>
     </div>
-    <video id="player" playsinline></video>
   </div>
 
   <!-- Playlist -->
-  <div class="playlist">
+  <div class="playlist-section">
     <h2>Playlist</h2>
     <div class="video-row" id="videoRow"></div>
   </div>
@@ -128,7 +98,6 @@
     let videos = [];
     let player;
     let currentId = null;
-    let locked = false;
 
     async function loadData() {
       let titles = [];
@@ -150,7 +119,8 @@
     function initPlayer() {
       const videoEl = document.getElementById('player');
       player = new Plyr(videoEl, {
-        controls: ['play', 'progress', 'current-time', 'mute', 'volume', 'fullscreen']
+        controls: ['play', 'progress', 'current-time', 'mute', 'volume', 'fullscreen'],
+        settings: ['speed']
       });
 
       player.on('ended', () => {
@@ -179,7 +149,6 @@
       if (!video) return;
 
       const videoEl = document.getElementById('player');
-      document.getElementById('currentTitle').textContent = video.title;
       currentId = id;
 
       videoEl.src = video.src;
@@ -187,34 +156,15 @@
       videoEl.play().catch(() => {});
     }
 
-    async function toggleLock() {
-      const icon = document.getElementById('lockIcon');
-      const text = document.getElementById('lockText');
-      const btn = icon.parentElement;
-
-      if (!screen.orientation?.lock) return alert("Not supported");
-
-      try {
-        if (!locked) {
-          await screen.orientation.lock('landscape');
-          locked = true;
-          btn.style.background = '#1e3a8a';
-          icon.textContent = '🔒';
-          text.textContent = 'Unlock';
-        } else {
-          await screen.orientation.unlock();
-          locked = false;
-          btn.style.background = '#222';
-          icon.textContent = '🔓';
-          text.textContent = 'Lock';
-        }
-      } catch (e) {}
-    }
-
     async function init() {
       await loadData();
       initPlayer();
       renderPlaylist();
+
+      // Auto-load first video
+      if (videos.length > 0) {
+        loadVideo(videos[0].id);
+      }
     }
 
     window.onload = init;

@@ -3,172 +3,143 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>My Video Hub</title>
-  <!-- Plyr CSS -->
+  <title>Video Hub</title>
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/plyr@3/dist/plyr.css">
   <style>
+    :root { --bg: #0f0f0f; --card: #1a1a1a; --accent: #4ade80; }
     body {
+      margin: 0; background: var(--bg); color: #eee;
       font-family: system-ui, -apple-system, sans-serif;
-      background: #111;
-      color: #eee;
-      margin: 0;
-      padding: 20px;
-      max-width: 900px;
-      margin-left: auto;
-      margin-right: auto;
+      padding: 16px; max-width: 1000px; margin-left: auto; margin-right: auto;
     }
-    h1 { text-align: center; margin-bottom: 10px; }
+    h1 { text-align: center; margin: 0 0 20px; font-weight: 600; font-size: 1.6rem; }
+    .player-header {
+      display: flex; align-items: center; justify-content: space-between;
+      margin-bottom: 12px; gap: 12px; flex-wrap: wrap;
+    }
+    .current-title { font-size: 1.1rem; font-weight: 500; flex: 1; min-width: 200px; }
+    .lock-btn {
+      background: #222; color: #eee; border: none; padding: 10px 16px;
+      border-radius: 9999px; font-size: 0.95rem; display: flex; align-items: center;
+      gap: 6px; cursor: pointer; white-space: nowrap; min-height: 44px;
+    }
+    .lock-btn.locked { background: #166534; color: #4ade80; }
     .player-container {
-      background: #1a1a1a;
-      border-radius: 12px;
-      padding: 20px;
-      margin-bottom: 20px;
+      background: #111; border-radius: 16px; padding: 16px;
+      margin-bottom: 24px; box-shadow: 0 4px 20px rgba(0,0,0,0.4);
     }
-    .current-title {
-      font-size: 1.3rem;
-      margin: 10px 0 15px;
-      text-align: center;
-      color: #fff;
+    .playlist-section h2 { margin: 0 0 12px; font-size: 1.1rem; font-weight: 500; }
+    .video-row {
+      display: flex; gap: 12px; overflow-x: auto; padding-bottom: 12px;
+      scroll-snap-type: x mandatory; -webkit-overflow-scrolling: touch;
     }
-    .playlist {
-      background: #1a1a1a;
-      border-radius: 12px;
-      padding: 15px;
+    .video-card {
+      min-width: 160px; background: var(--card); border-radius: 12px;
+      padding: 14px 16px; cursor: pointer; scroll-snap-align: start;
+      border: 2px solid transparent; transition: all 0.2s ease;
+      display: flex; flex-direction: column; gap: 6px;
     }
-    .playlist-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 15px;
-    }
-    .video-list {
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
-    }
-    .video-item {
-      background: #222;
-      border: none;
-      color: #eee;
-      padding: 14px 18px;
-      border-radius: 8px;
-      text-align: left;
-      cursor: pointer;
-      font-size: 1rem;
-      transition: background 0.2s;
-    }
-    .video-item:hover {
-      background: #333;
-    }
-    .video-item.active {
-      background: #444;
-      border-left: 4px solid #4ade80;
-    }
-    .toggle-btn {
-      background: #333;
-      color: #eee;
-      border: none;
-      padding: 8px 16px;
-      border-radius: 6px;
-      cursor: pointer;
-    }
-    .toggle-btn:hover { background: #555; }
-    @media (max-width: 600px) {
-      body { padding: 10px; }
+    .video-card:active { transform: scale(0.98); }
+    .video-card.active { border-color: var(--accent); background: #222; }
+    .video-number { font-size: 0.85rem; color: #888; font-weight: 500; }
+    .video-title { font-size: 1rem; line-height: 1.3; font-weight: 500; }
+    @media (max-width: 480px) {
+      .video-card { min-width: 140px; padding: 12px 14px; }
+      .current-title { font-size: 1rem; }
     }
   </style>
 </head>
 <body>
-  <h1>🎬 My Video Hub</h1>
-  <p style="text-align:center; color:#888;">Click any title below to play</p>
+  <h1>Video Hub</h1>
 
-  <!-- Main Player -->
   <div class="player-container">
-    <div class="current-title" id="currentTitle">Select a video to start</div>
-    
-    <video id="player" playsinline controls>
-      <!-- Default video will be set by JS -->
-    </video>
+    <div class="player-header">
+      <div class="current-title" id="currentTitle">Select a video to begin</div>
+      <button id="lockBtn" class="lock-btn" onclick="toggleOrientationLock()">
+        <span id="lockIcon">🔓</span>
+        <span id="lockText">Lock Rotate</span>
+      </button>
+    </div>
+    <video id="player" playsinline></video>
   </div>
 
-  <!-- Playlist -->
-  <div class="playlist" id="playlist">
-    <div class="playlist-header">
-      <h2 style="margin:0;">Playlist</h2>
-      <button class="toggle-btn" onclick="togglePlaylist()">Hide Playlist</button>
-    </div>
-    
-    <div class="video-list" id="videoList">
-      <!-- Populated by JavaScript -->
-    </div>
+  <div class="playlist-section">
+    <h2>Videos</h2>
+    <div class="video-row" id="videoRow"></div>
+    <p style="text-align:center; color:#666; font-size:0.85rem; margin-top:8px;">
+      Swipe to browse • Tap any card to play
+    </p>
   </div>
 
-  <p style="text-align:center; color:#666; font-size:0.9rem; margin-top:30px;">
-    Hosted on GitHub Pages • Replace the video sources below with your own files or URLs
-  </p>
-
-  <!-- Plyr JS -->
   <script src="https://cdn.jsdelivr.net/npm/plyr@3/dist/plyr.min.js"></script>
-  
   <script>
-    // === YOUR VIDEOS - EDIT THIS ARRAY ===
-    const videos = [
-      {
-        id: 1,
-        title: "Intro Video - Welcome",
-        src: "https://cdn.plyr.io/static/demo/View_From_A_Blue_Moon_Trailer-576p.mp4", // ← Replace with your video
-        poster: "" // optional poster image URL
-      },
-      {
-        id: 2,
-        title: "Tutorial Part 1",
-        src: "https://cdn.plyr.io/static/demo/View_From_A_Blue_Moon_Trailer-576p.mp4", // ← Replace
-        poster: ""
-      },
-      {
-        id: 3,
-        title: "Demo Walkthrough",
-        src: "https://cdn.plyr.io/static/demo/View_From_A_Blue_Moon_Trailer-576p.mp4", // ← Replace
-        poster: ""
-      }
-      // Add as many as you want
-    ];
+    // =====================================================
+    // TITLES COME FROM titles.txt (one title per line)
+    // Create titles.txt in the same folder as index.html
+    // =====================================================
 
+    let videos = [];
     let player;
     let currentVideoId = null;
+    let isLocked = false;
+
+    async function loadTitlesAndVideos() {
+      let titles = [];
+
+      try {
+        const response = await fetch('titles.txt');
+        if (response.ok) {
+          const text = await response.text();
+          titles = text
+            .split('\n')
+            .map(line => line.trim())
+            .filter(line => line.length > 0);
+        }
+      } catch (e) {
+        console.log('Could not load titles.txt, using fallback names');
+      }
+
+      // Build the videos array
+      const count = titles.length > 0 ? titles.length : 8; // fallback to 8 if no titles.txt
+
+      videos = [];
+      for (let i = 1; i <= count; i++) {
+        videos.push({
+          id: i,
+          title: titles[i - 1] || `Video ${i}`,
+          src: `videos/video${i}.mp4`
+        });
+      }
+    }
 
     function initPlayer() {
-      const videoElement = document.getElementById('player');
-      
-      // Initialize Plyr
-      player = new Plyr(videoElement, {
-        controls: ['play', 'progress', 'current-time', 'mute', 'volume', 'settings', 'fullscreen'],
-        settings: ['quality', 'speed'],
-        speed: { selected: 1, options: [0.5, 0.75, 1, 1.25, 1.5, 2] }
+      const videoEl = document.getElementById('player');
+      player = new Plyr(videoEl, {
+        controls: ['play', 'progress', 'current-time', 'mute', 'volume', 'fullscreen'],
+        settings: ['speed'],
+        speed: { selected: 1, options: [0.75, 1, 1.25, 1.5, 2] }
       });
 
-      // Optional: Auto-play next video when one ends
       player.on('ended', () => {
-        playNextVideo();
+        const idx = videos.findIndex(v => v.id === currentVideoId);
+        const next = (idx + 1) % videos.length;
+        loadVideo(videos[next].id);
       });
     }
 
     function renderPlaylist() {
-      const listContainer = document.getElementById('videoList');
-      listContainer.innerHTML = '';
+      const row = document.getElementById('videoRow');
+      row.innerHTML = '';
 
       videos.forEach(video => {
-        const btn = document.createElement('button');
-        btn.className = 'video-item';
-        btn.textContent = video.title;
-        btn.onclick = () => loadVideo(video.id);
-        btn.dataset.id = video.id;
-        
-        if (video.id === currentVideoId) {
-          btn.classList.add('active');
-        }
-        
-        listContainer.appendChild(btn);
+        const card = document.createElement('div');
+        card.className = `video-card ${video.id === currentVideoId ? 'active' : ''}`;
+        card.innerHTML = `
+          <div class="video-number">#${video.id}</div>
+          <div class="video-title">${video.title}</div>
+        `;
+        card.onclick = () => loadVideo(video.id);
+        row.appendChild(card);
       });
     }
 
@@ -179,65 +150,58 @@
       const videoEl = document.getElementById('player');
       const titleEl = document.getElementById('currentTitle');
 
-      // Update source
       videoEl.src = video.src;
-      if (video.poster) videoEl.poster = video.poster;
-
-      // Update UI
       titleEl.textContent = video.title;
       currentVideoId = videoId;
 
-      // Re-render playlist to highlight active item
       renderPlaylist();
 
-      // Play the video
-      videoEl.play().catch(() => {
-        // Autoplay might be blocked - user can click play
-      });
+      const activeCard = document.querySelector('.video-card.active');
+      if (activeCard) {
+        activeCard.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+      }
 
-      // Optional: Hide playlist after starting (uncomment if you want this behavior)
-      // document.getElementById('playlist').style.display = 'none';
+      videoEl.play().catch(() => {});
     }
 
-    function playNextVideo() {
-      if (!currentVideoId) return;
-      
-      const currentIndex = videos.findIndex(v => v.id === currentVideoId);
-      const nextIndex = (currentIndex + 1) % videos.length;
-      loadVideo(videos[nextIndex].id);
-    }
+    async function toggleOrientationLock() {
+      const btn = document.getElementById('lockBtn');
+      const icon = document.getElementById('lockIcon');
+      const text = document.getElementById('lockText');
 
-    function togglePlaylist() {
-      const playlist = document.getElementById('playlist');
-      const btns = document.querySelectorAll('.toggle-btn');
-      
-      if (playlist.style.display === 'none') {
-        playlist.style.display = 'block';
-        btns.forEach(b => b.textContent = 'Hide Playlist');
-      } else {
-        playlist.style.display = 'none';
-        btns.forEach(b => b.textContent = 'Show Playlist');
+      if (!screen.orientation || !screen.orientation.lock) {
+        alert("Screen rotation lock is not supported on this device.");
+        return;
+      }
+
+      try {
+        if (!isLocked) {
+          await screen.orientation.lock('landscape');
+          isLocked = true;
+          btn.classList.add('locked');
+          icon.textContent = '🔒';
+          text.textContent = 'Unlock Rotate';
+        } else {
+          await screen.orientation.unlock();
+          isLocked = false;
+          btn.classList.remove('locked');
+          icon.textContent = '🔓';
+          text.textContent = 'Lock Rotate';
+        }
+      } catch (err) {
+        console.log(err);
+        alert("Couldn't lock orientation. Try fullscreen first.");
       }
     }
 
-    // Initialize everything
-    function init() {
+    async function init() {
+      await loadTitlesAndVideos();   // ← loads your titles.txt
       initPlayer();
       renderPlaylist();
-      
-      // Auto-load the first video (optional)
-      // loadVideo(videos[0].id);
-      
-      // Keyboard hint
-      console.log('%c[Video Hub] Tip: Press "H" to toggle playlist visibility', 'color:#666');
-    }
 
-    // Bonus: Press "H" key to toggle playlist
-    document.addEventListener('keydown', (e) => {
-      if (e.key.toLowerCase() === 'h') {
-        togglePlaylist();
-      }
-    });
+      // Optional: auto-load first video
+      // if (videos.length > 0) loadVideo(videos[0].id);
+    }
 
     window.onload = init;
   </script>

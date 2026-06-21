@@ -325,7 +325,7 @@
     }
 
     .credit-line {
-      margin: 2px 0 0;
+      margin: 14px 0 0;
       text-align: center;
       font-size: 0.64rem;
       letter-spacing: 0.08em;
@@ -387,7 +387,16 @@
 
           <section class="dial-grid" aria-label="Dial controls">
             <div class="dial-stack">
-              <button class="dial dial--small" id="dial-play" type="button" aria-label="Play or pause">
+              <button class="dial dial--small" id="dial-prev" type="button" aria-label="Previous channel">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <line x1="19" y1="12" x2="5" y2="12"></line>
+                  <polyline points="11 6 5 12 11 18"></polyline>
+                </svg>
+              </button>
+              <span class="dial-label">Prev</span>
+            </div>
+            <div class="dial-stack">
+              <button class="dial dial--big" id="dial-play" type="button" aria-label="Play or pause">
                 <svg class="icon-play" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
                   <polygon points="8 6 19 12 8 18 8 6"></polygon>
                 </svg>
@@ -399,22 +408,13 @@
               <span class="dial-label">Play</span>
             </div>
             <div class="dial-stack">
-              <button class="dial dial--big" id="dial-next" type="button" aria-label="Next channel">
+              <button class="dial dial--small" id="dial-next" type="button" aria-label="Next channel">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
                   <line x1="5" y1="12" x2="19" y2="12"></line>
                   <polyline points="13 6 19 12 13 18"></polyline>
                 </svg>
               </button>
               <span class="dial-label">Next</span>
-            </div>
-            <div class="dial-stack">
-              <button class="dial dial--small" id="dial-prev" type="button" aria-label="Previous channel">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-                  <line x1="19" y1="12" x2="5" y2="12"></line>
-                  <polyline points="11 6 5 12 11 18"></polyline>
-                </svg>
-              </button>
-              <span class="dial-label">Prev</span>
             </div>
             <div class="dial-stack">
               <button class="dial dial--small" id="dial-rewind" type="button" aria-label="Rewind 10 seconds">

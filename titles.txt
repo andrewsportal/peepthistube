@@ -1,0 +1,5 @@
+# Format: video-file-name | Display Title
+# You can also use relative paths like: clips/trailer.mp4 | Trailer
+
+video1.MP4 | Opening Reel
+video2.MP4 | Feature Presentation

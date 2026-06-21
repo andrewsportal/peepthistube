@@ -31,24 +31,25 @@
     }
 
     body {
+      --page-padding: clamp(14px, 3.5vw, 34px);
       margin: 0;
       min-height: 100svh;
       background: var(--bg);
       color: var(--text-primary);
       font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", sans-serif;
-      padding: clamp(20px, 4vw, 36px);
+      padding: var(--page-padding);
       display: flex;
-      align-items: stretch;
+      align-items: center;
       justify-content: center;
     }
 
     .app-shell {
       width: min(1040px, 100%);
-      min-height: 100%;
+      min-height: calc(100svh - (var(--page-padding) * 2));
       display: flex;
       flex-direction: column;
       justify-content: center;
-      gap: clamp(26px, 4vh, 40px);
+      gap: clamp(18px, 2.8vh, 30px);
       margin: 0 auto;
     }
 
@@ -62,7 +63,7 @@
 
     #player {
       width: 100%;
-      aspect-ratio: 16 / 9;
+      aspect-ratio: 14 / 10;
       display: block;
       background: #000000 !important;
     }
@@ -90,7 +91,7 @@
     .playlist-section {
       display: flex;
       flex-direction: column;
-      gap: 18px;
+      gap: 14px;
     }
 
     .playlist-header {
@@ -190,7 +191,7 @@
       align-items: center;
       justify-content: center;
       gap: 8px;
-      margin: 2px auto 0;
+      margin: 0 auto;
       font-size: 0.74rem;
       letter-spacing: 0.01em;
       color: var(--text-tertiary);
@@ -205,11 +206,11 @@
 
     @media (max-width: 560px) {
       .app-shell {
-        gap: 28px;
+        gap: 20px;
       }
 
       .playlist-section {
-        gap: 16px;
+        gap: 12px;
       }
 
       .video-card {
@@ -337,7 +338,8 @@
       const videoElement = document.getElementById(PLAYER_ID);
 
       player = new Plyr(videoElement, {
-        controls: ["play", "progress", "current-time", "mute", "volume", "fullscreen"]
+        controls: ["play", "progress", "current-time", "mute", "volume", "fullscreen"],
+        ratio: "14:10"
       });
 
       videoElement.addEventListener("error", () => {

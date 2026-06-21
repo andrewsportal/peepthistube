@@ -10,20 +10,25 @@
       --wallpaper-light: #e9e2d2;
       --wallpaper-mid: #d8cdb8;
       --wallpaper-line: rgba(73, 54, 28, 0.08);
+      --desk-top: #d0a56e;
       --desk-front-light: #bc9059;
       --desk-front-dark: #9f7545;
       --tv-metal-1: #ebddc4;
       --tv-metal-2: #ccb896;
       --tv-panel: #d7c3a0;
+      --bezel: #1c1d1f;
       --accent: #d49d46;
       --control-text: rgba(65, 44, 20, 0.9);
       --label-text: rgba(80, 56, 28, 0.84);
       --plyr-color-main: var(--accent);
     }
 
-    * { box-sizing: border-box; }
+    * {
+      box-sizing: border-box;
+    }
 
-    html, body {
+    html,
+    body {
       margin: 0;
       width: 100%;
       min-height: 100%;
@@ -70,7 +75,9 @@
         linear-gradient(90deg, rgba(139, 96, 48, 0.35) 0 8px, transparent 8px 24px),
         linear-gradient(180deg, var(--desk-front-light) 0%, var(--desk-front-dark) 100%);
       border-top: 10px solid #d7af77;
-      box-shadow: inset 0 20px 35px rgba(54, 32, 16, 0.25), inset 0 -28px 30px rgba(67, 42, 20, 0.22);
+      box-shadow:
+        inset 0 20px 35px rgba(54, 32, 16, 0.25),
+        inset 0 -28px 30px rgba(67, 42, 20, 0.22);
       z-index: 1;
     }
 
@@ -131,7 +138,9 @@
       overflow: hidden;
       position: relative;
       background: #040404;
-      box-shadow: inset 0 0 42px rgba(0, 0, 0, 0.9), 0 0 20px rgba(0, 0, 0, 0.65);
+      box-shadow:
+        inset 0 0 42px rgba(0, 0, 0, 0.9),
+        0 0 20px rgba(0, 0, 0, 0.65);
       isolation: isolate;
     }
 
@@ -154,7 +163,9 @@
       background: #000;
     }
 
-    .plyr__controls { display: none !important; }
+    .plyr__controls {
+      display: none !important;
+    }
 
     .osd-title {
       position: absolute;
@@ -203,11 +214,6 @@
       font-weight: 650;
     }
 
-    .now-playing-wrap {
-      display: grid;
-      gap: 10px;
-    }
-
     .now-playing {
       position: relative;
       border-radius: 10px;
@@ -216,6 +222,11 @@
       border: 1px solid rgba(89, 61, 26, 0.16);
       box-shadow: inset 0 1px 2px rgba(255, 255, 255, 0.22);
       min-height: 64px;
+    }
+
+    .now-playing-wrap {
+      display: grid;
+      gap: 10px;
     }
 
     .now-playing--interactive {
@@ -237,28 +248,11 @@
       box-shadow: 0 0 0 2px rgba(255, 249, 240, 0.8), inset 0 1px 2px rgba(255, 255, 255, 0.22);
     }
 
-    .now-playing .channel {
-      font-size: 0.7rem;
-      letter-spacing: 0.07em;
-      color: rgba(61, 41, 18, 0.8);
-      text-transform: uppercase;
-      margin-bottom: 4px;
-      font-weight: 610;
-    }
-
     .now-playing-main {
       display: grid;
       grid-template-columns: minmax(0, 1fr) auto;
       align-items: center;
       gap: 10px;
-    }
-
-    .now-playing .title {
-      margin: 0;
-      color: rgba(30, 21, 11, 0.96);
-      font-size: 0.88rem;
-      line-height: 1.3;
-      font-weight: 610;
     }
 
     .menu-indicator {
@@ -299,13 +293,21 @@
       overflow: auto;
     }
 
+    .channel-menu[hidden] {
+      display: none !important;
+    }
+
     .control-panel.is-browsing .dial-grid,
     .control-panel.is-browsing .speaker-grill {
       display: none;
     }
 
     .control-panel.is-browsing .credit-line {
-      margin-top: 8px;
+      display: none;
+    }
+
+    .control-panel.is-browsing .channel-menu {
+      max-height: min(40vh, 280px);
     }
 
     .channel-option {
@@ -365,6 +367,23 @@
       color: rgba(80, 56, 28, 0.9);
     }
 
+    .now-playing .channel {
+      font-size: 0.7rem;
+      letter-spacing: 0.07em;
+      color: rgba(61, 41, 18, 0.8);
+      text-transform: uppercase;
+      margin-bottom: 4px;
+      font-weight: 610;
+    }
+
+    .now-playing .title {
+      margin: 0;
+      color: rgba(30, 21, 11, 0.96);
+      font-size: 0.88rem;
+      line-height: 1.3;
+      font-weight: 610;
+    }
+
     .dial-grid {
       display: grid;
       grid-template-columns: repeat(3, minmax(0, 1fr));
@@ -411,6 +430,20 @@
       height: clamp(52px, 5vw, 84px);
     }
 
+    .dial svg {
+      width: 16px;
+      height: 16px;
+      display: block;
+      color: rgba(25, 17, 8, 0.9);
+      z-index: 2;
+      position: relative;
+    }
+
+    .dial--big svg {
+      width: 24px;
+      height: 24px;
+    }
+
     .dial--small {
       width: 34px;
       height: 34px;
@@ -424,20 +457,6 @@
         inset 0 1px 3px rgba(255, 255, 255, 0.56),
         inset 0 -2px 6px rgba(73, 46, 12, 0.36);
       border: 1px solid rgba(123, 82, 31, 0.46);
-    }
-
-    .dial svg {
-      width: 16px;
-      height: 16px;
-      display: block;
-      color: rgba(25, 17, 8, 0.9);
-      z-index: 2;
-      position: relative;
-    }
-
-    .dial--big svg {
-      width: 24px;
-      height: 24px;
     }
 
     .dial.is-active {
@@ -464,9 +483,17 @@
     }
 
     @media (max-width: 1024px) {
-      .tv-set { grid-template-columns: 1fr; }
-      .screen-chassis { border-radius: 16px; }
-      .dial-grid { grid-template-columns: repeat(6, minmax(0, 1fr)); }
+      .tv-set {
+        grid-template-columns: 1fr;
+      }
+
+      .screen-chassis {
+        border-radius: 16px;
+      }
+
+      .dial-grid {
+        grid-template-columns: repeat(6, minmax(0, 1fr));
+      }
     }
 
     @media (max-width: 720px) {
@@ -477,9 +504,17 @@
         padding-left: max(10px, env(safe-area-inset-left, 0px));
       }
 
-      .desk { height: 14svh; }
-      .dial-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
-      .speaker-grill { display: none; }
+      .desk {
+        height: 14svh;
+      }
+
+      .dial-grid {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+      }
+
+      .speaker-grill {
+        display: none;
+      }
     }
   </style>
 </head>
@@ -530,7 +565,6 @@
               </button>
               <span class="dial-label">Prev</span>
             </div>
-
             <div class="dial-stack">
               <button class="dial dial--big" id="dial-play" type="button" aria-label="Play or pause">
                 <svg class="icon-play" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
@@ -543,7 +577,6 @@
               </button>
               <span class="dial-label">Play</span>
             </div>
-
             <div class="dial-stack">
               <button class="dial dial--small" id="dial-next" type="button" aria-label="Next channel">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
@@ -553,7 +586,6 @@
               </button>
               <span class="dial-label">Next</span>
             </div>
-
             <div class="dial-stack">
               <button class="dial dial--small" id="dial-rewind" type="button" aria-label="Rewind 10 seconds">
                 <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
@@ -563,7 +595,6 @@
               </button>
               <span class="dial-label">Rew</span>
             </div>
-
             <div class="dial-stack">
               <button class="dial dial--small" id="dial-forward" type="button" aria-label="Fast forward 10 seconds">
                 <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
@@ -573,7 +604,6 @@
               </button>
               <span class="dial-label">Fwd</span>
             </div>
-
             <div class="dial-stack">
               <button class="dial dial--small" id="dial-mute" type="button" aria-label="Mute or unmute audio">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
@@ -611,12 +641,14 @@
     async function loadTitles() {
       try {
         const response = await fetch(TITLE_SOURCE);
-        if (!response.ok) return [];
+        if (!response.ok) {
+          return [];
+        }
         return (await response.text())
           .split("\n")
           .map((line) => line.trim())
           .filter(Boolean);
-      } catch {
+      } catch (error) {
         return [];
       }
     }
@@ -651,12 +683,16 @@
       osd.textContent = text;
       osd.classList.add("is-visible");
       clearTimeout(osdTimeout);
-      osdTimeout = setTimeout(() => osd.classList.remove("is-visible"), duration);
+      osdTimeout = setTimeout(() => {
+        osd.classList.remove("is-visible");
+      }, duration);
     }
 
     function updateNowPlaying(video) {
-      document.getElementById("channelLabel").textContent = `Channel ${padChannel(video.id)}`;
-      document.getElementById("nowPlayingTitle").textContent = video.title;
+      const channelLabel = document.getElementById("channelLabel");
+      const titleLabel = document.getElementById("nowPlayingTitle");
+      channelLabel.textContent = `Channel ${padChannel(video.id)}`;
+      titleLabel.textContent = video.title;
     }
 
     function createChannelOption(video) {
@@ -666,7 +702,9 @@
       option.setAttribute("role", "option");
       option.setAttribute("aria-selected", String(video.id === currentId));
 
-      if (video.id === currentId) option.classList.add("is-active");
+      if (video.id === currentId) {
+        option.classList.add("is-active");
+      }
 
       const id = document.createElement("span");
       id.className = "channel-option-id";
@@ -684,22 +722,23 @@
       check.setAttribute("stroke-linecap", "round");
       check.setAttribute("stroke-linejoin", "round");
       check.classList.add("channel-option-check");
+      check.innerHTML = "<polyline points=\"20 6 9 17 4 12\"></polyline>";
       check.setAttribute("aria-hidden", "true");
-      check.innerHTML = "<polyline points='20 6 9 17 4 12'></polyline>";
 
       option.append(id, title, check);
       option.addEventListener("click", () => {
         loadVideo(video.id);
         setChannelMenuVisible(false);
       });
-
       return option;
     }
 
     function renderChannelMenu() {
       const menu = document.getElementById("channelMenu");
       menu.innerHTML = "";
-      videos.forEach((video) => menu.appendChild(createChannelOption(video)));
+      videos.forEach((video) => {
+        menu.appendChild(createChannelOption(video));
+      });
     }
 
     function setChannelMenuVisible(visible) {
@@ -713,12 +752,13 @@
         menu.hidden = false;
         trigger.setAttribute("aria-expanded", "true");
         panel.classList.add("is-browsing");
-      } else {
-        channelMenuVisible = false;
-        trigger.setAttribute("aria-expanded", "false");
-        panel.classList.remove("is-browsing");
-        menu.hidden = true;
+        return;
       }
+
+      channelMenuVisible = false;
+      trigger.setAttribute("aria-expanded", "false");
+      panel.classList.remove("is-browsing");
+      menu.hidden = true;
     }
 
     function setupChannelMenu() {
@@ -743,7 +783,10 @@
           { transform: `rotate(${degrees}deg) scale(0.96)` },
           { transform: "rotate(0deg) scale(1)" }
         ],
-        { duration: 170, easing: "cubic-bezier(0.22, 1, 0.36, 1)" }
+        {
+          duration: 170,
+          easing: "cubic-bezier(0.22, 1, 0.36, 1)"
+        }
       );
     }
 
@@ -753,9 +796,11 @@
 
     function loadVideo(id) {
       const selectedVideo = videos.find((video) => video.id === id);
-      if (!selectedVideo) return;
-
+      if (!selectedVideo) {
+        return;
+      }
       const videoElement = document.getElementById(PLAYER_ID);
+
       currentId = id;
       fallbackAttempted = false;
       videoElement.src = selectedVideo.src;
@@ -767,7 +812,9 @@
     }
 
     function stepChannel(step) {
-      if (!videos.length) return;
+      if (!videos.length) {
+        return;
+      }
       const currentIndex = getCurrentIndex();
       const safeIndex = currentIndex >= 0 ? currentIndex : 0;
       const nextIndex = (safeIndex + step + videos.length) % videos.length;
@@ -826,8 +873,15 @@
       });
 
       document.addEventListener("keydown", (event) => {
-        if (event.defaultPrevented || channelMenuVisible) return;
-        if (event.target instanceof HTMLElement && /input|textarea|select/i.test(event.target.tagName)) return;
+        if (event.defaultPrevented) {
+          return;
+        }
+        if (channelMenuVisible) {
+          return;
+        }
+        if (event.target instanceof HTMLElement && /input|textarea|select/i.test(event.target.tagName)) {
+          return;
+        }
 
         if (event.key === "ArrowRight") {
           event.preventDefault();
@@ -873,14 +927,18 @@
 
       videoElement.addEventListener("error", () => {
         const currentVideo = videos.find((video) => video.id === currentId);
-        if (!currentVideo || fallbackAttempted) return;
+        if (!currentVideo || fallbackAttempted) {
+          return;
+        }
         fallbackAttempted = true;
         videoElement.src = getUppercaseSource(currentVideo.src);
         videoElement.play().catch(() => {});
       });
 
       player.on("ended", () => {
-        if (!videos.length) return;
+        if (!videos.length) {
+          return;
+        }
         stepChannel(1);
       });
     }

@@ -212,7 +212,7 @@
     .now-playing {
       position: relative;
       border-radius: 10px;
-      padding: 10px 40px 10px 10px;
+      padding: 10px;
       background: rgba(35, 24, 12, 0.12);
       border: 1px solid rgba(89, 61, 26, 0.2);
       min-height: 64px;
@@ -233,44 +233,6 @@
       font-size: 0.86rem;
       line-height: 1.3;
       font-weight: 620;
-    }
-
-    .fullscreen-chip {
-      appearance: none;
-      border: 1px solid rgba(101, 71, 33, 0.35);
-      background: rgba(255, 244, 222, 0.54);
-      width: 26px;
-      height: 26px;
-      border-radius: 7px;
-      position: absolute;
-      right: 8px;
-      top: 8px;
-      display: grid;
-      place-items: center;
-      cursor: pointer;
-      color: rgba(48, 31, 9, 0.9);
-      transition: transform 140ms ease, box-shadow 140ms ease;
-    }
-
-    .fullscreen-chip:hover {
-      transform: translateY(-1px);
-      box-shadow: 0 4px 10px rgba(54, 30, 9, 0.2);
-    }
-
-    .fullscreen-chip:focus-visible {
-      outline: none;
-      box-shadow: 0 0 0 2px rgba(56, 33, 11, 0.4), 0 0 0 4px rgba(255, 255, 255, 0.65);
-    }
-
-    .fullscreen-chip.is-active {
-      background: rgba(212, 157, 70, 0.35);
-      border-color: rgba(101, 71, 33, 0.55);
-    }
-
-    .fullscreen-chip svg {
-      width: 14px;
-      height: 14px;
-      display: block;
     }
 
     .dial-grid {
@@ -294,7 +256,6 @@
     }
 
     .dial {
-      --dial-rotation: 0deg;
       appearance: none;
       border: 0;
       border-radius: 50%;
@@ -318,26 +279,6 @@
     .dial--big {
       width: clamp(52px, 5vw, 84px);
       height: clamp(52px, 5vw, 84px);
-      background: radial-gradient(circle at 35% 35%, #f4deaa 0%, #b68535 70%);
-      box-shadow:
-        0 6px 12px rgba(0, 0, 0, 0.32),
-        inset 0 2px 4px rgba(255, 255, 255, 0.45),
-        inset 0 -3px 7px rgba(68, 45, 10, 0.52);
-    }
-
-    .dial--big::before,
-    .dial--small::before {
-      content: "";
-      position: absolute;
-      left: 50%;
-      top: 8%;
-      width: 4px;
-      height: 26%;
-      transform: translateX(-50%) rotate(var(--dial-rotation));
-      transform-origin: 50% 180%;
-      border-radius: 99px;
-      background: rgba(29, 19, 7, 0.95);
-      box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.22);
     }
 
     .dial svg {
@@ -357,12 +298,16 @@
     .dial--small {
       width: 34px;
       height: 34px;
-      background: linear-gradient(145deg, #ececee 0%, #a5a5ab 100%);
+    }
+
+    .dial--big,
+    .dial--small {
+      background: radial-gradient(circle at 32% 26%, #f8e5b8 0%, #d7a353 52%, #b98433 100%);
       box-shadow:
-        0 3px 6px rgba(0, 0, 0, 0.32),
-        inset 0 2px 3px rgba(255, 255, 255, 0.85),
-        inset 0 -2px 3px rgba(0, 0, 0, 0.22);
-      border: 1px solid rgba(79, 79, 82, 0.58);
+        0 4px 9px rgba(0, 0, 0, 0.24),
+        inset 0 1px 3px rgba(255, 255, 255, 0.58),
+        inset 0 -2px 6px rgba(73, 46, 12, 0.42);
+      border: 1px solid rgba(123, 82, 31, 0.52);
     }
 
     .dial.is-active {
@@ -377,6 +322,15 @@
         radial-gradient(circle, rgba(125, 92, 52, 0.45) 20%, transparent 21%) 0 0 / 8px 8px,
         linear-gradient(180deg, rgba(150, 116, 73, 0.4), rgba(113, 81, 44, 0.45));
       border: 1px solid rgba(96, 66, 30, 0.3);
+    }
+
+    .credit-line {
+      margin: 2px 0 0;
+      text-align: center;
+      font-size: 0.64rem;
+      letter-spacing: 0.08em;
+      color: rgba(66, 45, 20, 0.85);
+      font-weight: 600;
     }
 
     @media (max-width: 1024px) {
@@ -429,39 +383,9 @@
           <section class="now-playing" aria-live="polite">
             <div class="channel" id="channelLabel">Channel --</div>
             <p class="title" id="nowPlayingTitle">Loading playlist...</p>
-            <button class="fullscreen-chip" id="fullscreenChip" type="button" aria-label="Toggle fullscreen">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-                <polyline points="8 3 3 3 3 8"></polyline>
-                <line x1="3" y1="3" x2="9" y2="9"></line>
-                <polyline points="16 3 21 3 21 8"></polyline>
-                <line x1="21" y1="3" x2="15" y2="9"></line>
-                <polyline points="8 21 3 21 3 16"></polyline>
-                <line x1="3" y1="21" x2="9" y2="15"></line>
-                <polyline points="16 21 21 21 21 16"></polyline>
-                <line x1="21" y1="21" x2="15" y2="15"></line>
-              </svg>
-            </button>
           </section>
 
           <section class="dial-grid" aria-label="Dial controls">
-            <div class="dial-stack">
-              <button class="dial dial--big" id="dial-prev" type="button" aria-label="Previous channel">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-                  <line x1="19" y1="12" x2="5" y2="12"></line>
-                  <polyline points="11 6 5 12 11 18"></polyline>
-                </svg>
-              </button>
-              <span class="dial-label">Channel -</span>
-            </div>
-            <div class="dial-stack">
-              <button class="dial dial--big" id="dial-next" type="button" aria-label="Next channel">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-                  <line x1="5" y1="12" x2="19" y2="12"></line>
-                  <polyline points="13 6 19 12 13 18"></polyline>
-                </svg>
-              </button>
-              <span class="dial-label">Channel +</span>
-            </div>
             <div class="dial-stack">
               <button class="dial dial--small" id="dial-play" type="button" aria-label="Play or pause">
                 <svg class="icon-play" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
@@ -473,6 +397,24 @@
                 </svg>
               </button>
               <span class="dial-label">Play</span>
+            </div>
+            <div class="dial-stack">
+              <button class="dial dial--big" id="dial-next" type="button" aria-label="Next channel">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <line x1="5" y1="12" x2="19" y2="12"></line>
+                  <polyline points="13 6 19 12 13 18"></polyline>
+                </svg>
+              </button>
+              <span class="dial-label">Next</span>
+            </div>
+            <div class="dial-stack">
+              <button class="dial dial--small" id="dial-prev" type="button" aria-label="Previous channel">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <line x1="19" y1="12" x2="5" y2="12"></line>
+                  <polyline points="11 6 5 12 11 18"></polyline>
+                </svg>
+              </button>
+              <span class="dial-label">Prev</span>
             </div>
             <div class="dial-stack">
               <button class="dial dial--small" id="dial-rewind" type="button" aria-label="Rewind 10 seconds">
@@ -505,6 +447,7 @@
           </section>
 
           <div class="speaker-grill" aria-hidden="true"></div>
+          <p class="credit-line">Filmed &amp; Edited by: Andrew Rios</p>
         </aside>
       </article>
     </main>
@@ -518,7 +461,6 @@
     const TITLE_SOURCE = "titles.txt";
 
     const videos = [];
-    const dialRotation = new Map();
 
     let player;
     let currentId = null;
@@ -583,10 +525,17 @@
     }
 
     function animateDial(element, degrees) {
-      const previous = dialRotation.get(element.id) || 0;
-      const next = previous + degrees;
-      dialRotation.set(element.id, next);
-      element.style.setProperty("--dial-rotation", `${next}deg`);
+      element.animate(
+        [
+          { transform: "rotate(0deg) scale(1)" },
+          { transform: `rotate(${degrees}deg) scale(0.96)` },
+          { transform: "rotate(0deg) scale(1)" }
+        ],
+        {
+          duration: 170,
+          easing: "cubic-bezier(0.22, 1, 0.36, 1)"
+        }
+      );
     }
 
     function getCurrentIndex() {
@@ -619,29 +568,6 @@
       loadVideo(videos[nextIndex].id);
     }
 
-    async function toggleFullscreen() {
-      const button = document.getElementById("fullscreenChip");
-      const tvScreen = document.getElementById("tvScreen");
-      const isFullscreen = Boolean(document.fullscreenElement);
-
-      try {
-        if (isFullscreen) {
-          await document.exitFullscreen();
-          showOSD("WINDOW MODE");
-        } else if (tvScreen.requestFullscreen) {
-          await tvScreen.requestFullscreen();
-          showOSD("MAXIMIZED");
-        } else if (player?.fullscreen?.supported) {
-          player.fullscreen.toggle();
-          showOSD(player.fullscreen.active ? "MAXIMIZED" : "WINDOW MODE");
-        }
-      } catch (error) {
-        showOSD("FULLSCREEN BLOCKED");
-      } finally {
-        button.classList.toggle("is-active", Boolean(document.fullscreenElement));
-      }
-    }
-
     function setupDials() {
       const dialPrev = document.getElementById("dial-prev");
       const dialNext = document.getElementById("dial-next");
@@ -651,7 +577,6 @@
       const dialMute = document.getElementById("dial-mute");
       const dialRewind = document.getElementById("dial-rewind");
       const dialForward = document.getElementById("dial-forward");
-      const fullscreenChip = document.getElementById("fullscreenChip");
 
       dialPrev.addEventListener("click", () => {
         animateDial(dialPrev, -38);
@@ -694,14 +619,6 @@
         showOSD(player.muted ? "MUTE" : "UNMUTE");
       });
 
-      fullscreenChip.addEventListener("click", () => {
-        toggleFullscreen();
-      });
-
-      document.addEventListener("fullscreenchange", () => {
-        fullscreenChip.classList.toggle("is-active", Boolean(document.fullscreenElement));
-      });
-
       document.addEventListener("keydown", (event) => {
         if (event.defaultPrevented) {
           return;
@@ -728,9 +645,6 @@
         } else if (event.key.toLowerCase() === "m") {
           event.preventDefault();
           dialMute.click();
-        } else if (event.key.toLowerCase() === "f") {
-          event.preventDefault();
-          fullscreenChip.click();
         }
       });
 

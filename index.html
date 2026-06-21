@@ -204,7 +204,7 @@
         <div class="screen-bezel">
             <div class="video-container">
                 <div class="crt-overlay"></div>
-                <video id="retro-player" src="https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4"></video>
+                <video id="retro-player"></video>
             </div>
         </div>
 
@@ -237,15 +237,20 @@
     </div>
 
     <script>
-        // Playlist logic
+        // Playlist logic updated to use your local repository files
+        // IMPORTANT: Ensure the file extensions match (e.g., .mp4, .webm)
         const playlist = [
-            "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4",
-            "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ElephantsDream.mp4",
-            "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/TearsOfSteel.mp4"
+            "./video1.mp4",
+            "./video2.mp4"
+            // You can add more local files here simply by appending them:
+            // "./video3.mp4"
         ];
         
         let currentVideoIndex = 0;
         const video = document.getElementById('retro-player');
+
+        // Load the first video immediately on page load
+        video.src = playlist[currentVideoIndex];
 
         // DOM Elements
         const btnPlay = document.getElementById('btn-play');

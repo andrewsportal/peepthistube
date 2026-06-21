@@ -23,13 +23,17 @@
       -webkit-font-smoothing: antialiased;
     }
     .player-wrapper {
-      background: #000;
+      background: #000000;
       padding: 0 0 24px;
     }
     .player-container {
-      background: #000;
+      background: #000000;
       overflow: hidden;
-      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.9);
+    }
+    /* Force pure black on the actual video element */
+    #player {
+      background: #000000 !important;
+      display: block;
     }
     .playlist-section {
       padding-top: 16px;

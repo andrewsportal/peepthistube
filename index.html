@@ -150,12 +150,14 @@
   <script src="https://cdn.jsdelivr.net/npm/plyr@3/dist/plyr.min.js"></script>
   <script>
     // =====================================================
-    // SETUP INSTRUCTIONS:
-    // 1. Create a folder called "videos" in your repo
-    // 2. Put your videos inside as: video1.mp4, video2.mp4, video3.mp4...
-    // 3. Create a file called "titles.txt" in the same folder as index.html
-    //    - One title per line (first line = title for video1.mp4)
-    // 4. Push everything to GitHub and enable GitHub Pages
+    // FINAL VERSION - Videos in root + supports .mp4 and .MP4
+    // =====================================================
+    // Upload these files directly in your repo root:
+    //   index.html
+    //   titles.txt          ← one title per line
+    //   video1.mp4 (or video1.MP4)
+    //   video2.mp4 (or video2.MP4)
+    //   etc.
     // =====================================================
 
     let videos = [];
@@ -179,7 +181,7 @@
         videos.push({
           id: i,
           title: titles[i - 1] || `Video ${i}`,
-          src: `videos/video${i}.mp4`
+          src: `video${i}.mp4`          // primary (lowercase)
         });
       }
     }
@@ -191,11 +193,17 @@
         settings: ['speed']
       });
 
-      // Show helpful message if video fails to load
+      // Smart fallback: try .MP4 if .mp4 fails
       videoEl.addEventListener('error', () => {
-        document.getElementById('currentTitle').textContent = 
-          'Video failed to load. Make sure videos/video1.mp4 exists in your repo.';
-        console.error('Failed to load:', videoEl.src);
+        if (videoEl.src.endsWith('.mp4') && !videoEl.src.endsWith('.MP4')) {
+          const newSrc = videoEl.src.replace('.mp4', '.MP4');
+          console.log('Trying uppercase extension:', newSrc);
+          videoEl.src = newSrc;
+          videoEl.play().catch(() => {});
+        } else {
+          document.getElementById('currentTitle').textContent = 
+            'Video failed to load. Check that the file exists in your repo root.';
+        }
       });
 
       player.on('ended', () => {
@@ -227,7 +235,7 @@
       const videoEl = document.getElementById('player');
       const titleEl = document.getElementById('currentTitle');
 
-      videoEl.src = video.src;
+      videoEl.src = video.src;           // try lowercase first
       titleEl.textContent = video.title;
       currentVideoId = videoId;
 
@@ -264,7 +272,7 @@
           text.textContent = 'Lock';
         }
       } catch (e) {
-        alert("Try tapping the fullscreen button first, then tap Lock.");
+        alert("Try entering fullscreen first, then tap Lock.");
       }
     }
 

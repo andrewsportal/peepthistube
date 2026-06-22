@@ -4,11 +4,13 @@ Single-page premium landing experience for three House music mixtapes.
 
 ## Interaction model
 
-The landing page is a simplified portal:
+The landing page is a simplified scene portal:
 
-- Full-screen looping background video
+- Full-screen looping background video per mixtape scene
+- Left/right edge arrows to move between the 3 scenes
 - One-hand mobile-first bottom control console
-- No hamburger menu
+- Controls auto-fade during playback and return on tap
+- No top hamburger or multi-menu layout
 - Lightweight playback with one shared audio instance
 - Media Session integration for better lock-screen/background controls (browser permitting)
 
@@ -29,8 +31,12 @@ Place these files either in the project root (`/workspace`) or update paths in `
 
 Open `index.html` and edit:
 
-1. `PORTAL.site` for brand / credit / hero copy
-2. `PORTAL.video` for background video + poster
-3. `PORTAL.mixtapes` for each mixtape's `audio`, `download`, `artwork`, `mood`, and `tracklist`
+1. `PORTAL.fallbackVideo` and `PORTAL.fallbackPoster`
+2. `PORTAL.mixtapes` for each scene's:
+   - `title`
+   - `description`
+   - `audio` / `download`
+   - `video`
+   - `tracklist`
 
 The `PORTAL` object is the single source of truth for all editable content.

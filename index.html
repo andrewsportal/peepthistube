@@ -3,10 +3,10 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Palm Deck House</title>
+  <title>Vagabond</title>
   <meta
     name="description"
-    content="A minimal Apple-inspired portal for three House mixtapes with cinematic looping visuals and lightweight background playback."
+    content="A minimal Apple-inspired House mixtape portal with cinematic looping scene videos and lightweight persistent audio playback."
   />
   <script src="https://cdn.tailwindcss.com"></script>
   <script>
@@ -15,7 +15,6 @@
         extend: {
           colors: {
             base: "#111111",
-            surface: "#1C1C1E",
             cream: "#FFF8F0",
             coral: "#E85D04",
             gold: "#FFB703",
@@ -25,9 +24,13 @@
     };
   </script>
   <style>
-    :root { color-scheme: dark; }
+    :root {
+      color-scheme: dark;
+    }
 
-    * { box-sizing: border-box; }
+    * {
+      box-sizing: border-box;
+    }
 
     html,
     body {
@@ -43,7 +46,7 @@
       overscroll-behavior: none;
     }
 
-    .portal-video {
+    .scene-video {
       position: fixed;
       inset: 0;
       width: 100%;
@@ -53,141 +56,98 @@
       transition: opacity 420ms ease;
     }
 
-    .portal-video.video-dim {
-      opacity: 0.4;
+    .scene-video.dim {
+      opacity: 0.35;
     }
 
-    .ambient-mask {
+    .scene-mask {
       position: fixed;
       inset: 0;
       z-index: -2;
       background:
-        radial-gradient(circle at 16% 18%, rgba(255, 183, 3, 0.16), transparent 42%),
-        linear-gradient(to bottom, rgba(17, 17, 17, 0.26), rgba(17, 17, 17, 0.84));
+        radial-gradient(circle at 16% 14%, rgba(255, 183, 3, 0.16), transparent 42%),
+        linear-gradient(to bottom, rgba(17, 17, 17, 0.23), rgba(17, 17, 17, 0.84));
     }
 
-    .controls-overlay {
+    .controls {
       opacity: 1;
       transition: opacity 320ms ease;
       pointer-events: none;
     }
 
-    .controls-overlay.is-hidden {
+    .controls.hidden {
       opacity: 0;
     }
 
-    .controls-overlay .ui-hit {
+    .controls .ui {
       pointer-events: auto;
-    }
-
-    .controls-overlay.is-hidden .ui-hit {
-      pointer-events: none;
     }
 
     .glass {
       backdrop-filter: blur(24px) saturate(160%);
       -webkit-backdrop-filter: blur(24px) saturate(160%);
-      background: rgba(24, 24, 26, 0.58);
-      border: 1px solid rgba(255, 248, 240, 0.11);
-      box-shadow: 0 18px 40px rgba(0, 0, 0, 0.36);
+      background: rgba(23, 23, 25, 0.56);
+      border: 1px solid rgba(255, 248, 240, 0.12);
+      box-shadow: 0 16px 38px rgba(0, 0, 0, 0.36);
     }
 
-    .gloss-btn {
-      border: 1px solid rgba(255, 248, 240, 0.22);
-      background: linear-gradient(to bottom, rgba(255, 248, 240, 0.16), rgba(255, 248, 240, 0.06));
+    .gloss {
+      border: 1px solid rgba(255, 248, 240, 0.25);
+      background: linear-gradient(to bottom, rgba(255, 248, 240, 0.15), rgba(255, 248, 240, 0.06));
       color: #fff8f0;
       cursor: pointer;
       transition:
         transform 280ms cubic-bezier(0.22, 1, 0.36, 1),
-        border-color 200ms ease,
-        background 200ms ease;
+        border-color 200ms ease;
     }
 
-    .gloss-btn:hover {
-      transform: scale(1.05);
-      border-color: rgba(255, 248, 240, 0.36);
+    .gloss:hover {
+      transform: scale(1.06);
+      border-color: rgba(255, 248, 240, 0.4);
     }
 
-    .gloss-btn:active { transform: scale(0.95); }
-
-    .mix-chip {
-      border-radius: 0.9rem;
-      border: 1px solid rgba(255, 248, 240, 0.14);
-      background: rgba(255, 248, 240, 0.05);
-      transition: transform 260ms cubic-bezier(0.22, 1, 0.36, 1), background 220ms ease, border-color 220ms ease;
+    .gloss:active {
+      transform: scale(0.94);
     }
 
-    .mix-chip:hover {
-      transform: translateY(-2px);
-      background: rgba(255, 248, 240, 0.1);
-    }
-
-    .mix-chip.active {
-      border-color: rgba(255, 183, 3, 0.62);
-      background: rgba(255, 183, 3, 0.16);
-      box-shadow: 0 0 0 1px rgba(255, 183, 3, 0.3);
-    }
-
-    .plaque-shell {
-      width: 2.5rem;
-      height: 2.5rem;
-      border-radius: 0.8rem;
-      padding: 2px;
-      background: linear-gradient(145deg, rgba(255, 183, 3, 0.95), rgba(232, 93, 4, 0.62));
-      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.36);
-      flex-shrink: 0;
-    }
-
-    .plaque-core {
-      width: 100%;
-      height: 100%;
-      border-radius: 0.7rem;
-      overflow: hidden;
-      position: relative;
-      background:
-        radial-gradient(circle at 30% 28%, rgba(255, 220, 132, 0.95), rgba(182, 124, 32, 0.92) 48%, rgba(84, 50, 12, 0.96) 100%);
-    }
-
-    .plaque-core::before {
-      content: "";
+    .edge-arrow {
       position: absolute;
-      inset: 20%;
+      top: 50%;
+      transform: translateY(-50%);
+      z-index: 30;
+      width: 44px;
+      height: 56px;
       border-radius: 999px;
-      border: 1px solid rgba(255, 248, 240, 0.45);
-      pointer-events: none;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      border: 1px solid rgba(255, 248, 240, 0.2);
+      background: rgba(17, 17, 17, 0.3);
+      backdrop-filter: blur(14px) saturate(150%);
+      -webkit-backdrop-filter: blur(14px) saturate(150%);
+      color: rgba(255, 248, 240, 0.9);
+      cursor: pointer;
+      transition: transform 280ms cubic-bezier(0.22, 1, 0.36, 1), background 180ms ease;
     }
 
-    .plaque-core img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      mix-blend-mode: soft-light;
-      opacity: 0.9;
+    .edge-arrow:hover {
+      transform: translateY(-50%) scale(1.06);
+      background: rgba(17, 17, 17, 0.45);
     }
 
-    .mix-animated-next {
-      animation: mixInNext 360ms cubic-bezier(0.22, 1, 0.36, 1);
+    .edge-arrow.left {
+      left: 10px;
     }
 
-    .mix-animated-prev {
-      animation: mixInPrev 360ms cubic-bezier(0.22, 1, 0.36, 1);
-    }
-
-    @keyframes mixInNext {
-      from { opacity: 0; transform: translateX(18px); }
-      to { opacity: 1; transform: translateX(0); }
-    }
-
-    @keyframes mixInPrev {
-      from { opacity: 0; transform: translateX(-18px); }
-      to { opacity: 1; transform: translateX(0); }
+    .edge-arrow.right {
+      right: 10px;
     }
 
     .progress {
       height: 4px;
       border-radius: 999px;
       position: relative;
-      background: rgba(255, 248, 240, 0.2);
+      background: rgba(255, 248, 240, 0.18);
       cursor: pointer;
       transition: height 180ms ease;
     }
@@ -198,9 +158,9 @@
     }
 
     .progress-fill {
+      width: 0%;
       height: 100%;
       border-radius: inherit;
-      width: 0%;
       background: linear-gradient(90deg, #e85d04, #ffb703);
     }
 
@@ -213,8 +173,8 @@
       left: 0%;
       transform: translate(-50%, -50%) scale(0);
       background: #fff8f0;
-      transition: transform 200ms cubic-bezier(0.22, 1, 0.36, 1);
       pointer-events: none;
+      transition: transform 200ms cubic-bezier(0.22, 1, 0.36, 1);
     }
 
     .progress:hover .progress-thumb,
@@ -222,30 +182,53 @@
       transform: translate(-50%, -50%) scale(1);
     }
 
-    .tracklist-panel {
+    .track-panel {
       max-height: 0;
       overflow: hidden;
       transition: max-height 340ms cubic-bezier(0.22, 1, 0.36, 1);
     }
 
-    .tracklist-panel.open {
-      max-height: min(30svh, 290px);
+    .track-panel.open {
+      max-height: min(34svh, 310px);
     }
 
-    .tracklist-scroll {
-      max-height: min(24svh, 230px);
+    .track-scroll {
+      max-height: min(27svh, 250px);
       overflow: auto;
       scrollbar-width: thin;
-      scrollbar-color: rgba(255, 248, 240, 0.2) transparent;
+      scrollbar-color: rgba(255, 248, 240, 0.18) transparent;
     }
 
-    .tracklist-scroll::-webkit-scrollbar { width: 8px; }
-    .tracklist-scroll::-webkit-scrollbar-thumb {
-      background: rgba(255, 248, 240, 0.2);
+    .track-scroll::-webkit-scrollbar {
+      width: 8px;
+    }
+
+    .track-scroll::-webkit-scrollbar-thumb {
+      background: rgba(255, 248, 240, 0.18);
       border-radius: 999px;
     }
 
-    .tabular { font-variant-numeric: tabular-nums; }
+    .mix-title-anim-next {
+      animation: mixInNext 350ms cubic-bezier(0.22, 1, 0.36, 1);
+    }
+
+    .mix-title-anim-prev {
+      animation: mixInPrev 350ms cubic-bezier(0.22, 1, 0.36, 1);
+    }
+
+    @keyframes mixInNext {
+      from { opacity: 0; transform: translateX(14px); }
+      to { opacity: 1; transform: translateX(0); }
+    }
+
+    @keyframes mixInPrev {
+      from { opacity: 0; transform: translateX(-14px); }
+      to { opacity: 1; transform: translateX(0); }
+    }
+
+    .tnum {
+      font-variant-numeric: tabular-nums;
+    }
 
     @media (prefers-reduced-motion: reduce) {
       *, *::before, *::after {
@@ -257,8 +240,8 @@
 </head>
 <body>
   <video
-    id="portalVideo"
-    class="portal-video"
+    id="sceneVideo"
+    class="scene-video"
     autoplay
     muted
     loop
@@ -267,73 +250,37 @@
     poster="hero-poster.jpg"
     aria-hidden="true"
   >
-    <source id="portalVideoSource" src="sunset-dance-loop.mp4" type="video/mp4" />
+    <source id="sceneVideoSource" src="scene-1.mp4" type="video/mp4" />
   </video>
-  <div class="ambient-mask" aria-hidden="true"></div>
+  <div class="scene-mask" aria-hidden="true"></div>
 
   <main id="stage" class="relative h-[100svh] w-full overflow-hidden">
-    <div id="gestureSurface" class="absolute inset-0 z-10"></div>
+    <div id="gestureArea" class="absolute inset-0 z-10"></div>
 
-    <div id="controlsOverlay" class="controls-overlay absolute inset-0 z-20 flex flex-col justify-between p-4 md:p-6">
-      <header class="ui-hit text-center">
-        <p id="creditTop" class="text-[0.64rem] uppercase tracking-[0.24em] text-gold/85">Mixed by Andrew</p>
-        <h1 id="headline" class="mt-2 text-[clamp(2.1rem,8vw,4.5rem)] font-semibold leading-[0.95] tracking-[-0.03em] text-cream">
-          Palm Deck House
+    <div id="controls" class="controls absolute inset-0 z-20 flex flex-col justify-between p-4 md:p-6">
+      <button id="prevSceneBtn" type="button" class="edge-arrow left ui" aria-label="Previous mixtape scene">
+        <svg viewBox="0 0 24 24" class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="1.9" aria-hidden="true">
+          <path d="M15 6l-6 6 6 6"></path>
+        </svg>
+      </button>
+      <button id="nextSceneBtn" type="button" class="edge-arrow right ui" aria-label="Next mixtape scene">
+        <svg viewBox="0 0 24 24" class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="1.9" aria-hidden="true">
+          <path d="M9 6l6 6-6 6"></path>
+        </svg>
+      </button>
+
+      <header id="mixHeader" class="ui pt-3 text-center mix-title-anim-next">
+        <h1 id="mixHeroTitle" class="text-[clamp(2.2rem,8.4vw,4.6rem)] font-semibold leading-[0.95] tracking-[-0.03em] text-cream">
+          Vagabond
         </h1>
-        <p id="subheadline" class="mx-auto mt-2 max-w-[36ch] text-[0.92rem] leading-relaxed text-cream/72 md:text-[1rem]">
-          A portal into the deck: palms, horizon, warm air, and three uninterrupted House journeys.
+        <p id="mixHeroDescription" class="mx-auto mt-2 max-w-[35ch] text-[0.93rem] leading-relaxed text-cream/72 md:text-[1rem]">
+          The first glow over the palm deck as the horizon opens.
         </p>
       </header>
 
-      <section class="ui-hit mx-0 mb-0 rounded-3xl p-3 glass md:mx-auto md:mb-1 md:w-full md:max-w-5xl md:p-4" aria-label="Mixtape controls">
-        <div id="mixSelector" class="grid grid-cols-3 gap-2"></div>
-
-        <div id="mixMeta" class="mt-3 mix-animated-next">
-          <div class="flex items-center justify-between gap-3">
-            <div class="flex min-w-0 items-center gap-3">
-              <div class="plaque-shell h-[3.05rem] w-[3.05rem] rounded-xl">
-                <div class="plaque-core rounded-[0.72rem]">
-                  <img id="playerArtwork" src="artwork-1.png" alt="" />
-                </div>
-              </div>
-              <div class="min-w-0">
-                <p id="mixTitle" class="truncate text-[0.93rem] font-medium tracking-[-0.01em] text-cream"></p>
-                <p id="mixMood" class="truncate text-[0.74rem] text-cream/62"></p>
-              </div>
-            </div>
-
-            <div class="flex items-center gap-2">
-              <button
-                id="prevMixBtn"
-                type="button"
-                class="gloss-btn inline-flex h-10 w-10 items-center justify-center rounded-full"
-                aria-label="Previous mixtape"
-              >
-                <svg viewBox="0 0 24 24" class="h-4.5 w-4.5" fill="none" stroke="currentColor" stroke-width="1.9" aria-hidden="true">
-                  <path d="M15 6l-6 6 6 6"></path>
-                </svg>
-              </button>
-              <button
-                id="nextMixBtn"
-                type="button"
-                class="gloss-btn inline-flex h-10 w-10 items-center justify-center rounded-full"
-                aria-label="Next mixtape"
-              >
-                <svg viewBox="0 0 24 24" class="h-4.5 w-4.5" fill="none" stroke="currentColor" stroke-width="1.9" aria-hidden="true">
-                  <path d="M9 6l6 6-6 6"></path>
-                </svg>
-              </button>
-            </div>
-          </div>
-        </div>
-
-        <div class="mt-3 grid grid-cols-[auto_auto_auto_auto_auto] items-center justify-center gap-2">
-          <button
-            id="rewindBtn"
-            type="button"
-            class="gloss-btn inline-flex h-10 w-10 items-center justify-center rounded-full"
-            aria-label="Rewind 10 seconds"
-          >
+      <section class="ui glass mx-0 rounded-3xl p-3 md:mx-auto md:w-full md:max-w-4xl md:p-4" aria-label="Audio controls">
+        <div class="flex flex-wrap items-center justify-center gap-2">
+          <button id="rewindBtn" type="button" class="gloss inline-flex h-10 w-10 items-center justify-center rounded-full" aria-label="Rewind 10 seconds">
             <svg viewBox="0 0 24 24" class="h-4.5 w-4.5" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
               <path d="M11 19a7 7 0 1 1 5.57-11.24"></path>
               <path d="M12 8H8v4"></path>
@@ -341,12 +288,7 @@
             </svg>
           </button>
 
-          <button
-            id="playPauseBtn"
-            type="button"
-            class="gloss-btn inline-flex h-11 w-11 items-center justify-center rounded-full border-gold/45 bg-gradient-to-b from-gold/35 to-coral/25"
-            aria-label="Play"
-          >
+          <button id="playPauseBtn" type="button" class="gloss inline-flex h-11 w-11 items-center justify-center rounded-full border-gold/45 bg-gradient-to-b from-gold/35 to-coral/24" aria-label="Play">
             <svg id="iconPlay" viewBox="0 0 24 24" class="h-[18px] w-[18px] translate-x-[1px]" fill="#fff8f0" aria-hidden="true">
               <path d="M8 5v14l11-7z"></path>
             </svg>
@@ -355,12 +297,7 @@
             </svg>
           </button>
 
-          <button
-            id="forwardBtn"
-            type="button"
-            class="gloss-btn inline-flex h-10 w-10 items-center justify-center rounded-full"
-            aria-label="Forward 10 seconds"
-          >
+          <button id="forwardBtn" type="button" class="gloss inline-flex h-10 w-10 items-center justify-center rounded-full" aria-label="Forward 10 seconds">
             <svg viewBox="0 0 24 24" class="h-4.5 w-4.5" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
               <path d="M13 19a7 7 0 1 0-5.57-11.24"></path>
               <path d="M12 8h4v4"></path>
@@ -368,22 +305,11 @@
             </svg>
           </button>
 
-          <button
-            id="toggleTracklistBtn"
-            type="button"
-            class="gloss-btn inline-flex h-10 items-center justify-center rounded-full px-3 text-[0.62rem] font-medium uppercase tracking-[0.14em]"
-            aria-label="Toggle tracklist"
-            aria-expanded="false"
-          >
+          <button id="tracklistBtn" type="button" class="gloss inline-flex h-10 items-center justify-center rounded-full px-4 text-[0.62rem] font-medium uppercase tracking-[0.14em]" aria-expanded="false" aria-label="Toggle tracklist">
             Tracklist
           </button>
 
-          <button
-            id="muteBtn"
-            type="button"
-            class="gloss-btn inline-flex h-10 w-10 items-center justify-center rounded-full"
-            aria-label="Mute"
-          >
+          <button id="muteBtn" type="button" class="gloss inline-flex h-10 w-10 items-center justify-center rounded-full" aria-label="Mute">
             <svg id="iconVol" viewBox="0 0 24 24" class="h-4.5 w-4.5" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
               <path d="M5 9v6h4l5 4V5L9 9z"></path>
               <path d="M18.5 8.5a5 5 0 0 1 0 7"></path>
@@ -395,34 +321,24 @@
               <path d="M15 9l4 6"></path>
             </svg>
           </button>
+
+          <a id="downloadBtn" href="#" download class="gloss inline-flex h-10 items-center justify-center rounded-full px-4 text-[0.62rem] font-medium uppercase tracking-[0.14em] text-cream no-underline" aria-label="Download current mixtape">
+            Download
+          </a>
         </div>
 
         <div class="mt-3 grid grid-cols-[auto_1fr_auto] items-center gap-2">
-          <span id="timeEl" class="tabular text-[0.68rem] text-cream/58">0:00</span>
-          <div
-            id="progressTrack"
-            class="progress"
-            role="slider"
-            tabindex="0"
-            aria-label="Playback progress"
-            aria-valuemin="0"
-            aria-valuemax="100"
-            aria-valuenow="0"
-          >
+          <span id="timeEl" class="tnum text-[0.68rem] text-cream/58">0:00</span>
+          <div id="progressTrack" class="progress" role="slider" tabindex="0" aria-label="Playback progress" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
             <div id="progressFill" class="progress-fill"></div>
             <div id="progressThumb" class="progress-thumb"></div>
           </div>
-          <span id="durationEl" class="tabular text-[0.68rem] text-cream/58">0:00</span>
+          <span id="durationEl" class="tnum text-[0.68rem] text-cream/58">0:00</span>
         </div>
 
-        <div id="tracklistPanel" class="tracklist-panel mt-3 rounded-2xl border border-cream/12 bg-black/25 p-3">
-          <div id="mixDownloads" class="mb-2 flex flex-wrap gap-1.5"></div>
-          <ol id="tracklistList" class="tracklist-scroll space-y-1 text-[0.76rem] leading-relaxed text-cream/78"></ol>
+        <div id="trackPanel" class="track-panel mt-3 rounded-2xl border border-cream/12 bg-black/24 p-3">
+          <ol id="trackList" class="track-scroll space-y-1 text-[0.76rem] leading-relaxed text-cream/78"></ol>
         </div>
-
-        <p id="creditBottom" class="mt-3 text-center text-[0.64rem] uppercase tracking-[0.16em] text-cream/42">
-          Mixed and curated by Andrew
-        </p>
       </section>
     </div>
   </main>
@@ -431,30 +347,18 @@
     // -------------------------------------------------------------
     // PORTAL DATA (single source of truth)
     // -------------------------------------------------------------
-    // 1) Update branding + credits in PORTAL.site
-    // 2) Update looping video in PORTAL.video
-    // 3) Update each mix in PORTAL.mixtapes (audio/download/artwork/tracklist)
+    // Update title/description/audio/video/download/tracklist here.
     const PORTAL = {
-      site: {
-        title: "Palm Deck House",
-        creditTop: "Mixed by Andrew",
-        headline: "Palm Deck House",
-        subheadline: "A portal into the deck: palms, horizon, warm air, and three uninterrupted House journeys.",
-        creditBottom: "Mixed and curated by Andrew",
-      },
-      video: {
-        src: "sunset-dance-loop.mp4",
-        poster: "hero-poster.jpg",
-      },
+      fallbackVideo: "sunset-dance-loop.mp4",
+      fallbackPoster: "hero-poster.jpg",
       mixtapes: [
         {
           id: "mixtape1",
-          title: "Mixtape 1",
-          mood: "Golden sunset movement",
+          title: "Vagabond",
+          description: "The first glow over the palm deck as the horizon opens.",
           audio: "mixtape1.mp3",
           download: "mixtape1.mp3",
-          artwork: "artwork-1.png",
-          video: "sunset-dance-loop.mp4",
+          video: "scene-1.mp4",
           tracklist: [
             "01. Artist - Opening Horizon",
             "02. Artist - Palm Rhythm",
@@ -464,12 +368,11 @@
         },
         {
           id: "mixtape2",
-          title: "Mixtape 2",
-          mood: "Deck lounge as dusk deepens",
+          title: "Palm Current",
+          description: "Dusk settles in while the dancefloor drifts into deeper rhythm.",
           audio: "mixtape2.mp3",
           download: "mixtape2.mp3",
-          artwork: "artwork-2.png",
-          video: "sunset-dance-loop.mp4",
+          video: "scene-2.mp4",
           tracklist: [
             "01. Artist - Blue Lanterns",
             "02. Artist - Deck Conversations",
@@ -479,12 +382,11 @@
         },
         {
           id: "mixtape3",
-          title: "Mixtape 3",
-          mood: "Afterglow into night",
+          title: "After Horizon",
+          description: "Night wraps the shoreline and the final movement lands softly.",
           audio: "mixtape3.mp3",
           download: "mixtape3.mp3",
-          artwork: "artwork-3.png",
-          video: "sunset-dance-loop.mp4",
+          video: "scene-3.mp4",
           tracklist: [
             "01. Artist - Midnight Palms",
             "02. Artist - Quiet Movement",
@@ -498,47 +400,41 @@
     const audio = new Audio();
     audio.preload = "metadata";
 
-    let activeMixIndex = 0;
+    let activeMix = 0;
     let isPlaying = false;
     let isScrubbing = false;
-    let controlsVisible = true;
-    let autoHideTimer = null;
+    let controlsAreVisible = true;
     let tracklistOpen = false;
+    let hideTimer = null;
     let lastDirection = "next";
 
-    const portalVideo = document.getElementById("portalVideo");
-    const portalVideoSource = document.getElementById("portalVideoSource");
+    const sceneVideo = document.getElementById("sceneVideo");
+    const sceneVideoSource = document.getElementById("sceneVideoSource");
     const stage = document.getElementById("stage");
-    const gestureSurface = document.getElementById("gestureSurface");
-    const controlsOverlay = document.getElementById("controlsOverlay");
-    const creditTop = document.getElementById("creditTop");
-    const headline = document.getElementById("headline");
-    const subheadline = document.getElementById("subheadline");
-    const mixSelector = document.getElementById("mixSelector");
-    const mixMeta = document.getElementById("mixMeta");
-    const playerArtwork = document.getElementById("playerArtwork");
-    const mixTitle = document.getElementById("mixTitle");
-    const mixMood = document.getElementById("mixMood");
-    const prevMixBtn = document.getElementById("prevMixBtn");
-    const nextMixBtn = document.getElementById("nextMixBtn");
+    const gestureArea = document.getElementById("gestureArea");
+    const controls = document.getElementById("controls");
+    const prevSceneBtn = document.getElementById("prevSceneBtn");
+    const nextSceneBtn = document.getElementById("nextSceneBtn");
+    const mixHeader = document.getElementById("mixHeader");
+    const mixHeroTitle = document.getElementById("mixHeroTitle");
+    const mixHeroDescription = document.getElementById("mixHeroDescription");
+    const rewindBtn = document.getElementById("rewindBtn");
     const playPauseBtn = document.getElementById("playPauseBtn");
     const iconPlay = document.getElementById("iconPlay");
     const iconPause = document.getElementById("iconPause");
-    const rewindBtn = document.getElementById("rewindBtn");
     const forwardBtn = document.getElementById("forwardBtn");
-    const toggleTracklistBtn = document.getElementById("toggleTracklistBtn");
+    const tracklistBtn = document.getElementById("tracklistBtn");
     const muteBtn = document.getElementById("muteBtn");
     const iconVol = document.getElementById("iconVol");
     const iconMuted = document.getElementById("iconMuted");
+    const downloadBtn = document.getElementById("downloadBtn");
     const progressTrack = document.getElementById("progressTrack");
     const progressFill = document.getElementById("progressFill");
     const progressThumb = document.getElementById("progressThumb");
     const timeEl = document.getElementById("timeEl");
     const durationEl = document.getElementById("durationEl");
-    const tracklistPanel = document.getElementById("tracklistPanel");
-    const mixDownloads = document.getElementById("mixDownloads");
-    const tracklistList = document.getElementById("tracklistList");
-    const creditBottom = document.getElementById("creditBottom");
+    const trackPanel = document.getElementById("trackPanel");
+    const trackList = document.getElementById("trackList");
 
     function formatTime(seconds) {
       if (!Number.isFinite(seconds) || seconds < 0) return "0:00";
@@ -547,21 +443,27 @@
       return `${m}:${String(s).padStart(2, "0")}`;
     }
 
-    function clearAutoHide() {
-      if (!autoHideTimer) return;
-      window.clearTimeout(autoHideTimer);
-      autoHideTimer = null;
+    function normalizeMixIndex(index) {
+      const len = PORTAL.mixtapes.length;
+      if (!len) return 0;
+      return ((index % len) + len) % len;
+    }
+
+    function clearHideTimer() {
+      if (!hideTimer) return;
+      window.clearTimeout(hideTimer);
+      hideTimer = null;
     }
 
     function setControlsVisible(visible) {
-      controlsVisible = visible;
-      controlsOverlay.classList.toggle("is-hidden", !visible);
+      controlsAreVisible = visible;
+      controls.classList.toggle("hidden", !visible);
     }
 
     function scheduleAutoHide() {
-      clearAutoHide();
-      if (!isPlaying) return;
-      autoHideTimer = window.setTimeout(() => {
+      clearHideTimer();
+      if (!isPlaying || tracklistOpen) return;
+      hideTimer = window.setTimeout(() => {
         setControlsVisible(false);
       }, 1800);
     }
@@ -573,13 +475,17 @@
 
     function setTracklistOpen(open) {
       tracklistOpen = open;
-      tracklistPanel.classList.toggle("open", open);
-      toggleTracklistBtn.setAttribute("aria-expanded", String(open));
-      toggleTracklistBtn.textContent = open ? "Hide List" : "Tracklist";
-      if (open) revealControls();
+      trackPanel.classList.toggle("open", open);
+      tracklistBtn.setAttribute("aria-expanded", String(open));
+      tracklistBtn.textContent = open ? "Hide List" : "Tracklist";
+      if (open) {
+        revealControls();
+      } else {
+        scheduleAutoHide();
+      }
     }
 
-    function setPlayState(playing) {
+    function updatePlayState(playing) {
       isPlaying = playing;
       iconPlay.classList.toggle("hidden", playing);
       iconPause.classList.toggle("hidden", !playing);
@@ -587,10 +493,10 @@
       if (playing) {
         scheduleAutoHide();
       } else {
-        clearAutoHide();
+        clearHideTimer();
         setControlsVisible(true);
       }
-      updateMediaSession(PORTAL.mixtapes[activeMixIndex]);
+      updateMediaSession(PORTAL.mixtapes[activeMix]);
     }
 
     function updateMuteUI() {
@@ -612,7 +518,6 @@
         durationEl.textContent = "0:00";
         return;
       }
-
       const pct = Math.min(100, Math.max(0, (now / duration) * 100));
       progressFill.style.width = `${pct}%`;
       progressThumb.style.left = `${pct}%`;
@@ -630,17 +535,33 @@
       updateProgressUI();
     }
 
-    function updateVideoSource(mixtape) {
-      const nextVideo = mixtape.video || PORTAL.video.src;
-      if (portalVideoSource.getAttribute("src") === nextVideo) return;
-      portalVideo.classList.add("video-dim");
+    function renderTracklist(items) {
+      trackList.innerHTML = "";
+      items.forEach((track) => {
+        const li = document.createElement("li");
+        li.className = "rounded-lg bg-cream/[0.04] px-2 py-1.5";
+        li.textContent = track;
+        trackList.appendChild(li);
+      });
+    }
+
+    function animateHeader(direction) {
+      mixHeader.classList.remove("mix-title-anim-next", "mix-title-anim-prev");
+      void mixHeader.offsetWidth;
+      mixHeader.classList.add(direction === "prev" ? "mix-title-anim-prev" : "mix-title-anim-next");
+    }
+
+    function switchSceneVideo(videoPath) {
+      const target = videoPath || PORTAL.fallbackVideo;
+      if (sceneVideoSource.getAttribute("src") === target) return;
+      sceneVideo.classList.add("dim");
       window.setTimeout(() => {
-        portalVideoSource.setAttribute("src", nextVideo);
-        portalVideo.load();
+        sceneVideoSource.setAttribute("src", target);
+        sceneVideo.load();
         if (!window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
-          portalVideo.play().catch(() => {});
+          sceneVideo.play().catch(() => {});
         }
-        portalVideo.classList.remove("video-dim");
+        sceneVideo.classList.remove("dim");
       }, 140);
     }
 
@@ -648,82 +569,18 @@
       if (!("mediaSession" in navigator) || !mixtape) return;
       navigator.mediaSession.metadata = new MediaMetadata({
         title: mixtape.title,
-        artist: PORTAL.site.creditTop,
-        album: PORTAL.site.title,
-        artwork: [{ src: mixtape.artwork, sizes: "512x512", type: "image/png" }],
+        artist: "Andrew",
+        album: "Palm Deck House",
       });
       navigator.mediaSession.playbackState = isPlaying ? "playing" : "paused";
-    }
-
-    function animateMixMeta(direction) {
-      mixMeta.classList.remove("mix-animated-next", "mix-animated-prev");
-      // Force reflow to restart CSS animation cleanly.
-      void mixMeta.offsetWidth;
-      mixMeta.classList.add(direction === "prev" ? "mix-animated-prev" : "mix-animated-next");
-    }
-
-    function renderSelector() {
-      mixSelector.innerHTML = "";
-      PORTAL.mixtapes.forEach((mixtape, index) => {
-        const button = document.createElement("button");
-        button.type = "button";
-        button.className = "mix-chip ui-hit flex items-center gap-2 px-2 py-2 text-left";
-        button.setAttribute("aria-label", `Play ${mixtape.title}`);
-        button.dataset.index = String(index);
-        button.innerHTML = `
-          <span class="plaque-shell">
-            <span class="plaque-core">
-              <img src="${mixtape.artwork}" alt="${mixtape.title} artwork" loading="lazy" />
-            </span>
-          </span>
-          <span class="min-w-0">
-            <span class="block truncate text-[0.68rem] font-medium uppercase tracking-[0.09em] text-cream">${mixtape.title}</span>
-            <span class="block truncate text-[0.63rem] text-cream/55">${mixtape.id}</span>
-          </span>
-        `;
-        button.addEventListener("click", () => {
-          const direction = index > activeMixIndex ? "next" : "prev";
-          selectMixtape(index, { autoplay: true, direction });
-        });
-        mixSelector.appendChild(button);
-      });
-    }
-
-    function renderSelectorState() {
-      mixSelector.querySelectorAll(".mix-chip").forEach((chip, index) => {
-        chip.classList.toggle("active", index === activeMixIndex);
-      });
-    }
-
-    function renderDownloads() {
-      mixDownloads.innerHTML = "";
-      PORTAL.mixtapes.forEach((mixtape) => {
-        const link = document.createElement("a");
-        link.href = mixtape.download || mixtape.audio;
-        link.download = (mixtape.download || mixtape.audio).split("/").pop();
-        link.className = "gloss-btn inline-flex h-8 items-center justify-center rounded-full px-3 text-[0.58rem] font-medium uppercase tracking-[0.12em] text-cream no-underline";
-        link.setAttribute("aria-label", `Download ${mixtape.title}`);
-        link.textContent = `Download ${mixtape.id}`;
-        mixDownloads.appendChild(link);
-      });
-    }
-
-    function renderTracklist(tracklist) {
-      tracklistList.innerHTML = "";
-      tracklist.forEach((track) => {
-        const li = document.createElement("li");
-        li.className = "rounded-lg bg-cream/[0.04] px-2 py-1.5";
-        li.textContent = track;
-        tracklistList.appendChild(li);
-      });
     }
 
     async function playAudio() {
       try {
         await audio.play();
-        setPlayState(true);
+        updatePlayState(true);
       } catch (_error) {
-        setPlayState(false);
+        updatePlayState(false);
       }
     }
 
@@ -735,62 +592,66 @@
       }
     }
 
-    function normalizeMixIndex(index) {
-      const len = PORTAL.mixtapes.length;
-      if (!len) return 0;
-      return ((index % len) + len) % len;
-    }
-
     function selectMixtape(index, options = {}) {
       const {
         autoplay = true,
         direction = "next",
       } = options;
       const nextIndex = normalizeMixIndex(index);
-      const mixtape = PORTAL.mixtapes[nextIndex];
-      if (!mixtape) return;
+      const mix = PORTAL.mixtapes[nextIndex];
+      if (!mix) return;
 
-      activeMixIndex = nextIndex;
+      activeMix = nextIndex;
       lastDirection = direction;
-      mixTitle.textContent = mixtape.title;
-      mixMood.textContent = mixtape.mood;
-      playerArtwork.src = mixtape.artwork;
-      playerArtwork.alt = `${mixtape.title} artwork`;
-      renderTracklist(mixtape.tracklist);
-      renderSelectorState();
-      animateMixMeta(direction);
-      updateVideoSource(mixtape);
 
-      audio.src = mixtape.audio;
+      mixHeroTitle.textContent = mix.title;
+      mixHeroDescription.textContent = mix.description;
+      document.title = mix.title;
+      downloadBtn.href = mix.download || mix.audio;
+      downloadBtn.download = (mix.download || mix.audio).split("/").pop();
+      renderTracklist(mix.tracklist);
+      animateHeader(direction);
+
+      switchSceneVideo(mix.video);
+
+      audio.src = mix.audio;
       audio.currentTime = 0;
       audio.load();
       updateProgressUI();
-      updateMediaSession(mixtape);
+      updateMediaSession(mix);
 
       if (autoplay) {
         playAudio();
       } else {
-        setPlayState(false);
+        updatePlayState(false);
       }
+
       revealControls();
     }
 
     function bindEvents() {
-      gestureSurface.addEventListener("pointerdown", () => {
-        if (!controlsVisible) {
+      gestureArea.addEventListener("pointerdown", () => {
+        if (!controlsAreVisible) {
           revealControls();
         } else if (isPlaying && !tracklistOpen) {
-          // Second tap while visible + playing quickly hides overlay.
           setControlsVisible(false);
-          clearAutoHide();
+          clearHideTimer();
         } else {
           revealControls();
         }
       });
 
       stage.addEventListener("pointermove", () => {
-        if (!controlsVisible && isPlaying) return;
+        if (!controlsAreVisible && isPlaying) return;
         if (isPlaying) scheduleAutoHide();
+      });
+
+      prevSceneBtn.addEventListener("click", () => {
+        selectMixtape(activeMix - 1, { autoplay: true, direction: "prev" });
+      });
+
+      nextSceneBtn.addEventListener("click", () => {
+        selectMixtape(activeMix + 1, { autoplay: true, direction: "next" });
       });
 
       playPauseBtn.addEventListener("click", () => {
@@ -811,21 +672,17 @@
         revealControls();
       });
 
-      prevMixBtn.addEventListener("click", () => {
-        selectMixtape(activeMixIndex - 1, { autoplay: true, direction: "prev" });
-      });
-
-      nextMixBtn.addEventListener("click", () => {
-        selectMixtape(activeMixIndex + 1, { autoplay: true, direction: "next" });
-      });
-
-      toggleTracklistBtn.addEventListener("click", () => {
+      tracklistBtn.addEventListener("click", () => {
         setTracklistOpen(!tracklistOpen);
       });
 
       muteBtn.addEventListener("click", () => {
         audio.muted = !audio.muted;
         updateMuteUI();
+        revealControls();
+      });
+
+      downloadBtn.addEventListener("click", () => {
         revealControls();
       });
 
@@ -865,16 +722,22 @@
 
       audio.addEventListener("loadedmetadata", updateProgressUI);
       audio.addEventListener("timeupdate", updateProgressUI);
-      audio.addEventListener("play", () => setPlayState(true));
-      audio.addEventListener("pause", () => setPlayState(false));
-      audio.addEventListener("ended", () => setPlayState(false));
+      audio.addEventListener("play", () => updatePlayState(true));
+      audio.addEventListener("pause", () => updatePlayState(false));
+      audio.addEventListener("ended", () => updatePlayState(false));
+
+      sceneVideo.addEventListener("error", () => {
+        if (sceneVideoSource.getAttribute("src") === PORTAL.fallbackVideo) return;
+        sceneVideoSource.setAttribute("src", PORTAL.fallbackVideo);
+        sceneVideo.load();
+      });
 
       document.addEventListener("visibilitychange", () => {
         if (document.hidden) {
-          // Keep audio alive, pause video decode for lower memory usage.
-          portalVideo.pause();
+          // Keep audio running, pause visual decode for lower memory.
+          sceneVideo.pause();
         } else if (!window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
-          portalVideo.play().catch(() => {});
+          sceneVideo.play().catch(() => {});
         }
       });
 
@@ -890,18 +753,10 @@
           updateMuteUI();
         } else if (event.key === "ArrowLeft") {
           event.preventDefault();
-          audio.currentTime = Math.max(0, audio.currentTime - 10);
+          selectMixtape(activeMix - 1, { autoplay: true, direction: "prev" });
         } else if (event.key === "ArrowRight") {
           event.preventDefault();
-          if (Number.isFinite(audio.duration)) {
-            audio.currentTime = Math.min(audio.duration, audio.currentTime + 10);
-          }
-        } else if (event.key === "ArrowUp") {
-          event.preventDefault();
-          selectMixtape(activeMixIndex - 1, { autoplay: true, direction: "prev" });
-        } else if (event.key === "ArrowDown") {
-          event.preventDefault();
-          selectMixtape(activeMixIndex + 1, { autoplay: true, direction: "next" });
+          selectMixtape(activeMix + 1, { autoplay: true, direction: "next" });
         } else if (event.key.toLowerCase() === "t") {
           event.preventDefault();
           setTracklistOpen(!tracklistOpen);
@@ -924,32 +779,20 @@
         updateProgressUI();
       });
       navigator.mediaSession.setActionHandler("previoustrack", () => {
-        selectMixtape(activeMixIndex - 1, { autoplay: true, direction: "prev" });
+        selectMixtape(activeMix - 1, { autoplay: true, direction: "prev" });
       });
       navigator.mediaSession.setActionHandler("nexttrack", () => {
-        selectMixtape(activeMixIndex + 1, { autoplay: true, direction: "next" });
+        selectMixtape(activeMix + 1, { autoplay: true, direction: "next" });
       });
-    }
-
-    function applySiteContent() {
-      document.title = PORTAL.site.title;
-      creditTop.textContent = PORTAL.site.creditTop;
-      headline.textContent = PORTAL.site.headline;
-      subheadline.textContent = PORTAL.site.subheadline;
-      creditBottom.textContent = PORTAL.site.creditBottom;
-
-      portalVideo.poster = PORTAL.video.poster;
-      portalVideoSource.setAttribute("src", PORTAL.video.src);
-      portalVideo.load();
-      if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
-        portalVideo.pause();
-      }
     }
 
     function init() {
-      applySiteContent();
-      renderSelector();
-      renderDownloads();
+      sceneVideo.poster = PORTAL.fallbackPoster;
+      sceneVideoSource.setAttribute("src", PORTAL.mixtapes[0].video || PORTAL.fallbackVideo);
+      sceneVideo.load();
+      if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+        sceneVideo.pause();
+      }
       bindEvents();
       initMediaSessionActions();
       updateMuteUI();

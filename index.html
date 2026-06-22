@@ -3,35 +3,24 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Sunset House</title>
-  <meta
-    name="description"
-    content="A premium single-page house music landing experience built around golden-hour motion and sound."
-  />
-  <script src="https://cdn.tailwindcss.com"></script>
-  <script>
-    tailwind.config = {
-      theme: {
-        extend: {
-          colors: {
-            base: "#111111",
-            surface: "#1C1C1E",
-            cream: "#FFF8F0",
-            coral: "#E85D04",
-            gold: "#FFB703",
-          },
-          boxShadow: {
-            card: "0 16px 36px rgba(0, 0, 0, 0.38)",
-            cardHover: "0 24px 52px rgba(0, 0, 0, 0.46)",
-            glow: "0 0 0 1px rgba(255, 183, 3, 0.45), 0 16px 42px rgba(232, 93, 4, 0.18)",
-          },
-        },
-      },
-    };
-  </script>
+  <title>Premium Retro TV Player</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/plyr@3/dist/plyr.css" />
   <style>
     :root {
-      color-scheme: dark;
+      --wallpaper-light: #e9e2d2;
+      --wallpaper-mid: #d8cdb8;
+      --wallpaper-line: rgba(73, 54, 28, 0.08);
+      --desk-top: #d0a56e;
+      --desk-front-light: #bc9059;
+      --desk-front-dark: #9f7545;
+      --tv-metal-1: #ebddc4;
+      --tv-metal-2: #ccb896;
+      --tv-panel: #d7c3a0;
+      --bezel: #1c1d1f;
+      --accent: #d49d46;
+      --control-text: rgba(65, 44, 20, 0.9);
+      --label-text: rgba(80, 56, 28, 0.84);
+      --plyr-color-main: var(--accent);
     }
 
     * {
@@ -42,992 +31,933 @@
     body {
       margin: 0;
       width: 100%;
-      height: 100%;
       min-height: 100%;
-      background: #111111;
-      color: #fff8f0;
-      font-family: "Inter", -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", sans-serif;
-      line-height: 1.5;
-      -webkit-font-smoothing: antialiased;
+      font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", sans-serif;
+      font-synthesis: none;
       text-rendering: optimizeLegibility;
-      overflow-x: hidden;
-      overscroll-behavior: none;
-    }
-
-    .glass {
-      backdrop-filter: blur(20px) saturate(170%);
-      -webkit-backdrop-filter: blur(20px) saturate(170%);
-      background: rgba(20, 20, 22, 0.58);
-      border: 1px solid rgba(255, 248, 240, 0.09);
-    }
-
-    .hero-mask {
-      background:
-        linear-gradient(to bottom, rgba(17, 17, 17, 0.28) 0%, rgba(17, 17, 17, 0.08) 40%, rgba(17, 17, 17, 0.62) 75%, rgba(17, 17, 17, 0.95) 100%),
-        radial-gradient(circle at 70% 30%, rgba(255, 183, 3, 0.12), transparent 45%);
-    }
-
-    .mix-card {
-      transition:
-        transform 560ms cubic-bezier(0.22, 1, 0.36, 1),
-        box-shadow 380ms ease,
-        border-color 280ms ease;
-    }
-
-    .mix-card .mix-art {
-      transition: transform 640ms cubic-bezier(0.22, 1, 0.36, 1), filter 300ms ease;
-    }
-
-    .mix-card:hover {
-      transform: translateY(-6px) scale(1.012);
-      box-shadow: 0 24px 52px rgba(0, 0, 0, 0.46);
-    }
-
-    .mix-card:hover .mix-art {
-      transform: scale(1.04);
-      filter: saturate(1.03);
-    }
-
-    .mix-card.active {
-      border-color: rgba(255, 183, 3, 0.5);
-      box-shadow: 0 0 0 1px rgba(255, 183, 3, 0.45), 0 16px 42px rgba(232, 93, 4, 0.18);
-    }
-
-    .mix-card:focus-visible {
-      outline: 2px solid rgba(255, 183, 3, 0.65);
-      outline-offset: 3px;
-    }
-
-    .play-overlay {
-      opacity: 0;
-      transition: opacity 240ms ease;
-    }
-
-    .mix-card:hover .play-overlay,
-    .mix-card:focus-visible .play-overlay,
-    .mix-card.active .play-overlay {
-      opacity: 1;
-    }
-
-    .now-playing-bars {
-      display: none;
-      align-items: flex-end;
-      gap: 2px;
-    }
-
-    .now-playing-bars.visible {
-      display: flex;
-    }
-
-    .now-playing-bars span {
-      width: 2px;
-      background: #ffb703;
-      border-radius: 999px;
-      animation: pulse 900ms ease-in-out infinite;
-    }
-
-    .now-playing-bars span:nth-child(1) {
-      height: 7px;
-      animation-delay: 0ms;
-    }
-
-    .now-playing-bars span:nth-child(2) {
-      height: 15px;
-      animation-delay: 120ms;
-    }
-
-    .now-playing-bars span:nth-child(3) {
-      height: 10px;
-      animation-delay: 240ms;
-    }
-
-    @keyframes pulse {
-      0%, 100% { transform: scaleY(0.65); opacity: 0.76; }
-      50% { transform: scaleY(1); opacity: 1; }
-    }
-
-    .player-shell {
-      backdrop-filter: blur(30px) saturate(170%);
-      -webkit-backdrop-filter: blur(30px) saturate(170%);
-      background: rgba(20, 20, 22, 0.82);
-      border-top: 1px solid rgba(255, 248, 240, 0.12);
-      transform: translateY(104%);
-      transition: transform 520ms cubic-bezier(0.22, 1, 0.36, 1);
-    }
-
-    .player-shell.visible {
-      transform: translateY(0);
-    }
-
-    .progress {
-      height: 4px;
-      border-radius: 999px;
-      position: relative;
-      background: rgba(255, 248, 240, 0.16);
-      cursor: pointer;
-      transition: height 200ms ease;
-    }
-
-    .progress:hover,
-    .progress:focus-visible {
-      height: 6px;
-    }
-
-    .progress-fill {
-      height: 100%;
-      border-radius: inherit;
-      width: 0%;
-      background: linear-gradient(90deg, #e85d04, #ffb703);
-    }
-
-    .progress-thumb {
-      width: 12px;
-      height: 12px;
-      border-radius: 50%;
-      position: absolute;
-      top: 50%;
-      left: 0%;
-      transform: translate(-50%, -50%) scale(0);
-      background: #fff8f0;
-      transition: transform 220ms cubic-bezier(0.22, 1, 0.36, 1);
-      pointer-events: none;
-    }
-
-    .progress:hover .progress-thumb,
-    .progress:focus-visible .progress-thumb {
-      transform: translate(-50%, -50%) scale(1);
-    }
-
-    .soft-btn {
-      transition: transform 300ms cubic-bezier(0.22, 1, 0.36, 1), color 180ms ease;
-    }
-
-    .soft-btn:hover {
-      transform: scale(1.08);
-      color: #fff8f0;
-    }
-
-    .soft-btn:active {
-      transform: scale(0.94);
-    }
-
-    .primary-play {
-      transition: transform 300ms cubic-bezier(0.22, 1, 0.36, 1), background 180ms ease;
-    }
-
-    .primary-play:hover {
-      transform: scale(1.07);
-      background: #ffffff;
-    }
-
-    .primary-play:active {
-      transform: scale(0.93);
-    }
-
-    .mobile-menu {
-      opacity: 0;
-      pointer-events: none;
-      transition: opacity 240ms ease;
-    }
-
-    .mobile-menu.open {
-      opacity: 1;
-      pointer-events: auto;
-    }
-
-    .swipe-shell {
-      position: relative;
-      height: 100svh;
+      -webkit-font-smoothing: antialiased;
       overflow: hidden;
-      touch-action: pan-x;
-    }
-
-    .swipe-track {
-      height: 100%;
-      display: flex;
-      flex-direction: column;
-      transform: translate3d(0, 0, 0);
-      transition: transform 760ms cubic-bezier(0.22, 1, 0.36, 1);
-      will-change: transform;
+      background: #111;
     }
 
     .scene {
-      flex: 0 0 100%;
-      min-height: 100svh;
       position: relative;
+      min-height: 100svh;
+      width: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding-top: calc(clamp(10px, 2vh, 24px) + env(safe-area-inset-top, 0px));
+      padding-right: max(12px, env(safe-area-inset-right, 0px));
+      padding-bottom: calc(clamp(10px, 2vh, 24px) + env(safe-area-inset-bottom, 0px));
+      padding-left: max(12px, env(safe-area-inset-left, 0px));
+      background:
+        radial-gradient(1200px 620px at 50% 12%, rgba(255, 255, 255, 0.28) 0%, transparent 64%),
+        repeating-linear-gradient(90deg, transparent 0, transparent 32px, var(--wallpaper-line) 32px, var(--wallpaper-line) 33px),
+        linear-gradient(180deg, var(--wallpaper-light) 0%, var(--wallpaper-mid) 100%);
     }
 
-    .scene-dots {
-      position: fixed;
-      right: 1rem;
-      top: 50%;
-      transform: translateY(-50%);
-      z-index: 45;
+    .scene::after {
+      content: "";
+      position: absolute;
+      inset: auto 0 0;
+      height: 34svh;
+      pointer-events: none;
+      background: linear-gradient(180deg, transparent 0%, rgba(62, 36, 16, 0.2) 55%, rgba(40, 22, 10, 0.35) 100%);
+      z-index: 0;
+    }
+
+    .desk {
+      position: absolute;
+      inset: auto 0 0;
+      height: clamp(120px, 19svh, 220px);
+      background:
+        linear-gradient(90deg, rgba(139, 96, 48, 0.35) 0 8px, transparent 8px 24px),
+        linear-gradient(180deg, var(--desk-front-light) 0%, var(--desk-front-dark) 100%);
+      border-top: 10px solid #d7af77;
+      box-shadow:
+        inset 0 20px 35px rgba(54, 32, 16, 0.25),
+        inset 0 -28px 30px rgba(67, 42, 20, 0.22);
+      z-index: 1;
+    }
+
+    .tv-stage {
+      width: min(1180px, 100%);
+      position: relative;
+      z-index: 2;
+      transform: translateY(clamp(0px, 0.9vh, 10px));
+    }
+
+    .tv-stage::after {
+      content: "";
+      position: absolute;
+      left: 50%;
+      transform: translateX(-50%);
+      bottom: -28px;
+      width: min(920px, 84%);
+      height: 62px;
+      border-radius: 50%;
+      filter: blur(18px);
+      background: rgba(23, 12, 6, 0.45);
+      z-index: -1;
+    }
+
+    .tv-set {
+      position: relative;
+      display: grid;
+      grid-template-columns: minmax(0, 2.1fr) minmax(270px, 1fr);
+      gap: clamp(12px, 1.6vw, 19px);
+      border-radius: 26px;
+      padding: clamp(12px, 1.8vw, 18px);
+      background:
+        linear-gradient(150deg, rgba(255, 255, 255, 0.72) 0%, rgba(255, 255, 255, 0) 42%),
+        linear-gradient(145deg, var(--tv-metal-1) 0%, var(--tv-metal-2) 100%);
+      border: 1px solid rgba(255, 248, 236, 0.88);
+      box-shadow:
+        inset 0 2px 0 rgba(255, 255, 255, 0.78),
+        inset 0 -2px 0 rgba(132, 106, 66, 0.36),
+        0 20px 36px rgba(31, 17, 7, 0.28),
+        0 44px 76px rgba(0, 0, 0, 0.38);
+    }
+
+    .screen-chassis {
+      background: linear-gradient(180deg, #26282d 0%, #17181b 100%);
+      border-radius: 14px 22px 22px 14px;
+      padding: clamp(10px, 1.4vw, 14px);
+      box-shadow:
+        inset 0 16px 26px rgba(0, 0, 0, 0.6),
+        inset 0 2px 3px rgba(255, 255, 255, 0.2),
+        1px 0 2px rgba(255, 255, 255, 0.16);
+      display: flex;
+    }
+
+    .tv-screen {
+      width: 100%;
+      aspect-ratio: 4 / 3;
+      border-radius: 6px;
+      overflow: hidden;
+      position: relative;
+      background: #040404;
+      box-shadow:
+        inset 0 0 42px rgba(0, 0, 0, 0.9),
+        0 0 20px rgba(0, 0, 0, 0.65);
+      isolation: isolate;
+    }
+
+    .tv-screen::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background:
+        linear-gradient(170deg, rgba(255, 255, 255, 0.14) 0 18%, rgba(255, 255, 255, 0) 40%),
+        repeating-linear-gradient(180deg, rgba(255, 255, 255, 0.04) 0 1px, transparent 1px 3px);
+      z-index: 7;
+      pointer-events: none;
+      mix-blend-mode: screen;
+    }
+
+    .plyr {
+      width: 100%;
+      height: 100%;
+      border-radius: inherit;
+      background: #000;
+    }
+
+    .plyr__controls {
+      display: none !important;
+    }
+
+    .osd-title {
+      position: absolute;
+      left: clamp(12px, 2vw, 26px);
+      bottom: clamp(12px, 2.2vw, 26px);
+      z-index: 12;
+      color: #89ff8c;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
+      font-size: clamp(0.72rem, 1.2vw, 0.95rem);
+      letter-spacing: 0.06em;
+      text-shadow: 0 0 8px rgba(75, 255, 79, 0.55);
+      opacity: 0;
+      transform: translateY(6px);
+      transition: opacity 180ms ease, transform 180ms ease;
+      pointer-events: none;
+    }
+
+    .osd-title.is-visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .control-panel {
+      border-radius: 16px;
+      padding: clamp(11px, 1.3vw, 15px);
+      background:
+        linear-gradient(180deg, rgba(255, 255, 255, 0.32) 0%, rgba(255, 255, 255, 0.02) 28%),
+        linear-gradient(180deg, #d8c6a5 0%, #cab28d 100%);
+      border: 1px solid rgba(129, 101, 64, 0.2);
+      box-shadow:
+        inset 4px 0 8px rgba(0, 0, 0, 0.06),
+        inset -2px 0 5px rgba(255, 255, 255, 0.4),
+        0 7px 16px rgba(37, 22, 9, 0.14);
       display: flex;
       flex-direction: column;
-      gap: 0.5rem;
-      padding: 0.5rem;
-      border-radius: 999px;
+      gap: 11px;
+      min-height: 100%;
     }
 
-    .scene-dot {
-      width: 0.44rem;
-      height: 0.44rem;
-      border-radius: 999px;
-      border: 1px solid rgba(255, 248, 240, 0.42);
-      background: transparent;
-      transition: transform 300ms cubic-bezier(0.22, 1, 0.36, 1), background 220ms ease, border-color 220ms ease;
+    .panel-title {
+      margin: 0;
+      font-size: 0.74rem;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--control-text);
+      font-weight: 650;
     }
 
-    .scene-dot.active {
-      background: rgba(255, 183, 3, 0.94);
-      border-color: rgba(255, 183, 3, 0.98);
-      transform: scale(1.22);
+    .now-playing {
+      position: relative;
+      border-radius: 10px;
+      padding: 11px 12px;
+      background: rgba(35, 24, 12, 0.12);
+      border: 1px solid rgba(89, 61, 26, 0.16);
+      box-shadow: inset 0 1px 2px rgba(255, 255, 255, 0.22);
+      min-height: 64px;
     }
 
-    .card-rail {
-      scrollbar-width: none;
+    .now-playing-wrap {
+      display: grid;
+      gap: 10px;
     }
 
-    .card-rail::-webkit-scrollbar {
+    .now-playing--interactive {
+      width: 100%;
+      appearance: none;
+      text-align: left;
+      cursor: pointer;
+      transition: border-color 160ms ease, box-shadow 160ms ease, background-color 160ms ease;
+    }
+
+    .now-playing--interactive:hover {
+      border-color: rgba(89, 61, 26, 0.28);
+      background: rgba(35, 24, 12, 0.17);
+    }
+
+    .now-playing--interactive:focus-visible {
+      outline: none;
+      border-color: rgba(108, 73, 32, 0.45);
+      box-shadow: 0 0 0 2px rgba(255, 249, 240, 0.8), inset 0 1px 2px rgba(255, 255, 255, 0.22);
+    }
+
+    .now-playing-main {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .menu-indicator {
+      width: 24px;
+      height: 24px;
+      border-radius: 7px;
+      border: 1px solid rgba(89, 61, 26, 0.22);
+      background: rgba(255, 248, 234, 0.45);
+      display: grid;
+      place-items: center;
+      flex: 0 0 auto;
+      transition: transform 160ms ease, background-color 160ms ease;
+    }
+
+    .menu-indicator svg {
+      width: 14px;
+      height: 14px;
+      color: rgba(74, 50, 23, 0.9);
+      display: block;
+    }
+
+    .now-playing--interactive[aria-expanded="true"] .menu-indicator {
+      transform: rotate(180deg);
+      background: rgba(255, 236, 197, 0.68);
+    }
+
+    .channel-menu {
+      position: relative;
+      border-radius: 13px;
+      border: 1px solid rgba(103, 73, 38, 0.24);
+      background: rgba(243, 228, 196, 0.82);
+      box-shadow: 0 10px 18px rgba(33, 19, 7, 0.15), inset 0 1px 1px rgba(255, 255, 255, 0.56);
+      backdrop-filter: blur(15px) saturate(140%);
+      padding: 7px;
+      display: grid;
+      gap: 6px;
+      max-height: min(44vh, 300px);
+      overflow: auto;
+    }
+
+    .channel-menu[hidden] {
+      display: none !important;
+    }
+
+    .control-panel.is-browsing .dial-grid,
+    .control-panel.is-browsing .speaker-grill {
       display: none;
     }
 
-    .tabular {
+    .control-panel.is-browsing .credit-line {
+      display: none;
+    }
+
+    .control-panel.is-browsing .channel-menu {
+      max-height: min(40vh, 280px);
+    }
+
+    .channel-option {
+      appearance: none;
+      border: 1px solid transparent;
+      background: rgba(46, 30, 12, 0.07);
+      color: rgba(31, 22, 12, 0.95);
+      border-radius: 10px;
+      padding: 8px 10px;
+      text-align: left;
+      cursor: pointer;
+      display: grid;
+      grid-template-columns: auto minmax(0, 1fr) auto;
+      align-items: center;
+      gap: 10px;
+      transition: background-color 140ms ease, border-color 140ms ease;
+    }
+
+    .channel-option:hover {
+      border-color: rgba(107, 71, 31, 0.36);
+      background: rgba(46, 30, 12, 0.14);
+    }
+
+    .channel-option:focus-visible {
+      outline: none;
+      border-color: rgba(107, 71, 31, 0.48);
+      box-shadow: 0 0 0 2px rgba(255, 245, 224, 0.9);
+    }
+
+    .channel-option-id {
+      font-size: 0.62rem;
+      letter-spacing: 0.08em;
+      color: rgba(74, 50, 23, 0.8);
       font-variant-numeric: tabular-nums;
+      text-transform: uppercase;
     }
 
-    .optical-kicker {
-      letter-spacing: 0.29em;
+    .channel-option-title {
+      font-size: 0.76rem;
+      font-weight: 600;
+      line-height: 1.26;
     }
 
-    .optical-hero {
-      letter-spacing: -0.028em;
+    .channel-option-check {
+      width: 14px;
+      height: 14px;
+      color: transparent;
+      transition: color 120ms ease;
     }
 
-    .optical-copy {
-      letter-spacing: -0.002em;
+    .channel-option.is-active {
+      border-color: rgba(107, 71, 31, 0.42);
+      background: rgba(62, 41, 18, 0.16);
     }
 
-    .optical-h2 {
-      letter-spacing: -0.021em;
+    .channel-option.is-active .channel-option-check {
+      color: rgba(80, 56, 28, 0.9);
     }
 
-    .optical-card-title {
-      letter-spacing: -0.012em;
+    .now-playing .channel {
+      font-size: 0.7rem;
+      letter-spacing: 0.07em;
+      color: rgba(61, 41, 18, 0.8);
+      text-transform: uppercase;
+      margin-bottom: 4px;
+      font-weight: 610;
     }
 
-    .optical-card-copy {
-      letter-spacing: 0.003em;
+    .now-playing .title {
+      margin: 0;
+      color: rgba(30, 21, 11, 0.96);
+      font-size: 0.88rem;
+      line-height: 1.3;
+      font-weight: 610;
     }
 
-    .nav-brand {
-      letter-spacing: 0.26em;
+    .dial-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 10px;
     }
 
-    @media (min-width: 768px) {
-      .optical-hero {
-        letter-spacing: -0.032em;
+    .dial-stack {
+      display: grid;
+      gap: 8px;
+      justify-items: center;
+    }
+
+    .dial-stack .dial-label {
+      color: var(--label-text);
+      font-size: 0.62rem;
+      letter-spacing: 0.075em;
+      text-transform: uppercase;
+      font-weight: 630;
+    }
+
+    .dial {
+      appearance: none;
+      border: 0;
+      border-radius: 50%;
+      cursor: pointer;
+      position: relative;
+      color: inherit;
+      transition: transform 180ms ease, box-shadow 180ms ease;
+      display: grid;
+      place-items: center;
+    }
+
+    .dial:focus-visible {
+      outline: none;
+      box-shadow: 0 0 0 2px rgba(56, 33, 11, 0.5), 0 0 0 5px rgba(255, 255, 255, 0.56);
+    }
+
+    .dial:active {
+      transform: scale(0.96);
+    }
+
+    .dial--big {
+      width: clamp(52px, 5vw, 84px);
+      height: clamp(52px, 5vw, 84px);
+    }
+
+    .dial svg {
+      width: 16px;
+      height: 16px;
+      display: block;
+      color: rgba(25, 17, 8, 0.9);
+      z-index: 2;
+      position: relative;
+    }
+
+    .dial--big svg {
+      width: 24px;
+      height: 24px;
+    }
+
+    .dial--small {
+      width: 34px;
+      height: 34px;
+    }
+
+    .dial--big,
+    .dial--small {
+      background: radial-gradient(circle at 32% 26%, #f9e8c0 0%, #d9a95d 52%, #b88436 100%);
+      box-shadow:
+        0 4px 8px rgba(0, 0, 0, 0.22),
+        inset 0 1px 3px rgba(255, 255, 255, 0.56),
+        inset 0 -2px 6px rgba(73, 46, 12, 0.36);
+      border: 1px solid rgba(123, 82, 31, 0.46);
+    }
+
+    .dial.is-active {
+      box-shadow: 0 0 0 2px rgba(56, 33, 11, 0.44), 0 0 0 6px rgba(247, 216, 154, 0.42);
+    }
+
+    .speaker-grill {
+      width: 100%;
+      height: clamp(56px, 8vh, 74px);
+      border-radius: 9px;
+      background:
+        radial-gradient(circle, rgba(125, 92, 52, 0.45) 20%, transparent 21%) 0 0 / 8px 8px,
+        linear-gradient(180deg, rgba(150, 116, 73, 0.4), rgba(113, 81, 44, 0.45));
+      border: 1px solid rgba(96, 66, 30, 0.3);
+    }
+
+    .credit-line {
+      margin: 14px 0 0;
+      text-align: center;
+      font-size: 0.64rem;
+      letter-spacing: 0.09em;
+      color: rgba(68, 47, 22, 0.72);
+      font-weight: 560;
+    }
+
+    @media (max-width: 1024px) {
+      .tv-set {
+        grid-template-columns: 1fr;
       }
 
-      .optical-copy {
-        letter-spacing: 0;
+      .screen-chassis {
+        border-radius: 16px;
       }
 
-      .optical-h2 {
-        letter-spacing: -0.024em;
+      .dial-grid {
+        grid-template-columns: repeat(6, minmax(0, 1fr));
       }
     }
 
-    @media (prefers-reduced-motion: reduce) {
-      *, *::before, *::after {
-        animation: none !important;
-        transition: none !important;
+    @media (max-width: 720px) {
+      .scene {
+        padding-top: calc(10px + env(safe-area-inset-top, 0px));
+        padding-right: max(10px, env(safe-area-inset-right, 0px));
+        padding-bottom: calc(10px + env(safe-area-inset-bottom, 0px));
+        padding-left: max(10px, env(safe-area-inset-left, 0px));
       }
 
-      .swipe-track {
-        transition: none !important;
+      .desk {
+        height: 14svh;
+      }
+
+      .dial-grid {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+      }
+
+      .speaker-grill {
+        display: none;
       }
     }
   </style>
 </head>
 <body>
-  <!--
-    QUICK SWAP GUIDE
-    1) Update brand text in LANDING.site.
-    2) Replace video + poster paths in LANDING.media.
-    3) Replace titles/descriptions/audio/artwork in LANDING.mixtapes.
-    4) Files can be in root (e.g. mixtape1.mp3) or /assets (e.g. assets/mixtape1.mp3).
-  -->
-
-  <nav
-    class="glass fixed inset-x-0 top-0 z-50 mx-auto flex h-14 w-full items-center justify-between px-5 md:px-10"
-    aria-label="Main navigation"
-  >
-    <a id="brandName" href="#" class="nav-brand text-[0.72rem] font-semibold uppercase text-cream/90 no-underline">
-      Sunset House
-    </a>
-
-    <div class="hidden items-center gap-2 md:flex">
-      <button
-        id="toCollectionButton"
-        type="button"
-        class="soft-btn inline-flex h-9 w-9 items-center justify-center rounded-full text-cream/70"
-        aria-label="Swipe to The Collection"
-      >
-        <svg viewBox="0 0 24 24" class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
-          <path d="M12 4v16M5 11l7 7 7-7"></path>
-        </svg>
-      </button>
-    </div>
-
-    <button
-      id="menuButton"
-      type="button"
-      class="soft-btn relative inline-flex h-9 w-9 items-center justify-center rounded-full text-cream/80 md:hidden"
-      aria-label="Open menu"
-      aria-controls="mobileMenu"
-      aria-expanded="false"
-    >
-      <span id="menuLineA" class="absolute h-px w-4 bg-cream transition-all duration-300"></span>
-      <span id="menuLineB" class="absolute h-px w-3 translate-y-[5px] bg-cream transition-all duration-300"></span>
-    </button>
-  </nav>
-
-  <div
-    id="mobileMenu"
-    class="mobile-menu glass fixed inset-0 z-40 flex flex-col items-center justify-center gap-10"
-    role="dialog"
-    aria-modal="true"
-    aria-hidden="true"
-  >
-    <button
-      id="mobileCollectionLink"
-      type="button"
-      class="text-2xl font-light uppercase tracking-[0.22em] text-cream"
-      style="background:none;border:none;"
-    >
-      The Collection
-    </button>
-  </div>
-
-  <main id="swipeShell" class="swipe-shell">
-    <div id="swipeTrack" class="swipe-track" aria-live="polite">
-    <section id="heroScene" class="scene relative isolate flex items-center justify-center overflow-hidden px-6 text-center" data-scene-index="0" aria-hidden="false">
-      <!-- Swap these filenames in LANDING.media below -->
-      <video
-        id="heroVideo"
-        class="absolute inset-0 -z-20 h-full w-full object-cover"
-        autoplay
-        muted
-        loop
-        playsinline
-        preload="metadata"
-        poster="hero-poster.jpg"
-        aria-hidden="true"
-      >
-        <source src="sunset-dance-loop.mp4" type="video/mp4" />
-      </video>
-      <div class="hero-mask absolute inset-0 -z-10" aria-hidden="true"></div>
-
-      <div class="glass mt-16 max-w-[43.5rem] rounded-3xl px-7 py-11 md:px-14 md:py-14">
-        <p class="optical-kicker mb-4 text-[0.65rem] uppercase text-gold/85 md:mb-5 md:text-xs">
-          Curated House Session
-        </p>
-        <h1 class="optical-hero mb-4 text-[clamp(2.9rem,9.2vw,6.25rem)] font-semibold leading-[0.94] text-cream md:mb-5">
-          Sunset House
-        </h1>
-        <p class="optical-copy mx-auto mb-10 max-w-[33ch] text-[0.98rem] leading-[1.7] text-cream/68 md:mb-11 md:text-[1.08rem]">
-          Three mixtapes shaped by golden hour, ocean air, and movement on warm sand.
-        </p>
-        <button
-          id="heroCtaButton"
-          type="button"
-          class="inline-flex items-center gap-2 rounded-full border border-cream/30 bg-cream/10 px-6 py-3 text-[0.72rem] font-medium uppercase tracking-[0.18em] text-cream no-underline transition-all duration-300 hover:scale-[1.03] hover:border-cream/45 hover:bg-cream/16 active:scale-[0.98] md:px-7"
-          aria-label="Open The Collection"
-        >
-          Explore the Collection
-          <svg viewBox="0 0 24 24" class="h-3.5 w-3.5" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
-            <path d="M5 12h14"></path>
-            <path d="M13 6l6 6-6 6"></path>
-          </svg>
-        </button>
-        <p class="mt-4 text-[0.66rem] uppercase tracking-[0.2em] text-cream/45 md:mt-5">Swipe up to explore</p>
-      </div>
-    </section>
-
-    <section id="collection" class="scene px-6 pb-[8rem] pt-24 md:px-10 md:pb-[9.5rem] md:pt-28" aria-label="The Collection" data-scene-index="1" aria-hidden="true">
-      <div class="mx-auto max-w-6xl">
-        <div class="mb-12 md:mb-[4.35rem]">
-          <p class="optical-kicker mb-3 text-[0.65rem] uppercase text-gold/78 md:mb-3.5 md:text-xs">The Collection</p>
-          <h2 class="optical-h2 text-[clamp(1.8rem,4.4vw,2.95rem)] font-semibold text-cream leading-[1.08]">
-            Three movements for one perfect horizon.
-          </h2>
-        </div>
-
-        <div id="collectionGrid" class="card-rail grid grid-flow-col auto-cols-[84%] gap-4 overflow-x-auto snap-x snap-mandatory pb-2 md:grid-flow-row md:auto-cols-auto md:grid-cols-2 md:gap-6 md:overflow-visible md:pb-0 lg:grid-cols-3"></div>
-      </div>
-    </section>
-    </div>
-
-    <div class="scene-dots glass" aria-label="Scene navigation">
-      <button id="sceneDot0" type="button" class="scene-dot active" aria-label="Go to hero scene"></button>
-      <button id="sceneDot1" type="button" class="scene-dot" aria-label="Go to collection scene"></button>
-    </div>
-  </main>
-
-  <div
-    id="playerBar"
-    class="player-shell fixed inset-x-0 bottom-0 z-50 pb-[env(safe-area-inset-bottom,0px)]"
-    role="region"
-    aria-label="Mixtape player"
-  >
-    <div class="h-px bg-gradient-to-r from-transparent via-gold/55 to-transparent"></div>
-    <div class="mx-auto flex h-[88px] max-w-7xl items-center gap-3 px-4 md:gap-6 md:px-8">
-      <div class="min-w-0 flex-1 md:max-w-[250px]">
-        <div class="flex items-center gap-3">
-          <div class="h-11 w-11 overflow-hidden rounded-lg ring-1 ring-cream/15 shadow-card">
-            <img id="playerArtwork" src="artwork-1.jpg" alt="" class="h-full w-full object-cover" />
+  <div class="scene">
+    <main class="tv-stage">
+      <article class="tv-set" aria-label="Retro television player">
+        <section class="screen-chassis">
+          <div class="tv-screen" id="tvScreen">
+            <video id="player" playsinline preload="metadata"></video>
+            <div id="osd" class="osd-title" aria-live="polite"></div>
           </div>
-          <div class="min-w-0">
-            <p id="playerTitle" class="truncate text-[0.9rem] font-medium tracking-[-0.01em] text-cream"></p>
-            <p id="playerSubtitle" class="truncate text-[0.69rem] tracking-[0.005em] text-cream/55"></p>
-          </div>
-        </div>
-      </div>
+        </section>
 
-      <div class="flex min-w-0 flex-[1.4] flex-col items-center gap-2 md:flex-[2]">
-        <div class="flex items-center gap-5 md:gap-7">
-          <button id="rewindButton" type="button" class="soft-btn text-cream/62" aria-label="Rewind 10 seconds">
-            <svg viewBox="0 0 24 24" class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true">
-              <path d="M12 19a7 7 0 1 1 5.57-11.24"></path>
-              <path d="M13 8H9v4"></path>
-              <path d="M9 8l5 5"></path>
-            </svg>
-          </button>
+        <aside class="control-panel" aria-label="Television controls">
+          <h1 class="panel-title">Peep This Tube</h1>
 
-          <button
-            id="playPauseButton"
-            type="button"
-            class="primary-play inline-flex h-11 w-11 items-center justify-center rounded-full bg-cream text-base"
-            aria-label="Play"
-          >
-            <svg id="playIcon" viewBox="0 0 24 24" class="h-[18px] w-[18px] translate-x-[1px]" fill="#111111" aria-hidden="true">
-              <path d="M8 5v14l11-7z"></path>
-            </svg>
-            <svg id="pauseIcon" viewBox="0 0 24 24" class="hidden h-[18px] w-[18px]" fill="#111111" aria-hidden="true">
-              <path d="M7 5h4v14H7zm6 0h4v14h-4z"></path>
-            </svg>
-          </button>
+          <section class="now-playing-wrap" aria-live="polite">
+            <button
+              class="now-playing now-playing--interactive"
+              id="channelMenuButton"
+              type="button"
+              aria-label="Open channel menu"
+              aria-haspopup="listbox"
+              aria-expanded="false"
+              aria-controls="channelMenu"
+            >
+              <div class="channel" id="channelLabel">Channel --</div>
+              <div class="now-playing-main">
+                <span class="title" id="nowPlayingTitle">Loading playlist...</span>
+                <span class="menu-indicator" aria-hidden="true">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round">
+                    <polyline points="6 9 12 15 18 9"></polyline>
+                  </svg>
+                </span>
+              </div>
+            </button>
+            <div class="channel-menu" id="channelMenu" role="listbox" aria-label="Available videos" hidden></div>
+          </section>
 
-        </div>
-
-        <div class="flex w-full max-w-[460px] items-center gap-2">
-          <span id="currentTime" class="tabular w-9 text-right text-[0.67rem] text-cream/55">0:00</span>
-          <div
-            id="progressTrack"
-            class="progress flex-1"
-            role="slider"
-            tabindex="0"
-            aria-label="Playback progress"
-            aria-valuemin="0"
-            aria-valuemax="100"
-            aria-valuenow="0"
-          >
-            <div id="progressFill" class="progress-fill"></div>
-            <div id="progressThumb" class="progress-thumb"></div>
-          </div>
-          <span id="durationTime" class="tabular w-9 text-[0.67rem] text-cream/55">0:00</span>
-        </div>
-      </div>
-
-      <div class="flex flex-1 items-center justify-end md:max-w-[240px]">
-        <button id="muteButton" type="button" class="soft-btn text-cream/62" aria-label="Mute">
-          <svg id="volumeOnIcon" viewBox="0 0 24 24" class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
-            <path d="M5 9v6h4l5 4V5L9 9z"></path>
-            <path d="M18.5 8.5a5 5 0 0 1 0 7"></path>
-            <path d="M20.8 6.1a8.6 8.6 0 0 1 0 11.8"></path>
-          </svg>
-          <svg id="volumeMutedIcon" viewBox="0 0 24 24" class="hidden h-5 w-5" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
-            <path d="M5 9v6h4l5 4V5L9 9z"></path>
-            <path d="M19 9l-4 6"></path>
-            <path d="M15 9l4 6"></path>
-          </svg>
-        </button>
-      </div>
-    </div>
-  </div>
-
-  <div id="playerSpacer" class="h-0 transition-all duration-500 ease-out"></div>
-
-  <script>
-    // -------------------------------------------------------------
-    // LANDING DATA (single source of truth)
-    // -------------------------------------------------------------
-    // Update brand text, hero media, and all mixtape metadata here.
-    // Paths can point to root files or /assets/... files.
-    const LANDING = {
-      site: {
-        brand: "Sunset House",
-        heroTitle: "Sunset House",
-        heroTagline: "Three mixtapes shaped by golden hour, ocean air, and movement on warm sand.",
-      },
-      media: {
-        heroVideo: "sunset-dance-loop.mp4",
-        heroPoster: "hero-poster.jpg",
-      },
-      mixtapes: [
-        {
-          title: "Golden Reverie",
-          description: "The sun begins its descent over the Andaman Sea.",
-          artwork: "artwork-1.jpg",
-          audio: "mixtape1.mp3",
-        },
-        {
-          title: "Palm Sway",
-          description: "Barefoot rhythms under the palms as dusk deepens.",
-          artwork: "artwork-2.jpg",
-          audio: "mixtape2.mp3",
-        },
-        {
-          title: "Afterglow",
-          description: "The full embrace of night.",
-          artwork: "artwork-3.jpg",
-          audio: "mixtape3.mp3",
-        },
-      ],
-    };
-
-    const audio = new Audio();
-    audio.preload = "metadata";
-
-    let activeIndex = null;
-    let isPlaying = false;
-    let isScrubbing = false;
-    let menuOpen = false;
-    let activeScene = 0;
-    let wheelLocked = false;
-    let touchStartX = 0;
-    let touchStartY = 0;
-    let touchTrackHorizontal = false;
-
-    const docBody = document.body;
-    const brandName = document.getElementById("brandName");
-    const toCollectionButton = document.getElementById("toCollectionButton");
-    const heroCtaButton = document.getElementById("heroCtaButton");
-    const heroVideo = document.getElementById("heroVideo");
-    const swipeShell = document.getElementById("swipeShell");
-    const swipeTrack = document.getElementById("swipeTrack");
-    const scenes = Array.from(document.querySelectorAll("[data-scene-index]"));
-    const sceneDot0 = document.getElementById("sceneDot0");
-    const sceneDot1 = document.getElementById("sceneDot1");
-    const collectionGrid = document.getElementById("collectionGrid");
-    const playerBar = document.getElementById("playerBar");
-    const playerSpacer = document.getElementById("playerSpacer");
-    const playerArtwork = document.getElementById("playerArtwork");
-    const playerTitle = document.getElementById("playerTitle");
-    const playerSubtitle = document.getElementById("playerSubtitle");
-    const rewindButton = document.getElementById("rewindButton");
-    const playPauseButton = document.getElementById("playPauseButton");
-    const playIcon = document.getElementById("playIcon");
-    const pauseIcon = document.getElementById("pauseIcon");
-    const progressTrack = document.getElementById("progressTrack");
-    const progressFill = document.getElementById("progressFill");
-    const progressThumb = document.getElementById("progressThumb");
-    const currentTime = document.getElementById("currentTime");
-    const durationTime = document.getElementById("durationTime");
-    const muteButton = document.getElementById("muteButton");
-    const volumeOnIcon = document.getElementById("volumeOnIcon");
-    const volumeMutedIcon = document.getElementById("volumeMutedIcon");
-    const menuButton = document.getElementById("menuButton");
-    const menuLineA = document.getElementById("menuLineA");
-    const menuLineB = document.getElementById("menuLineB");
-    const mobileMenu = document.getElementById("mobileMenu");
-    const mobileCollectionLink = document.getElementById("mobileCollectionLink");
-
-    function formatTime(seconds) {
-      if (!Number.isFinite(seconds) || seconds < 0) return "0:00";
-      const min = Math.floor(seconds / 60);
-      const sec = Math.floor(seconds % 60);
-      return `${min}:${String(sec).padStart(2, "0")}`;
-    }
-
-    function clampSceneIndex(index) {
-      return Math.max(0, Math.min(scenes.length - 1, index));
-    }
-
-    function setScene(index) {
-      const nextScene = clampSceneIndex(index);
-      if (nextScene === activeScene) return;
-
-      activeScene = nextScene;
-      swipeTrack.style.transform = `translate3d(0, -${nextScene * 100}%, 0)`;
-
-      scenes.forEach((scene, sceneIdx) => {
-        const isActive = sceneIdx === nextScene;
-        scene.setAttribute("aria-hidden", String(!isActive));
-      });
-
-      sceneDot0.classList.toggle("active", nextScene === 0);
-      sceneDot1.classList.toggle("active", nextScene === 1);
-    }
-
-    function setPlayerVisible(visible) {
-      playerBar.classList.toggle("visible", visible);
-      playerSpacer.style.height = visible ? "88px" : "0px";
-    }
-
-    function updatePlayIcon(playing) {
-      isPlaying = playing;
-      playIcon.classList.toggle("hidden", playing);
-      pauseIcon.classList.toggle("hidden", !playing);
-      playPauseButton.setAttribute("aria-label", playing ? "Pause" : "Play");
-      renderCardState();
-    }
-
-    function updateMuteUI() {
-      const muted = audio.muted;
-      volumeOnIcon.classList.toggle("hidden", muted);
-      volumeMutedIcon.classList.toggle("hidden", !muted);
-      muteButton?.setAttribute("aria-label", muted ? "Unmute" : "Mute");
-    }
-
-    function renderCardState() {
-      const cards = collectionGrid.querySelectorAll(".mix-card");
-      cards.forEach((card, idx) => {
-        const active = idx === activeIndex;
-        const bars = card.querySelector(".now-playing-bars");
-        card.classList.toggle("active", active);
-        card.setAttribute("aria-pressed", active ? "true" : "false");
-        bars?.classList.toggle("visible", active && isPlaying);
-      });
-    }
-
-    function updateProgressUI() {
-      const duration = audio.duration;
-      const now = audio.currentTime;
-
-      if (!Number.isFinite(duration) || duration <= 0) {
-        progressFill.style.width = "0%";
-        progressThumb.style.left = "0%";
-        progressTrack.setAttribute("aria-valuenow", "0");
-        progressTrack.setAttribute("aria-valuetext", "0:00 of 0:00");
-        currentTime.textContent = "0:00";
-        durationTime.textContent = "0:00";
-        return;
-      }
-
-      const progressPercent = Math.min(100, Math.max(0, (now / duration) * 100));
-      progressFill.style.width = `${progressPercent}%`;
-      progressThumb.style.left = `${progressPercent}%`;
-      progressTrack.setAttribute("aria-valuenow", String(Math.round(progressPercent)));
-      progressTrack.setAttribute("aria-valuetext", `${formatTime(now)} of ${formatTime(duration)}`);
-      currentTime.textContent = formatTime(now);
-      durationTime.textContent = formatTime(duration);
-    }
-
-    function seekByClientX(clientX) {
-      if (!Number.isFinite(audio.duration) || audio.duration <= 0) return;
-      const rect = progressTrack.getBoundingClientRect();
-      const x = Math.min(Math.max(clientX - rect.left, 0), rect.width);
-      audio.currentTime = (x / rect.width) * audio.duration;
-      updateProgressUI();
-    }
-
-    function updatePlayerMeta(mixtape) {
-      playerArtwork.src = mixtape.artwork;
-      playerArtwork.alt = `${mixtape.title} artwork`;
-      playerTitle.textContent = mixtape.title;
-      playerSubtitle.textContent = mixtape.description;
-    }
-
-    async function playAudio() {
-      try {
-        await audio.play();
-        updatePlayIcon(true);
-      } catch (_error) {
-        updatePlayIcon(false);
-      }
-    }
-
-    function togglePlayPause() {
-      if (activeIndex === null) {
-        selectMixtape(0, { autoplay: true, forceReload: true });
-        return;
-      }
-
-      if (audio.paused) {
-        playAudio();
-      } else {
-        audio.pause();
-      }
-    }
-
-    function selectMixtape(index, options = {}) {
-      const { autoplay = true, forceReload = false } = options;
-      const mixtape = LANDING.mixtapes[index];
-      if (!mixtape) return;
-
-      const sameTrack = index === activeIndex && !forceReload;
-      if (sameTrack) {
-        togglePlayPause();
-        return;
-      }
-
-      activeIndex = index;
-      updatePlayerMeta(mixtape);
-      setPlayerVisible(true);
-      renderCardState();
-
-      audio.src = mixtape.audio;
-      audio.currentTime = 0;
-      audio.load();
-      updateProgressUI();
-
-      if (autoplay) {
-        playAudio();
-      } else {
-        updatePlayIcon(false);
-      }
-    }
-
-    function buildCards() {
-      LANDING.mixtapes.forEach((mixtape, index) => {
-        const card = document.createElement("article");
-        card.className = "mix-card group snap-start rounded-2xl border border-cream/10 bg-surface/92 shadow-card overflow-hidden";
-        card.setAttribute("role", "button");
-        card.setAttribute("tabindex", "0");
-        card.setAttribute("aria-label", `Play ${mixtape.title}`);
-
-        card.innerHTML = `
-          <div class="relative">
-            <img
-              src="${mixtape.artwork}"
-              alt="${mixtape.title} artwork"
-              class="mix-art aspect-square w-full object-cover"
-              loading="lazy"
-            />
-            <div class="play-overlay absolute inset-0 flex items-center justify-center bg-black/28">
-              <div class="glass inline-flex h-14 w-14 items-center justify-center rounded-full border-cream/20 bg-cream/90 text-base">
-                <svg viewBox="0 0 24 24" class="h-5 w-5 translate-x-[1px]" fill="#111111" aria-hidden="true">
-                  <path d="M8 5v14l11-7z"></path>
+          <section class="dial-grid" aria-label="Dial controls">
+            <div class="dial-stack">
+              <button class="dial dial--small" id="dial-prev" type="button" aria-label="Previous channel">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <line x1="19" y1="12" x2="5" y2="12"></line>
+                  <polyline points="11 6 5 12 11 18"></polyline>
                 </svg>
-              </div>
+              </button>
+              <span class="dial-label">Prev</span>
             </div>
-          </div>
-          <div class="flex items-start justify-between gap-4 px-5 pb-5 pt-4">
-            <div>
-              <h3 class="optical-card-title mb-1 text-[1.02rem] font-semibold text-cream">${mixtape.title}</h3>
-              <p class="optical-card-copy max-w-[31ch] text-[0.78rem] leading-[1.62] text-cream/57">${mixtape.description}</p>
+            <div class="dial-stack">
+              <button class="dial dial--big" id="dial-play" type="button" aria-label="Play or pause">
+                <svg class="icon-play" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                  <polygon points="8 6 19 12 8 18 8 6"></polygon>
+                </svg>
+                <svg class="icon-pause" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" style="display:none;">
+                  <rect x="7" y="6" width="4" height="12"></rect>
+                  <rect x="13" y="6" width="4" height="12"></rect>
+                </svg>
+              </button>
+              <span class="dial-label">Play</span>
             </div>
-            <div class="mt-1 flex min-h-[20px] min-w-[22px] items-center justify-center">
-              <div class="now-playing-bars" aria-hidden="true">
-                <span></span><span></span><span></span>
-              </div>
+            <div class="dial-stack">
+              <button class="dial dial--small" id="dial-next" type="button" aria-label="Next channel">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <line x1="5" y1="12" x2="19" y2="12"></line>
+                  <polyline points="13 6 19 12 13 18"></polyline>
+                </svg>
+              </button>
+              <span class="dial-label">Next</span>
             </div>
-          </div>
-        `;
+            <div class="dial-stack">
+              <button class="dial dial--small" id="dial-rewind" type="button" aria-label="Rewind 10 seconds">
+                <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                  <polygon points="11 6 5 12 11 18 11 6"></polygon>
+                  <polygon points="19 6 13 12 19 18 19 6"></polygon>
+                </svg>
+              </button>
+              <span class="dial-label">Rew</span>
+            </div>
+            <div class="dial-stack">
+              <button class="dial dial--small" id="dial-forward" type="button" aria-label="Fast forward 10 seconds">
+                <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                  <polygon points="5 6 11 12 5 18 5 6"></polygon>
+                  <polygon points="13 6 19 12 13 18 13 6"></polygon>
+                </svg>
+              </button>
+              <span class="dial-label">Fwd</span>
+            </div>
+            <div class="dial-stack">
+              <button class="dial dial--small" id="dial-mute" type="button" aria-label="Mute or unmute audio">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <polygon points="11 5 6 9 3 9 3 15 6 15 11 19 11 5"></polygon>
+                  <line x1="16" y1="9" x2="21" y2="14"></line>
+                  <line x1="21" y1="9" x2="16" y2="14"></line>
+                </svg>
+              </button>
+              <span class="dial-label">Mute</span>
+            </div>
+          </section>
 
-        const onSelect = () => selectMixtape(index, { autoplay: true });
+          <div class="speaker-grill" aria-hidden="true"></div>
+          <p class="credit-line">Filmed &amp; Edited by: Andrew Rios</p>
+        </aside>
+      </article>
+    </main>
 
-        card.addEventListener("click", onSelect);
-        card.addEventListener("keydown", (event) => {
-          if (event.key === "Enter" || event.key === " ") {
-            event.preventDefault();
-            onSelect();
-          }
+    <div class="desk" aria-hidden="true"></div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/plyr@3/dist/plyr.min.js"></script>
+  <script>
+    const PLAYER_ID = "player";
+    const TITLE_SOURCE = "titles.txt";
+
+    const videos = [];
+
+    let player;
+    let currentId = null;
+    let fallbackAttempted = false;
+    let osdTimeout;
+    let channelMenuVisible = false;
+
+    async function loadTitles() {
+      try {
+        const response = await fetch(TITLE_SOURCE);
+        if (!response.ok) {
+          return [];
+        }
+        return (await response.text())
+          .split("\n")
+          .map((line) => line.trim())
+          .filter(Boolean);
+      } catch (error) {
+        return [];
+      }
+    }
+
+    async function loadData() {
+      const titles = await loadTitles();
+      videos.length = 0;
+
+      for (let i = 1; i <= titles.length; i += 1) {
+        videos.push({
+          id: i,
+          title: titles[i - 1] || `Video ${i}`,
+          src: `video${i}.mp4`
         });
+      }
 
-        collectionGrid.appendChild(card);
-      });
-    }
-
-    function toggleMenu(forceState) {
-      menuOpen = typeof forceState === "boolean" ? forceState : !menuOpen;
-      mobileMenu.classList.toggle("open", menuOpen);
-      mobileMenu.setAttribute("aria-hidden", String(!menuOpen));
-      menuButton.setAttribute("aria-expanded", String(menuOpen));
-      menuButton.setAttribute("aria-label", menuOpen ? "Close menu" : "Open menu");
-      docBody.style.overflow = menuOpen ? "hidden" : "";
-
-      if (menuOpen) {
-        menuLineA.style.transform = "translateY(0) rotate(45deg)";
-        menuLineB.style.transform = "translateY(0) rotate(-45deg)";
-        menuLineB.style.width = "1rem";
-      } else {
-        menuLineA.style.transform = "";
-        menuLineB.style.transform = "";
-        menuLineB.style.width = "0.75rem";
+      if (!videos.length) {
+        videos.push({ id: 1, title: "Video 1", src: "video1.mp4" });
       }
     }
 
-    function applyConfig() {
-      brandName.textContent = LANDING.site.brand;
-      document.title = LANDING.site.heroTitle;
-
-      const heroTitleNode = document.querySelector("h1");
-      const heroTaglineNode = heroTitleNode?.nextElementSibling;
-      if (heroTitleNode) heroTitleNode.textContent = LANDING.site.heroTitle;
-      if (heroTaglineNode) heroTaglineNode.textContent = LANDING.site.heroTagline;
-
-      heroVideo.poster = LANDING.media.heroPoster;
-      const source = heroVideo.querySelector("source");
-      if (source) {
-        source.src = LANDING.media.heroVideo;
-      }
-      heroVideo.load();
-
-      if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
-        heroVideo.pause();
-      }
+    function getUppercaseSource(src) {
+      return src.replace(/\.mp4$/i, ".MP4");
     }
 
-    function bindEvents() {
-      brandName.addEventListener("click", (event) => {
-        event.preventDefault();
-        setScene(0);
+    function padChannel(id) {
+      return String(id).padStart(2, "0");
+    }
+
+    function showOSD(text, duration = 1700) {
+      const osd = document.getElementById("osd");
+      osd.textContent = text;
+      osd.classList.add("is-visible");
+      clearTimeout(osdTimeout);
+      osdTimeout = setTimeout(() => {
+        osd.classList.remove("is-visible");
+      }, duration);
+    }
+
+    function updateNowPlaying(video) {
+      const channelLabel = document.getElementById("channelLabel");
+      const titleLabel = document.getElementById("nowPlayingTitle");
+      channelLabel.textContent = `Channel ${padChannel(video.id)}`;
+      titleLabel.textContent = video.title;
+    }
+
+    function createChannelOption(video) {
+      const option = document.createElement("button");
+      option.type = "button";
+      option.className = "channel-option";
+      option.setAttribute("role", "option");
+      option.setAttribute("aria-selected", String(video.id === currentId));
+
+      if (video.id === currentId) {
+        option.classList.add("is-active");
+      }
+
+      const id = document.createElement("span");
+      id.className = "channel-option-id";
+      id.textContent = `CH ${padChannel(video.id)}`;
+
+      const title = document.createElement("span");
+      title.className = "channel-option-title";
+      title.textContent = video.title;
+
+      const check = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+      check.setAttribute("viewBox", "0 0 24 24");
+      check.setAttribute("fill", "none");
+      check.setAttribute("stroke", "currentColor");
+      check.setAttribute("stroke-width", "2.2");
+      check.setAttribute("stroke-linecap", "round");
+      check.setAttribute("stroke-linejoin", "round");
+      check.classList.add("channel-option-check");
+      check.innerHTML = "<polyline points=\"20 6 9 17 4 12\"></polyline>";
+      check.setAttribute("aria-hidden", "true");
+
+      option.append(id, title, check);
+      option.addEventListener("click", () => {
+        loadVideo(video.id);
+        setChannelMenuVisible(false);
+      });
+      return option;
+    }
+
+    function renderChannelMenu() {
+      const menu = document.getElementById("channelMenu");
+      menu.innerHTML = "";
+      videos.forEach((video) => {
+        menu.appendChild(createChannelOption(video));
+      });
+    }
+
+    function setChannelMenuVisible(visible) {
+      const menu = document.getElementById("channelMenu");
+      const trigger = document.getElementById("channelMenuButton");
+      const panel = document.querySelector(".control-panel");
+
+      if (visible) {
+        renderChannelMenu();
+        channelMenuVisible = true;
+        menu.hidden = false;
+        trigger.setAttribute("aria-expanded", "true");
+        panel.classList.add("is-browsing");
+        return;
+      }
+
+      channelMenuVisible = false;
+      trigger.setAttribute("aria-expanded", "false");
+      panel.classList.remove("is-browsing");
+      menu.hidden = true;
+    }
+
+    function setupChannelMenu() {
+      const trigger = document.getElementById("channelMenuButton");
+
+      trigger.addEventListener("click", () => {
+        setChannelMenuVisible(!channelMenuVisible);
       });
 
-      toCollectionButton?.addEventListener("click", () => setScene(1));
-      heroCtaButton?.addEventListener("click", () => setScene(1));
-      sceneDot0?.addEventListener("click", () => setScene(0));
-      sceneDot1?.addEventListener("click", () => setScene(1));
-
-      playPauseButton.addEventListener("click", togglePlayPause);
-
-      rewindButton.addEventListener("click", () => {
-        audio.currentTime = Math.max(0, audio.currentTime - 10);
-        updateProgressUI();
-      });
-
-      const toggleMute = () => {
-        audio.muted = !audio.muted;
-        updateMuteUI();
-      };
-
-      muteButton?.addEventListener("click", toggleMute);
-
-      progressTrack.addEventListener("pointerdown", (event) => {
-        isScrubbing = true;
-        seekByClientX(event.clientX);
-        progressTrack.setPointerCapture(event.pointerId);
-      });
-
-      progressTrack.addEventListener("pointermove", (event) => {
-        if (!isScrubbing) return;
-        seekByClientX(event.clientX);
-      });
-
-      progressTrack.addEventListener("pointerup", () => {
-        isScrubbing = false;
-      });
-
-      progressTrack.addEventListener("keydown", (event) => {
-        if (!Number.isFinite(audio.duration) || audio.duration <= 0) return;
-        const jump = Math.max(1, audio.duration * 0.02);
-
-        if (event.key === "ArrowLeft") {
-          event.preventDefault();
-          audio.currentTime = Math.max(0, audio.currentTime - jump);
-        } else if (event.key === "ArrowRight") {
-          event.preventDefault();
-          audio.currentTime = Math.min(audio.duration, audio.currentTime + jump);
-        } else if (event.key === "Home") {
-          event.preventDefault();
-          audio.currentTime = 0;
-        } else if (event.key === "End") {
-          event.preventDefault();
-          audio.currentTime = audio.duration;
-        }
-
-        updateProgressUI();
-      });
-
-      audio.addEventListener("loadedmetadata", updateProgressUI);
-      audio.addEventListener("timeupdate", updateProgressUI);
-      audio.addEventListener("play", () => updatePlayIcon(true));
-      audio.addEventListener("pause", () => updatePlayIcon(false));
-      audio.addEventListener("ended", () => updatePlayIcon(false));
-
-      swipeShell.addEventListener("wheel", (event) => {
-        if (menuOpen) return;
-        if (Math.abs(event.deltaY) < 28 || Math.abs(event.deltaY) < Math.abs(event.deltaX)) return;
-        event.preventDefault();
-        if (wheelLocked) return;
-
-        wheelLocked = true;
-        setScene(activeScene + (event.deltaY > 0 ? 1 : -1));
-        window.setTimeout(() => { wheelLocked = false; }, 760);
-      }, { passive: false });
-
-      swipeShell.addEventListener("touchstart", (event) => {
-        if (event.touches.length !== 1) return;
-        const touch = event.touches[0];
-        touchStartX = touch.clientX;
-        touchStartY = touch.clientY;
-        touchTrackHorizontal = Boolean(event.target.closest("#collectionGrid"));
-      }, { passive: true });
-
-      swipeShell.addEventListener("touchend", (event) => {
-        if (!event.changedTouches.length || menuOpen) return;
-        const touch = event.changedTouches[0];
-        const dx = touch.clientX - touchStartX;
-        const dy = touch.clientY - touchStartY;
-
-        // Preserve horizontal card rail swipe on mobile.
-        if (touchTrackHorizontal && Math.abs(dx) > Math.abs(dy)) return;
-        if (Math.abs(dy) < 54 || Math.abs(dy) < Math.abs(dx) * 1.2) return;
-
-        setScene(activeScene + (dy < 0 ? 1 : -1));
-      }, { passive: true });
-
-      menuButton.addEventListener("click", () => toggleMenu());
-      mobileCollectionLink.addEventListener("click", () => {
-        toggleMenu(false);
-        setScene(1);
-      });
       document.addEventListener("keydown", (event) => {
-        const typingTarget = event.target.closest("input, textarea, select, [contenteditable], button");
-        if (!typingTarget) {
-          if (event.key === "ArrowDown" || event.key === "PageDown") {
-            event.preventDefault();
-            setScene(activeScene + 1);
-          } else if (event.key === "ArrowUp" || event.key === "PageUp") {
-            event.preventDefault();
-            setScene(activeScene - 1);
-          } else if (event.key === " ") {
-            event.preventDefault();
-            togglePlayPause();
-          } else if (event.key.toLowerCase() === "m") {
-            event.preventDefault();
-            audio.muted = !audio.muted;
-            updateMuteUI();
-          } else if (event.key === "ArrowLeft") {
-            event.preventDefault();
-            audio.currentTime = Math.max(0, audio.currentTime - 10);
-          } else if (event.key === "ArrowRight") {
-            event.preventDefault();
-            if (Number.isFinite(audio.duration)) {
-              audio.currentTime = Math.min(audio.duration, audio.currentTime + 10);
-            }
-          }
-        }
-
-        if (event.key === "Escape" && menuOpen) {
-          toggleMenu(false);
+        if (event.key === "Escape" && channelMenuVisible) {
+          event.preventDefault();
+          setChannelMenuVisible(false);
         }
       });
     }
 
-    function init() {
-      applyConfig();
-      buildCards();
-      bindEvents();
-      updateMuteUI();
-      updateProgressUI();
+    function animateDial(element, degrees) {
+      element.animate(
+        [
+          { transform: "rotate(0deg) scale(1)" },
+          { transform: `rotate(${degrees}deg) scale(0.96)` },
+          { transform: "rotate(0deg) scale(1)" }
+        ],
+        {
+          duration: 170,
+          easing: "cubic-bezier(0.22, 1, 0.36, 1)"
+        }
+      );
     }
 
-    init();
+    function getCurrentIndex() {
+      return videos.findIndex((video) => video.id === currentId);
+    }
+
+    function loadVideo(id) {
+      const selectedVideo = videos.find((video) => video.id === id);
+      if (!selectedVideo) {
+        return;
+      }
+      const videoElement = document.getElementById(PLAYER_ID);
+
+      currentId = id;
+      fallbackAttempted = false;
+      videoElement.src = selectedVideo.src;
+      updateNowPlaying(selectedVideo);
+      renderChannelMenu();
+
+      showOSD(`CH ${padChannel(selectedVideo.id)} â¢ ${selectedVideo.title.toUpperCase()}`);
+      videoElement.play().catch(() => {});
+    }
+
+    function stepChannel(step) {
+      if (!videos.length) {
+        return;
+      }
+      const currentIndex = getCurrentIndex();
+      const safeIndex = currentIndex >= 0 ? currentIndex : 0;
+      const nextIndex = (safeIndex + step + videos.length) % videos.length;
+      loadVideo(videos[nextIndex].id);
+    }
+
+    function setupDials() {
+      const dialPrev = document.getElementById("dial-prev");
+      const dialNext = document.getElementById("dial-next");
+      const dialPlay = document.getElementById("dial-play");
+      const playIcon = dialPlay.querySelector(".icon-play");
+      const pauseIcon = dialPlay.querySelector(".icon-pause");
+      const dialMute = document.getElementById("dial-mute");
+      const dialRewind = document.getElementById("dial-rewind");
+      const dialForward = document.getElementById("dial-forward");
+
+      dialPrev.addEventListener("click", () => {
+        animateDial(dialPrev, -38);
+        stepChannel(-1);
+      });
+
+      dialNext.addEventListener("click", () => {
+        animateDial(dialNext, 38);
+        stepChannel(1);
+      });
+
+      dialPlay.addEventListener("click", () => {
+        animateDial(dialPlay, 32);
+        if (player.playing) {
+          player.pause();
+          showOSD("PAUSE");
+        } else {
+          player.play();
+          showOSD("PLAY");
+        }
+      });
+
+      dialRewind.addEventListener("click", () => {
+        animateDial(dialRewind, -24);
+        player.currentTime = Math.max(0, player.currentTime - 10);
+        showOSD("REWIND 10s");
+      });
+
+      dialForward.addEventListener("click", () => {
+        animateDial(dialForward, 24);
+        const duration = Number.isFinite(player.duration) ? player.duration : 0;
+        player.currentTime = Math.min(duration || player.currentTime + 10, player.currentTime + 10);
+        showOSD("FORWARD 10s");
+      });
+
+      dialMute.addEventListener("click", () => {
+        animateDial(dialMute, 26);
+        player.muted = !player.muted;
+        dialMute.classList.toggle("is-active", player.muted);
+        showOSD(player.muted ? "MUTE" : "UNMUTE");
+      });
+
+      document.addEventListener("keydown", (event) => {
+        if (event.defaultPrevented) {
+          return;
+        }
+        if (channelMenuVisible) {
+          return;
+        }
+        if (event.target instanceof HTMLElement && /input|textarea|select/i.test(event.target.tagName)) {
+          return;
+        }
+
+        if (event.key === "ArrowRight") {
+          event.preventDefault();
+          dialNext.click();
+        } else if (event.key === "ArrowLeft") {
+          event.preventDefault();
+          dialPrev.click();
+        } else if (event.key === " " || event.key === "k") {
+          event.preventDefault();
+          dialPlay.click();
+        } else if (event.key.toLowerCase() === "j") {
+          event.preventDefault();
+          dialRewind.click();
+        } else if (event.key.toLowerCase() === "l") {
+          event.preventDefault();
+          dialForward.click();
+        } else if (event.key.toLowerCase() === "m") {
+          event.preventDefault();
+          dialMute.click();
+        }
+      });
+
+      player.on("play", () => {
+        dialPlay.classList.add("is-active");
+        playIcon.style.display = "none";
+        pauseIcon.style.display = "block";
+      });
+
+      player.on("pause", () => {
+        dialPlay.classList.remove("is-active");
+        playIcon.style.display = "block";
+        pauseIcon.style.display = "none";
+      });
+    }
+
+    function initPlayer() {
+      const videoElement = document.getElementById(PLAYER_ID);
+      player = new Plyr(videoElement, {
+        controls: [],
+        ratio: "4:3",
+        clickToPlay: false
+      });
+
+      videoElement.addEventListener("error", () => {
+        const currentVideo = videos.find((video) => video.id === currentId);
+        if (!currentVideo || fallbackAttempted) {
+          return;
+        }
+        fallbackAttempted = true;
+        videoElement.src = getUppercaseSource(currentVideo.src);
+        videoElement.play().catch(() => {});
+      });
+
+      player.on("ended", () => {
+        if (!videos.length) {
+          return;
+        }
+        stepChannel(1);
+      });
+    }
+
+    async function init() {
+      await loadData();
+      initPlayer();
+      setupChannelMenu();
+      setupDials();
+      renderChannelMenu();
+
+      if (videos.length) {
+        loadVideo(videos[0].id);
+      } else {
+        showOSD("NO MEDIA");
+      }
+    }
+
+    window.addEventListener("load", init);
   </script>
 </body>
 </html>

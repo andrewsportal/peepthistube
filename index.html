@@ -410,6 +410,7 @@
     }
 
     .play-btn {
+      appearance: none;
       width: 52px;
       height: 52px;
       border-radius: 50%;
@@ -417,16 +418,42 @@
       display: grid;
       place-items: center;
       color: #fff;
+      cursor: pointer;
       border: 1px solid rgba(180, 216, 255, 0.46);
       background: linear-gradient(180deg, rgba(30, 142, 255, 0.95), rgba(9, 114, 245, 0.92));
       box-shadow:
         0 10px 20px rgba(10, 132, 255, 0.28),
         inset 0 1px 0 rgba(255, 255, 255, 0.24);
+      transition:
+        transform var(--t),
+        box-shadow var(--t),
+        border-color var(--t),
+        filter var(--t);
+      touch-action: manipulation;
+      -webkit-tap-highlight-color: transparent;
     }
 
     .play-btn:hover {
       border-color: rgba(204, 232, 255, 0.64);
       box-shadow:
+        0 12px 24px rgba(10, 132, 255, 0.34),
+        inset 0 1px 0 rgba(255, 255, 255, 0.28);
+    }
+
+    .play-btn:active {
+      transform: scale(0.97);
+      border-color: rgba(178, 219, 255, 0.62);
+      box-shadow:
+        0 8px 16px rgba(10, 132, 255, 0.26),
+        inset 0 1px 2px rgba(0, 0, 0, 0.2);
+      filter: saturate(1.03);
+    }
+
+    .play-btn:focus-visible {
+      outline: none;
+      border-color: rgba(193, 227, 255, 0.78);
+      box-shadow:
+        0 0 0 3px var(--focus),
         0 12px 24px rgba(10, 132, 255, 0.34),
         inset 0 1px 0 rgba(255, 255, 255, 0.28);
     }
@@ -622,7 +649,7 @@
           <button class="ghost-btn" id="rewindBtn" type="button" aria-label="Rewind 10 seconds">-10</button>
           <button class="ghost-btn" id="prevBtn" type="button" aria-label="Previous video">Prev</button>
 
-          <button class="ghost-btn play-btn" id="playBtn" type="button" aria-label="Play video">
+          <button class="play-btn" id="playBtn" type="button" aria-label="Play video">
             <svg class="icon-play" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
               <polygon points="8 5 20 12 8 19"></polygon>
             </svg>

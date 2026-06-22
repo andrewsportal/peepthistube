@@ -98,7 +98,7 @@
 
     .top-row {
       display: flex;
-      align-items: center;
+      align-items: flex-start;
       justify-content: space-between;
       gap: 10px;
     }
@@ -122,6 +122,19 @@
       line-height: 1.24;
       font-weight: 620;
       color: var(--text);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      max-width: min(58vw, 620px);
+    }
+
+    .credit {
+      margin: 3px 0 0;
+      font-size: 0.63rem;
+      line-height: 1.2;
+      letter-spacing: 0.045em;
+      font-weight: 540;
+      color: rgba(166, 186, 214, 0.56);
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
@@ -411,6 +424,12 @@
         font-size: 0.62rem;
       }
 
+      .credit {
+        font-size: 0.6rem;
+        color: rgba(166, 186, 214, 0.5);
+        max-width: 52vw;
+      }
+
       .ghost-btn {
         min-height: 42px;
         min-width: 42px;
@@ -470,13 +489,14 @@
           <div class="meta">
             <p class="channel" id="channelLabel">Channel --</p>
             <h1 class="title" id="nowPlayingTitle">Loading playlist...</h1>
+            <p class="credit" id="creditLine">Filmed &amp; Edited by: Andrew Rios</p>
           </div>
           <div class="top-actions">
             <button class="ghost-btn" id="playlistToggle" type="button" aria-expanded="false" aria-controls="playlistRail">
               Playlist
             </button>
-            <button class="ghost-btn" id="fullscreenBtn" type="button" aria-label="Toggle full screen">
-              Full
+            <button class="ghost-btn" id="shareBtn" type="button" aria-label="Share current video">
+              Share
             </button>
           </div>
         </div>
@@ -534,7 +554,7 @@
     const player = document.getElementById(PLAYER_ID);
 
     const playlistToggle = document.getElementById("playlistToggle");
-    const fullscreenBtn = document.getElementById("fullscreenBtn");
+    const shareBtn = document.getElementById("shareBtn");
     const playlistSection = document.getElementById("playlistSection");
     const playlistRail = document.getElementById("playlistRail");
 
@@ -644,6 +664,99 @@
       return videos.findIndex((video) => video.id === currentId);
     }
 
+    function getCurrentVideo() {
+      return videos.find((video) => video.id === currentId) || null;
+    }
+
+    function buildVideoPageUrl(video) {
+      const url = new URL(window.location.href);
+      url.searchParams.set("v", String(video.id));
+      return url.toString();
+    }
+
+    function buildDirectVideoUrl(video) {
+      return new URL(video.src, window.location.href).toString();
+    }
+
+    function getInitialVideoIdFromUrl() {
+      const raw = new URLSearchParams(window.location.search).get("v");
+      const parsed = Number.parseInt(raw, 10);
+      return Number.isFinite(parsed) && parsed > 0 ? parsed : null;
+    }
+
+    async function copyTextFallback(text) {
+      if (navigator.clipboard?.writeText) {
+        try {
+          await navigator.clipboard.writeText(text);
+          return true;
+        } catch (error) {
+          /* continue fallback */
+        }
+      }
+
+      try {
+        const textArea = document.createElement("textarea");
+        textArea.value = text;
+        textArea.setAttribute("readonly", "");
+        textArea.style.position = "fixed";
+        textArea.style.opacity = "0";
+        textArea.style.pointerEvents = "none";
+        document.body.appendChild(textArea);
+        textArea.select();
+        textArea.setSelectionRange(0, text.length);
+        const copied = document.execCommand("copy");
+        document.body.removeChild(textArea);
+        return copied;
+      } catch (error) {
+        return false;
+      }
+    }
+
+    async function shareCurrentVideo() {
+      const video = getCurrentVideo();
+      if (!video) {
+        showOSD("NO VIDEO", 900);
+        return;
+      }
+
+      const pageUrl = buildVideoPageUrl(video);
+      const directUrl = buildDirectVideoUrl(video);
+
+      const shareData = {
+        title: video.title,
+        text: `${video.title}\n${directUrl}`,
+        url: pageUrl
+      };
+
+      try {
+        if (navigator.share) {
+          await navigator.share(shareData);
+          showOSD("SHARED", 900);
+          return;
+        }
+
+        const copied = await copyTextFallback(`${video.title}\n${pageUrl}\n${directUrl}`);
+        showOSD(copied ? "LINK COPIED" : "SHARE NOT AVAILABLE", 1100);
+      } catch (error) {
+        if (error && error.name === "AbortError") {
+          showOSD("SHARE CANCELED", 900);
+          return;
+        }
+        const copied = await copyTextFallback(`${video.title}\n${pageUrl}\n${directUrl}`);
+        showOSD(copied ? "LINK COPIED" : "SHARE FAILED", 1100);
+      }
+    }
+
+    function syncUrlForVideo(id) {
+      try {
+        const url = new URL(window.location.href);
+        url.searchParams.set("v", String(id));
+        history.replaceState({ v: id }, "", url);
+      } catch (error) {
+        /* no-op */
+      }
+    }
+
     function getPlaylistItems() {
       return Array.from(playlistRail.querySelectorAll(".playlist-item"));
     }
@@ -729,6 +842,7 @@
       if (!selected) return;
 
       currentId = id;
+      syncUrlForVideo(id);
       fallbackAttempted = false;
       player.src = selected.src;
 
@@ -842,10 +956,6 @@
       }
     }
 
-    function updateFullscreenButton() {
-      fullscreenBtn.textContent = getFullscreenElement() ? "Exit" : "Full";
-    }
-
     async function toggleFullscreen() {
       if (getFullscreenElement()) {
         await exitFullscreen();
@@ -859,13 +969,11 @@
           }
         }
       }
-      updateFullscreenButton();
     }
 
     function armFullscreenOnGesture() {
       const once = async () => {
         await requestFullscreen();
-        updateFullscreenButton();
       };
       window.addEventListener("pointerdown", once, { once: true });
       window.addEventListener("keydown", once, { once: true });
@@ -917,9 +1025,9 @@
         setPlaylistVisible(!playlistVisible, { focus: !playlistVisible });
       });
 
-      fullscreenBtn.addEventListener("click", async () => {
+      shareBtn.addEventListener("click", async () => {
         showUi(true);
-        await toggleFullscreen();
+        await shareCurrentVideo();
       });
 
       seekBar.addEventListener("pointerdown", () => {
@@ -984,7 +1092,6 @@
         showUi();
 
         if (handlePlaylistKeys(event)) return;
-
         if (isEditingTarget(event.target)) return;
 
         if (event.key === "Escape" && playlistVisible) {
@@ -1017,11 +1124,11 @@
         } else if (event.key.toLowerCase() === "c") {
           event.preventDefault();
           setPlaylistVisible(!playlistVisible, { focus: !playlistVisible });
+        } else if (event.key.toLowerCase() === "s") {
+          event.preventDefault();
+          await shareCurrentVideo();
         }
       });
-
-      document.addEventListener("fullscreenchange", updateFullscreenButton);
-      document.addEventListener("webkitfullscreenchange", updateFullscreenButton);
     }
 
     async function init() {
@@ -1030,10 +1137,15 @@
       renderPlaylist();
       updateMuteButton();
       setPlayButtonState(false);
-      updateFullscreenButton();
 
-      if (videos.length) {
-        await loadVideo(videos[0].id);
+      const initialId = getInitialVideoIdFromUrl();
+      const validInitialId =
+        initialId && videos.some((video) => video.id === initialId)
+          ? initialId
+          : videos[0]?.id;
+
+      if (validInitialId) {
+        await loadVideo(validInitialId);
       } else {
         showOSD("NO MEDIA");
       }

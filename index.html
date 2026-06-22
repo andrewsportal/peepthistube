@@ -128,17 +128,17 @@
       max-width: min(58vw, 620px);
     }
 
-    .credit {
-      margin: 3px 0 0;
+    .credit-footer {
+      margin: 2px 0 0;
       font-size: 0.63rem;
       line-height: 1.2;
       letter-spacing: 0.045em;
       font-weight: 540;
       color: rgba(166, 186, 214, 0.56);
+      text-align: center;
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
-      max-width: min(58vw, 620px);
     }
 
     .top-actions {
@@ -424,10 +424,9 @@
         font-size: 0.62rem;
       }
 
-      .credit {
+      .credit-footer {
         font-size: 0.6rem;
         color: rgba(166, 186, 214, 0.5);
-        max-width: 52vw;
       }
 
       .ghost-btn {
@@ -489,7 +488,6 @@
           <div class="meta">
             <p class="channel" id="channelLabel">Channel --</p>
             <h1 class="title" id="nowPlayingTitle">Loading playlist...</h1>
-            <p class="credit" id="creditLine">Filmed &amp; Edited by: Andrew Rios</p>
           </div>
           <div class="top-actions">
             <button class="ghost-btn" id="playlistToggle" type="button" aria-expanded="false" aria-controls="playlistRail">
@@ -531,6 +529,8 @@
           <button class="ghost-btn" id="forwardBtn" type="button" aria-label="Forward 10 seconds">+10</button>
           <button class="ghost-btn" id="muteBtn" type="button" aria-label="Mute audio">Mute</button>
         </div>
+
+        <p class="credit-footer" id="creditLine">Filmed &amp; Edited by: Andrew Rios</p>
       </section>
     </div>
 

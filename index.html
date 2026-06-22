@@ -489,6 +489,14 @@
     }
 
     @media (max-width: 720px) {
+      #player {
+        inset:
+          calc(88px + env(safe-area-inset-top, 0px))
+          0
+          calc(220px + env(safe-area-inset-bottom, 0px))
+          0;
+      }
+
       .ui {
         padding-bottom: calc(22px + env(safe-area-inset-bottom, 0px));
       }
@@ -525,14 +533,15 @@
       }
 
       .transport-row {
-        gap: 6px;
+        gap: 5px;
         margin-bottom: 10px;
       }
 
       .ghost-btn {
-        min-height: 42px;
-        min-width: 42px;
-        padding: 0 10px;
+        min-height: 40px;
+        min-width: 40px;
+        padding: 0 8px;
+        font-size: 0.8rem;
       }
 
       .playlist-item {
@@ -542,8 +551,8 @@
 
     @media (pointer: coarse) {
       .ghost-btn {
-        min-height: 46px;
-        min-width: 46px;
+        min-height: 44px;
+        min-width: 44px;
       }
 
       .play-btn {
@@ -552,7 +561,7 @@
       }
 
       .transport-row {
-        gap: 8px;
+        gap: 6px;
       }
 
       .playlist-item {

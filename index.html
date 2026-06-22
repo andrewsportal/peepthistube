@@ -7,6 +7,7 @@
   <style>
     :root {
       color-scheme: dark;
+      --player-inset-x: 0px;
       --player-inset-top: 0px;
       --player-inset-bottom: 0px;
       --player-focus-y: 50%;
@@ -67,7 +68,7 @@
 
     #player {
       position: absolute;
-      inset: var(--player-inset-top) 0 var(--player-inset-bottom) 0;
+      inset: var(--player-inset-top) var(--player-inset-x) var(--player-inset-bottom) var(--player-inset-x);
       object-fit: contain;
       object-position: center var(--player-focus-y);
       background: #000;
@@ -1084,6 +1085,7 @@
       const isPhoneViewport = window.matchMedia("(max-width: 720px)").matches;
 
       if (!isPhoneViewport) {
+        app.style.setProperty("--player-inset-x", "0px");
         app.style.setProperty("--player-inset-top", "0px");
         app.style.setProperty("--player-inset-bottom", "0px");
         return;
@@ -1093,6 +1095,7 @@
       const bottomHeight = bottomZone ? bottomZone.getBoundingClientRect().height : 0;
       const uiStyles = ui ? getComputedStyle(ui) : null;
       const uiTopPad = uiStyles ? Number.parseFloat(uiStyles.paddingTop) || 0 : 0;
+      const uiLeftPad = uiStyles ? Number.parseFloat(uiStyles.paddingLeft) || 0 : 0;
       const uiBottomPad = uiStyles ? Number.parseFloat(uiStyles.paddingBottom) || 0 : 0;
 
       /*
@@ -1101,7 +1104,9 @@
       */
       const topInset = Math.round(Math.max(78, Math.min(150, topHeight + uiTopPad + 8)));
       const bottomInset = Math.round(Math.max(164, Math.min(300, bottomHeight + uiBottomPad + 10)));
+      const xInset = Math.round(Math.max(8, Math.min(20, uiLeftPad + 2)));
 
+      app.style.setProperty("--player-inset-x", `${xInset}px`);
       app.style.setProperty("--player-inset-top", `${topInset}px`);
       app.style.setProperty("--player-inset-bottom", `${bottomInset}px`);
     }

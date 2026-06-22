@@ -129,7 +129,7 @@
     }
 
     .credit-footer {
-      margin: 2px 0 0;
+      margin: 0;
       font-size: 0.63rem;
       line-height: 1.2;
       letter-spacing: 0.045em;
@@ -276,7 +276,7 @@
 
     .bottom-zone {
       display: grid;
-      gap: 8px;
+      gap: 0;
     }
 
     .seek-row {
@@ -284,6 +284,7 @@
       grid-template-columns: auto minmax(0, 1fr) auto;
       gap: 8px;
       align-items: center;
+      margin-bottom: 8px;
     }
 
     .time {
@@ -344,6 +345,7 @@
       justify-content: center;
       gap: 2px;
       flex-wrap: wrap;
+      margin-bottom: 4px;
     }
 
     .play-btn {
@@ -980,8 +982,7 @@
     }
 
     function bindEvents() {
-      playBtn.addEventListener("click", async () => {
-        showUi(true);
+      const togglePlayback = async () => {
         if (player.paused) {
           const ok = await safePlay(true);
           if (ok) showOSD("PLAY", 700);
@@ -989,6 +990,16 @@
           player.pause();
           showOSD("PAUSE", 700);
         }
+      };
+
+      playBtn.addEventListener("click", async () => {
+        showUi(true);
+        await togglePlayback();
+      });
+
+      player.addEventListener("click", async () => {
+        showUi(true);
+        await togglePlayback();
       });
 
       rewindBtn.addEventListener("click", () => {

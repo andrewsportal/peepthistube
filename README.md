@@ -4,12 +4,13 @@ Single-page premium landing experience for three House music mixtapes.
 
 ## Interaction model
 
-The landing page is swipe-first and scene-based:
+The landing page is a simplified portal:
 
-- Scene 1: Hero video
-- Scene 2: The Collection
-
-Navigation works via vertical swipe, mouse wheel/trackpad, scene dots, and keyboard (Arrow Up/Down or Page Up/Down).
+- Full-screen looping background video
+- One-hand mobile-first bottom control console
+- No hamburger menu
+- Lightweight playback with one shared audio instance
+- Media Session integration for better lock-screen/background controls (browser permitting)
 
 ## Files to add
 
@@ -17,9 +18,9 @@ Place these files either in the project root (`/workspace`) or update paths in `
 
 - `sunset-dance-loop.mp4` (hero looping video, 8-15s, seamless)
 - `hero-poster.jpg` (fallback poster image for hero video)
-- `artwork-1.jpg`
-- `artwork-2.jpg`
-- `artwork-3.jpg`
+- `artwork-1.png` (or `.jpg`)
+- `artwork-2.png` (or `.jpg`)
+- `artwork-3.png` (or `.jpg`)
 - `mixtape1.mp3`
 - `mixtape2.mp3`
 - `mixtape3.mp3`
@@ -28,8 +29,8 @@ Place these files either in the project root (`/workspace`) or update paths in `
 
 Open `index.html` and edit:
 
-1. `LANDING.site` for brand text and hero copy
-2. `LANDING.media` for hero video/poster paths
-3. `LANDING.mixtapes` for titles, descriptions, artwork, and audio
+1. `PORTAL.site` for brand / credit / hero copy
+2. `PORTAL.video` for background video + poster
+3. `PORTAL.mixtapes` for each mixtape's `audio`, `download`, `artwork`, `mood`, and `tracklist`
 
-The `LANDING` object is the single source of truth for all editable content.
+The `PORTAL` object is the single source of truth for all editable content.

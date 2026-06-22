@@ -208,24 +208,6 @@
       border-radius: 999px;
     }
 
-    .mix-title-anim-next {
-      animation: mixInNext 350ms cubic-bezier(0.22, 1, 0.36, 1);
-    }
-
-    .mix-title-anim-prev {
-      animation: mixInPrev 350ms cubic-bezier(0.22, 1, 0.36, 1);
-    }
-
-    @keyframes mixInNext {
-      from { opacity: 0; transform: translateX(14px); }
-      to { opacity: 1; transform: translateX(0); }
-    }
-
-    @keyframes mixInPrev {
-      from { opacity: 0; transform: translateX(-14px); }
-      to { opacity: 1; transform: translateX(0); }
-    }
-
     .tnum {
       font-variant-numeric: tabular-nums;
     }
@@ -269,7 +251,7 @@
         </svg>
       </button>
 
-      <header id="mixHeader" class="ui pt-3 text-center mix-title-anim-next">
+      <header id="mixHeader" class="ui pt-3 text-center">
         <h1 id="mixHeroTitle" class="text-[clamp(2.2rem,8.4vw,4.6rem)] font-semibold leading-[0.95] tracking-[-0.03em] text-cream">
           Vagabond
         </h1>
@@ -336,7 +318,7 @@
           <span id="durationEl" class="tnum text-[0.68rem] text-cream/58">0:00</span>
         </div>
 
-        <div id="trackPanel" class="track-panel mt-3 rounded-2xl border border-cream/12 bg-black/24 p-3">
+        <div id="trackPanel" class="track-panel mt-3">
           <ol id="trackList" class="track-scroll space-y-1 text-[0.76rem] leading-relaxed text-cream/78"></ol>
         </div>
       </section>
@@ -545,12 +527,6 @@
       });
     }
 
-    function animateHeader(direction) {
-      mixHeader.classList.remove("mix-title-anim-next", "mix-title-anim-prev");
-      void mixHeader.offsetWidth;
-      mixHeader.classList.add(direction === "prev" ? "mix-title-anim-prev" : "mix-title-anim-next");
-    }
-
     function switchSceneVideo(videoPath) {
       const target = videoPath || PORTAL.fallbackVideo;
       if (sceneVideoSource.getAttribute("src") === target) return;
@@ -610,7 +586,6 @@
       downloadBtn.href = mix.download || mix.audio;
       downloadBtn.download = (mix.download || mix.audio).split("/").pop();
       renderTracklist(mix.tracklist);
-      animateHeader(direction);
 
       switchSceneVideo(mix.video);
 

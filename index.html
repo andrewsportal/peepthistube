@@ -66,9 +66,17 @@
       }
     }
 
-    #player {
+    .player-stage {
       position: absolute;
       inset: var(--player-inset-top) var(--player-inset-x) var(--player-inset-bottom) var(--player-inset-x);
+      overflow: hidden;
+      background: #000;
+    }
+
+    #player {
+      width: 100%;
+      height: 100%;
+      display: block;
       object-fit: contain;
       object-position: center var(--player-focus-y);
       background: #000;
@@ -484,10 +492,6 @@
     }
 
     @media (max-width: 720px) {
-      .app {
-        --player-focus-y: 48%;
-      }
-
       .ui {
         padding-bottom: calc(22px + env(safe-area-inset-bottom, 0px));
       }
@@ -580,7 +584,9 @@
 </head>
 <body>
   <main class="app" id="app" aria-label="Minimal theater video player">
-    <video id="player" preload="metadata" playsinline></video>
+    <div class="player-stage" id="playerStage">
+      <video id="player" preload="metadata" playsinline></video>
+    </div>
     <div class="vignette" aria-hidden="true"></div>
 
     <div class="ui" id="ui">
@@ -1102,8 +1108,9 @@
         Reserve matte rails from the *actual* UI footprint so controls stay off
         active color video, while avoiding over-shifting in iOS webviews.
       */
-      const topInset = Math.round(Math.max(78, Math.min(150, topHeight + uiTopPad + 8)));
-      const bottomInset = Math.round(Math.max(164, Math.min(300, bottomHeight + uiBottomPad + 10)));
+      const matteGap = 12;
+      const topInset = Math.round(topHeight + uiTopPad + matteGap);
+      const bottomInset = Math.round(bottomHeight + uiBottomPad + matteGap);
       const xInset = Math.round(Math.max(8, Math.min(20, uiLeftPad + 2)));
 
       app.style.setProperty("--player-inset-x", `${xInset}px`);

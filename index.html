@@ -3,28 +3,16 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-  <title>Peep This Tube - Minimal Theater Player</title>
+  <title>Peep This Tube — Minimal Theater</title>
   <style>
     :root {
       color-scheme: dark;
-      --bg-0: #020305;
-      --bg-1: #070a10;
-      --bg-2: #0c1119;
-      --text: rgba(242, 247, 255, 0.94);
-      --text-soft: rgba(198, 214, 238, 0.8);
-      --text-muted: rgba(166, 186, 214, 0.72);
-      --line: rgba(215, 228, 248, 0.16);
-      --line-soft: rgba(215, 228, 248, 0.1);
-      --surface: rgba(10, 14, 22, 0.62);
-      --surface-2: rgba(10, 14, 22, 0.8);
+      --text: rgba(245, 249, 255, 0.95);
+      --text-soft: rgba(200, 215, 240, 0.82);
+      --text-muted: rgba(170, 190, 220, 0.72);
+      --line: rgba(210, 225, 250, 0.22);
       --accent: #0a84ff;
-      --focus: rgba(10, 132, 255, 0.5);
-
-      --r-sm: 8px;
-      --r-md: 12px;
-      --r-lg: 16px;
-      --r-xl: 22px;
-
+      --focus: rgba(10, 132, 255, 0.48);
       --ease: cubic-bezier(0.22, 1, 0.36, 1);
       --t: 220ms var(--ease);
     }
@@ -52,9 +40,7 @@
       width: 100%;
       min-height: 100vh;
       min-height: 100svh;
-      background:
-        radial-gradient(1000px 560px at 50% 45%, rgba(30, 44, 66, 0.2) 0%, rgba(12, 18, 28, 0.07) 44%, transparent 70%),
-        linear-gradient(180deg, var(--bg-2) 0%, var(--bg-0) 100%);
+      background: #000;
       isolation: isolate;
     }
 
@@ -79,195 +65,217 @@
       pointer-events: none;
       z-index: 1;
       background:
-        linear-gradient(180deg, rgba(0, 0, 0, 0.58) 0%, transparent 22%, transparent 70%, rgba(0, 0, 0, 0.66) 100%),
-        radial-gradient(120% 90% at 50% 50%, transparent 55%, rgba(0, 0, 0, 0.24) 100%);
+        linear-gradient(180deg, rgba(0, 0, 0, 0.75) 0%, transparent 24%, transparent 70%, rgba(0, 0, 0, 0.82) 100%),
+        radial-gradient(120% 90% at 50% 50%, transparent 56%, rgba(0, 0, 0, 0.2) 100%);
     }
 
-    .controls-shell {
+    .ui {
       position: absolute;
       inset: 0;
-      z-index: 5;
+      z-index: 6;
       display: flex;
       flex-direction: column;
       justify-content: space-between;
-      gap: 16px;
+      pointer-events: none;
       padding:
-        calc(14px + env(safe-area-inset-top, 0px))
-        max(14px, env(safe-area-inset-right, 0px))
-        calc(14px + env(safe-area-inset-bottom, 0px))
-        max(14px, env(safe-area-inset-left, 0px));
+        calc(10px + env(safe-area-inset-top, 0px))
+        max(10px, env(safe-area-inset-right, 0px))
+        calc(12px + env(safe-area-inset-bottom, 0px))
+        max(10px, env(safe-area-inset-left, 0px));
       transition: opacity var(--t), transform var(--t);
     }
 
-    .app.is-ui-hidden {
-      cursor: none;
-    }
-
-    .app.is-ui-hidden .controls-shell,
-    .app.is-ui-hidden .playlist-popover {
+    .app.is-ui-hidden .ui {
       opacity: 0;
-      transform: translateY(8px);
+      transform: translateY(6px);
       pointer-events: none;
     }
 
-    .top-bar,
-    .bottom-bar {
-      border-radius: var(--r-lg);
-      border: 1px solid var(--line-soft);
-      background: linear-gradient(180deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.01)), var(--surface);
-      backdrop-filter: blur(12px) saturate(110%);
-      -webkit-backdrop-filter: blur(12px) saturate(110%);
-      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.32);
+    .top-zone,
+    .bottom-zone {
+      pointer-events: auto;
     }
 
-    .top-bar {
+    .top-row {
       display: flex;
       align-items: center;
       justify-content: space-between;
-      gap: 14px;
-      padding: 10px 12px;
-      min-height: 56px;
+      gap: 10px;
     }
 
-    .title-wrap {
+    .meta {
       min-width: 0;
     }
 
-    .channel-label {
+    .channel {
       margin: 0 0 2px;
-      font-size: 0.69rem;
-      font-weight: 600;
-      letter-spacing: 0.07em;
+      font-size: 0.66rem;
+      letter-spacing: 0.08em;
       text-transform: uppercase;
       color: var(--text-muted);
+      font-weight: 620;
     }
 
-    .title-text {
+    .title {
       margin: 0;
-      font-size: clamp(0.9rem, 1.2vw, 1.05rem);
-      font-weight: 610;
-      line-height: 1.25;
+      font-size: clamp(0.9rem, 1.6vw, 1.05rem);
+      line-height: 1.24;
+      font-weight: 620;
       color: var(--text);
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
-      max-width: min(60vw, 640px);
+      max-width: min(58vw, 620px);
     }
 
-    .top-actions,
-    .action-row {
+    .top-actions {
       display: flex;
       align-items: center;
-      gap: 8px;
-      flex-wrap: wrap;
-      justify-content: flex-end;
+      gap: 2px;
+      flex-shrink: 0;
     }
 
-    .btn {
+    .ghost-btn {
       appearance: none;
-      border: 1px solid var(--line-soft);
-      background: rgba(255, 255, 255, 0.04);
-      color: var(--text);
-      border-radius: 999px;
+      border: 0;
+      background: transparent;
+      color: var(--text-soft);
       min-height: 44px;
       min-width: 44px;
-      padding: 0 14px;
+      padding: 0 10px;
+      border-radius: 999px;
       cursor: pointer;
-      transition: all var(--t);
+      font: inherit;
       font-size: 0.84rem;
-      font-weight: 590;
+      font-weight: 600;
       letter-spacing: 0.01em;
+      transition: color var(--t), background-color var(--t), transform var(--t);
       touch-action: manipulation;
       -webkit-tap-highlight-color: transparent;
     }
 
-    .btn:hover {
+    .ghost-btn:hover {
+      color: var(--text);
+      background: rgba(255, 255, 255, 0.08);
+      transform: translateY(-1px);
+    }
+
+    .ghost-btn:active {
+      transform: translateY(0) scale(0.98);
+    }
+
+    .ghost-btn:focus-visible {
+      outline: none;
+      box-shadow: 0 0 0 3px var(--focus);
+      color: #fff;
+    }
+
+    .playlist-section {
+      margin-top: 8px;
+      max-height: 0;
+      opacity: 0;
+      transform: translateX(14px);
+      overflow: hidden;
+      pointer-events: none;
+      transition: max-height var(--t), opacity var(--t), transform var(--t);
+    }
+
+    .app.is-playlist-open .playlist-section {
+      max-height: 88px;
+      opacity: 1;
+      transform: translateX(0);
+      pointer-events: auto;
+    }
+
+    .playlist-rail {
+      display: flex;
+      align-items: stretch;
+      gap: 8px;
+      overflow-x: auto;
+      padding-bottom: 2px;
+      -webkit-overflow-scrolling: touch;
+      scroll-snap-type: x proximity;
+    }
+
+    .playlist-rail::-webkit-scrollbar {
+      height: 6px;
+    }
+
+    .playlist-rail::-webkit-scrollbar-thumb {
+      background: rgba(204, 220, 247, 0.22);
+      border-radius: 999px;
+    }
+
+    .playlist-item {
+      appearance: none;
+      border: 1px solid rgba(210, 225, 250, 0.16);
+      background: rgba(255, 255, 255, 0.04);
+      color: var(--text);
+      border-radius: 12px;
+      min-height: 48px;
+      min-width: min(280px, 78vw);
+      max-width: min(360px, 86vw);
+      padding: 8px 10px;
+      display: grid;
+      grid-template-columns: auto minmax(0, 1fr);
+      gap: 10px;
+      align-items: center;
+      text-align: left;
+      cursor: pointer;
+      transition: all var(--t);
+      scroll-snap-align: start;
+    }
+
+    .playlist-item:hover {
       background: rgba(255, 255, 255, 0.1);
       border-color: var(--line);
       transform: translateY(-1px);
     }
 
-    .btn:active {
-      transform: translateY(0) scale(0.98);
-    }
-
-    .btn:focus-visible {
+    .playlist-item:focus-visible {
       outline: none;
-      border-color: rgba(10, 132, 255, 0.55);
+      border-color: rgba(10, 132, 255, 0.6);
       box-shadow: 0 0 0 3px var(--focus);
     }
 
-    .btn-compact {
-      padding: 0 12px;
-      min-height: 40px;
-      min-width: 40px;
-      font-size: 0.8rem;
+    .playlist-item.is-active {
+      background: rgba(10, 132, 255, 0.2);
+      border-color: rgba(132, 191, 255, 0.48);
     }
 
-    .center-controls {
-      align-self: center;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      gap: clamp(10px, 2.6vw, 30px);
-      padding: 8px;
-      border-radius: 999px;
-    }
-
-    .btn-circle {
-      width: clamp(52px, 8vw, 64px);
-      height: clamp(52px, 8vw, 64px);
-      border-radius: 50%;
-      display: grid;
-      place-items: center;
-      padding: 0;
-      border: 1px solid var(--line);
-      background: rgba(255, 255, 255, 0.06);
-      font-size: 0.92rem;
+    .playlist-item-id {
+      font-size: 0.64rem;
       font-weight: 620;
+      letter-spacing: 0.07em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      font-variant-numeric: tabular-nums;
     }
 
-    .btn-circle svg {
-      width: 22px;
-      height: 22px;
-      display: block;
+    .playlist-item-title {
+      font-size: 0.85rem;
+      font-weight: 610;
+      line-height: 1.22;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
     }
 
-    .btn-play {
-      width: clamp(64px, 9vw, 78px);
-      height: clamp(64px, 9vw, 78px);
-      background: rgba(255, 255, 255, 0.12);
-      border-color: rgba(215, 228, 248, 0.28);
-    }
-
-    .btn-play .icon-pause {
-      display: none;
-    }
-
-    .btn-play.is-playing .icon-play {
-      display: none;
-    }
-
-    .btn-play.is-playing .icon-pause {
-      display: block;
-    }
-
-    .bottom-bar {
-      padding: 10px 12px 12px;
+    .bottom-zone {
       display: grid;
-      gap: 10px;
+      gap: 8px;
     }
 
-    .timeline-row {
+    .seek-row {
       display: grid;
       grid-template-columns: auto minmax(0, 1fr) auto;
+      gap: 8px;
       align-items: center;
-      gap: 10px;
     }
 
     .time {
       font-size: 0.8rem;
-      font-weight: 590;
+      font-weight: 600;
       color: var(--text-soft);
       font-variant-numeric: tabular-nums;
     }
@@ -276,8 +284,8 @@
       width: 100%;
       margin: 0;
       height: 18px;
-      background: transparent;
       appearance: none;
+      background: transparent;
       cursor: pointer;
     }
 
@@ -288,7 +296,7 @@
     .seek::-webkit-slider-runnable-track {
       height: 4px;
       border-radius: 999px;
-      background: rgba(255, 255, 255, 0.26);
+      background: rgba(255, 255, 255, 0.3);
     }
 
     .seek::-webkit-slider-thumb {
@@ -296,123 +304,82 @@
       width: 16px;
       height: 16px;
       margin-top: -6px;
-      border-radius: 50%;
       border: 0;
+      border-radius: 50%;
       background: #fff;
-      box-shadow: 0 0 0 4px rgba(255, 255, 255, 0.16);
+      box-shadow: 0 0 0 4px rgba(255, 255, 255, 0.14);
     }
 
     .seek::-moz-range-track {
       height: 4px;
       border-radius: 999px;
-      background: rgba(255, 255, 255, 0.26);
+      background: rgba(255, 255, 255, 0.3);
     }
 
     .seek::-moz-range-thumb {
       width: 16px;
       height: 16px;
-      border-radius: 50%;
       border: 0;
+      border-radius: 50%;
       background: #fff;
-      box-shadow: 0 0 0 4px rgba(255, 255, 255, 0.16);
+      box-shadow: 0 0 0 4px rgba(255, 255, 255, 0.14);
     }
 
-    .playlist-popover {
-      position: absolute;
-      z-index: 9;
-      top: calc(72px + env(safe-area-inset-top, 0px));
-      right: max(14px, env(safe-area-inset-right, 0px));
-      width: min(360px, calc(100% - 28px));
-      max-height: min(56vh, 420px);
-      overflow: auto;
-      padding: 8px;
-      border-radius: var(--r-lg);
-      border: 1px solid var(--line-soft);
-      background: linear-gradient(180deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.01)), var(--surface-2);
-      backdrop-filter: blur(14px) saturate(112%);
-      -webkit-backdrop-filter: blur(14px) saturate(112%);
-      box-shadow: 0 14px 28px rgba(0, 0, 0, 0.44);
-      transition: opacity var(--t), transform var(--t);
-    }
-
-    .playlist-popover[hidden] {
-      display: none !important;
-    }
-
-    .playlist-option {
-      width: 100%;
-      appearance: none;
-      border: 1px solid transparent;
-      border-radius: 10px;
-      background: rgba(255, 255, 255, 0.04);
-      color: var(--text);
-      padding: 10px 11px;
-      min-height: 44px;
-      text-align: left;
-      cursor: pointer;
-      display: grid;
-      grid-template-columns: auto minmax(0, 1fr);
-      gap: 10px;
+    .transport-row {
+      display: flex;
       align-items: center;
-      transition: all var(--t);
+      justify-content: center;
+      gap: 2px;
+      flex-wrap: wrap;
     }
 
-    .playlist-option + .playlist-option {
-      margin-top: 6px;
+    .play-btn {
+      width: 50px;
+      height: 50px;
+      border-radius: 50%;
+      padding: 0;
+      display: grid;
+      place-items: center;
+      color: #fff;
+      background: rgba(255, 255, 255, 0.12);
+      border: 1px solid rgba(220, 232, 252, 0.24);
     }
 
-    .playlist-option-id {
-      font-size: 0.66rem;
-      color: var(--text-muted);
-      letter-spacing: 0.065em;
-      text-transform: uppercase;
-      font-weight: 610;
-      font-variant-numeric: tabular-nums;
+    .play-btn svg {
+      width: 22px;
+      height: 22px;
+      display: block;
     }
 
-    .playlist-option-title {
-      font-size: 0.82rem;
-      font-weight: 600;
-      line-height: 1.25;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
+    .play-btn .icon-pause {
+      display: none;
     }
 
-    .playlist-option:hover {
-      background: rgba(255, 255, 255, 0.1);
-      border-color: var(--line);
-      transform: translateY(-1px);
+    .play-btn.is-playing .icon-play {
+      display: none;
     }
 
-    .playlist-option:focus-visible {
-      outline: none;
-      border-color: rgba(10, 132, 255, 0.56);
-      box-shadow: 0 0 0 3px var(--focus);
-    }
-
-    .playlist-option.is-active {
-      background: rgba(10, 132, 255, 0.2);
-      border-color: rgba(121, 185, 255, 0.5);
+    .play-btn.is-playing .icon-pause {
+      display: block;
     }
 
     .osd {
       position: absolute;
       left: 50%;
-      top: calc(50% + 84px);
-      transform: translate(-50%, 10px);
-      z-index: 12;
+      top: 50%;
+      transform: translate(-50%, 18px);
+      z-index: 10;
       pointer-events: none;
-      border: 1px solid var(--line-soft);
       border-radius: 999px;
-      padding: 8px 14px;
-      background: rgba(0, 0, 0, 0.62);
+      border: 1px solid rgba(220, 232, 252, 0.2);
+      background: rgba(0, 0, 0, 0.58);
       color: var(--text);
-      font-size: 0.79rem;
-      letter-spacing: 0.04em;
+      font-size: 0.8rem;
       font-weight: 610;
+      letter-spacing: 0.04em;
+      padding: 8px 14px;
       opacity: 0;
-      transition: all var(--t);
+      transition: opacity var(--t), transform var(--t);
       white-space: nowrap;
     }
 
@@ -426,126 +393,59 @@
       width: 1px;
       height: 1px;
       margin: -1px;
-      border: 0;
       padding: 0;
-      white-space: nowrap;
-      clip-path: inset(50%);
-      clip: rect(0 0 0 0);
+      border: 0;
       overflow: hidden;
-    }
-
-    @media (max-width: 900px) {
-      .center-controls {
-        gap: 14px;
-      }
-
-      .title-text {
-        max-width: 48vw;
-      }
+      clip: rect(0 0 0 0);
+      clip-path: inset(50%);
+      white-space: nowrap;
     }
 
     @media (max-width: 720px) {
-      .controls-shell {
-        gap: 12px;
-        padding:
-          calc(10px + env(safe-area-inset-top, 0px))
-          max(10px, env(safe-area-inset-right, 0px))
-          calc(10px + env(safe-area-inset-bottom, 0px))
-          max(10px, env(safe-area-inset-left, 0px));
+      .title {
+        max-width: 52vw;
+        font-size: 0.92rem;
       }
 
-      .top-bar,
-      .bottom-bar {
-        border-radius: var(--r-md);
+      .channel {
+        font-size: 0.62rem;
       }
 
-      .top-bar {
-        min-height: 52px;
-        padding: 8px 10px;
+      .ghost-btn {
+        min-height: 42px;
+        min-width: 42px;
+        padding: 0 9px;
       }
 
-      .title-text {
-        max-width: 56vw;
-        font-size: 0.88rem;
-      }
-
-      .channel-label {
-        font-size: 0.64rem;
-      }
-
-      .btn-compact {
-        min-height: 38px;
-        min-width: 38px;
-        padding: 0 10px;
-      }
-
-      .btn-circle {
-        width: 52px;
-        height: 52px;
-      }
-
-      .btn-play {
-        width: 62px;
-        height: 62px;
-      }
-
-      .playlist-popover {
-        top: calc(62px + env(safe-area-inset-top, 0px));
-        max-height: 52vh;
+      .playlist-item {
+        min-width: 78vw;
       }
     }
 
     @media (pointer: coarse) {
-      .btn {
+      .ghost-btn {
         min-height: 48px;
         min-width: 48px;
       }
 
-      .btn-compact {
-        min-height: 44px;
-        min-width: 44px;
+      .play-btn {
+        width: 54px;
+        height: 54px;
       }
 
-      .playlist-option {
-        min-height: 48px;
-      }
-
-      .top-bar,
-      .bottom-bar {
-        backdrop-filter: blur(8px) saturate(106%);
-        -webkit-backdrop-filter: blur(8px) saturate(106%);
-      }
-
-      .playlist-popover {
-        backdrop-filter: blur(10px) saturate(106%);
-        -webkit-backdrop-filter: blur(10px) saturate(106%);
-      }
-    }
-
-    @supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
-      .top-bar,
-      .bottom-bar {
-        background: rgba(10, 14, 22, 0.9);
-      }
-
-      .playlist-popover {
-        background: rgba(10, 14, 22, 0.95);
+      .playlist-item {
+        min-height: 50px;
       }
     }
 
     @media (prefers-contrast: more) {
-      .btn,
-      .playlist-option,
-      .top-bar,
-      .bottom-bar,
-      .playlist-popover {
-        border-color: rgba(224, 236, 255, 0.42);
+      .ghost-btn,
+      .playlist-item {
+        color: #fff;
       }
 
-      .channel-label,
-      .time,
-      .playlist-option-id {
-        color: #dce9ff;
+      .playlist-item {
+        border-color: rgba(230, 240, 255, 0.45);
       }
     }
 
@@ -553,8 +453,8 @@
       *,
       *::before,
       *::after {
-        animation: none !important;
         transition: none !important;
+        animation: none !important;
       }
     }
   </style>
@@ -564,53 +464,56 @@
     <video id="player" preload="metadata" playsinline></video>
     <div class="vignette" aria-hidden="true"></div>
 
-    <div class="controls-shell" id="controlsShell">
-      <header class="top-bar">
-        <div class="title-wrap">
-          <p class="channel-label" id="channelLabel">Channel --</p>
-          <h1 class="title-text" id="nowPlayingTitle">Loading playlist...</h1>
+    <div class="ui" id="ui">
+      <section class="top-zone">
+        <div class="top-row">
+          <div class="meta">
+            <p class="channel" id="channelLabel">Channel --</p>
+            <h1 class="title" id="nowPlayingTitle">Loading playlist...</h1>
+          </div>
+          <div class="top-actions">
+            <button class="ghost-btn" id="playlistToggle" type="button" aria-expanded="false" aria-controls="playlistRail">
+              Playlist
+            </button>
+            <button class="ghost-btn" id="fullscreenBtn" type="button" aria-label="Toggle full screen">
+              Full
+            </button>
+          </div>
         </div>
-        <div class="top-actions">
-          <button class="btn btn-compact" id="playlistToggle" type="button" aria-haspopup="listbox" aria-controls="playlistMenu" aria-expanded="false">
-            Playlist
-          </button>
-          <button class="btn btn-compact" id="fullscreenBtn" type="button" aria-label="Toggle full screen">
-            Full
-          </button>
+
+        <div class="playlist-section" id="playlistSection" aria-hidden="true">
+          <div class="playlist-rail" id="playlistRail" role="listbox" aria-label="Video playlist"></div>
         </div>
-      </header>
-
-      <section class="center-controls" aria-label="Playback controls">
-        <button class="btn btn-circle" id="rewindBtn" type="button" aria-label="Rewind 10 seconds">-10</button>
-
-        <button class="btn btn-circle btn-play" id="playBtn" type="button" aria-label="Play video">
-          <svg class="icon-play" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-            <polygon points="8,5 20,12 8,19"></polygon>
-          </svg>
-          <svg class="icon-pause" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-            <rect x="6" y="5" width="4.5" height="14"></rect>
-            <rect x="13.5" y="5" width="4.5" height="14"></rect>
-          </svg>
-        </button>
-
-        <button class="btn btn-circle" id="forwardBtn" type="button" aria-label="Forward 10 seconds">+10</button>
       </section>
 
-      <footer class="bottom-bar">
-        <div class="timeline-row">
+      <section class="bottom-zone">
+        <div class="seek-row">
           <span class="time" id="timeCurrent">0:00</span>
-          <input class="seek" id="seekBar" type="range" min="0" max="1000" step="1" value="0" aria-label="Seek video timeline" />
+          <input class="seek" id="seekBar" type="range" min="0" max="1000" step="1" value="0" aria-label="Seek timeline" />
           <span class="time" id="timeTotal">--:--</span>
         </div>
-        <div class="action-row">
-          <button class="btn btn-compact" id="prevBtn" type="button" aria-label="Previous channel">Prev</button>
-          <button class="btn btn-compact" id="nextBtn" type="button" aria-label="Next channel">Next</button>
-          <button class="btn btn-compact" id="muteBtn" type="button" aria-label="Mute audio">Mute</button>
+
+        <div class="transport-row" aria-label="Playback controls">
+          <button class="ghost-btn" id="rewindBtn" type="button" aria-label="Rewind 10 seconds">-10</button>
+          <button class="ghost-btn" id="prevBtn" type="button" aria-label="Previous channel">Prev</button>
+
+          <button class="ghost-btn play-btn" id="playBtn" type="button" aria-label="Play video">
+            <svg class="icon-play" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+              <polygon points="8 5 20 12 8 19"></polygon>
+            </svg>
+            <svg class="icon-pause" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+              <rect x="6" y="5" width="4.5" height="14"></rect>
+              <rect x="13.5" y="5" width="4.5" height="14"></rect>
+            </svg>
+          </button>
+
+          <button class="ghost-btn" id="nextBtn" type="button" aria-label="Next channel">Next</button>
+          <button class="ghost-btn" id="forwardBtn" type="button" aria-label="Forward 10 seconds">+10</button>
+          <button class="ghost-btn" id="muteBtn" type="button" aria-label="Mute audio">Mute</button>
         </div>
-      </footer>
+      </section>
     </div>
 
-    <section class="playlist-popover" id="playlistMenu" role="listbox" aria-label="Video playlist" hidden></section>
     <div class="osd" id="osd" aria-live="polite"></div>
     <span class="sr-only" id="liveRegion" aria-live="polite"></span>
   </main>
@@ -622,17 +525,18 @@
     const videos = [];
     let currentId = null;
     let fallbackAttempted = false;
-    let channelMenuVisible = false;
+    let playlistVisible = false;
     let osdTimer = null;
     let hideUiTimer = null;
     let isScrubbing = false;
 
     const app = document.getElementById("app");
     const player = document.getElementById(PLAYER_ID);
-    const controlsShell = document.getElementById("controlsShell");
+
     const playlistToggle = document.getElementById("playlistToggle");
-    const playlistMenu = document.getElementById("playlistMenu");
     const fullscreenBtn = document.getElementById("fullscreenBtn");
+    const playlistSection = document.getElementById("playlistSection");
+    const playlistRail = document.getElementById("playlistRail");
 
     const channelLabel = document.getElementById("channelLabel");
     const nowPlayingTitle = document.getElementById("nowPlayingTitle");
@@ -699,9 +603,9 @@
       return `${m}:${String(s).padStart(2, "0")}`;
     }
 
-    function showOSD(message, duration = 1400) {
-      osd.textContent = message;
-      liveRegion.textContent = message;
+    function showOSD(text, duration = 1300) {
+      osd.textContent = text;
+      liveRegion.textContent = text;
       osd.classList.add("is-visible");
       clearTimeout(osdTimer);
       osdTimer = setTimeout(() => {
@@ -718,7 +622,6 @@
       const muted = player.muted;
       muteBtn.textContent = muted ? "Unmute" : "Mute";
       muteBtn.setAttribute("aria-label", muted ? "Unmute audio" : "Mute audio");
-      muteBtn.classList.toggle("is-active", muted);
     }
 
     function updateNowPlaying(video) {
@@ -731,6 +634,7 @@
       const current = Number.isFinite(player.currentTime) ? player.currentTime : 0;
       timeCurrent.textContent = formatTime(current);
       timeTotal.textContent = duration > 0 ? formatTime(duration) : "--:--";
+
       if (!isScrubbing) {
         seekBar.value = duration > 0 ? String(Math.round((current / duration) * 1000)) : "0";
       }
@@ -740,65 +644,71 @@
       return videos.findIndex((video) => video.id === currentId);
     }
 
-    function getPlaylistOptions() {
-      return Array.from(playlistMenu.querySelectorAll(".playlist-option"));
+    function getPlaylistItems() {
+      return Array.from(playlistRail.querySelectorAll(".playlist-item"));
     }
 
-    function focusPlaylistOption(index) {
-      const options = getPlaylistOptions();
-      if (!options.length) return;
-      const safeIndex = ((index % options.length) + options.length) % options.length;
-      options.forEach((option, i) => {
-        option.tabIndex = i === safeIndex ? 0 : -1;
+    function focusPlaylistItem(index) {
+      const items = getPlaylistItems();
+      if (!items.length) return;
+      const safe = ((index % items.length) + items.length) % items.length;
+
+      items.forEach((item, i) => {
+        item.tabIndex = i === safe ? 0 : -1;
       });
-      options[safeIndex].focus();
+
+      items[safe].focus({ preventScroll: true });
+      items[safe].scrollIntoView({ behavior: "smooth", inline: "nearest", block: "nearest" });
     }
 
     function renderPlaylist() {
-      playlistMenu.innerHTML = "";
-      videos.forEach((video) => {
-        const option = document.createElement("button");
-        option.type = "button";
-        option.id = `playlist-option-${video.id}`;
-        option.className = "playlist-option";
-        option.setAttribute("role", "option");
-        option.setAttribute("aria-selected", String(video.id === currentId));
-        option.tabIndex = -1;
+      playlistRail.innerHTML = "";
 
-        if (video.id === currentId) option.classList.add("is-active");
+      videos.forEach((video) => {
+        const item = document.createElement("button");
+        item.type = "button";
+        item.id = `playlist-item-${video.id}`;
+        item.className = "playlist-item";
+        item.setAttribute("role", "option");
+        item.setAttribute("aria-selected", String(video.id === currentId));
+        item.tabIndex = -1;
+
+        if (video.id === currentId) item.classList.add("is-active");
 
         const id = document.createElement("span");
-        id.className = "playlist-option-id";
+        id.className = "playlist-item-id";
         id.textContent = `CH ${padChannel(video.id)}`;
 
         const title = document.createElement("span");
-        title.className = "playlist-option-title";
+        title.className = "playlist-item-title";
         title.textContent = video.title;
 
-        option.append(id, title);
+        item.append(id, title);
 
-        option.addEventListener("click", () => {
+        item.addEventListener("click", () => {
           loadVideo(video.id);
           setPlaylistVisible(false, { returnFocus: true });
         });
 
-        playlistMenu.appendChild(option);
+        playlistRail.appendChild(item);
       });
     }
 
     function setPlaylistVisible(visible, { focus = false, returnFocus = false } = {}) {
-      channelMenuVisible = visible;
-      playlistMenu.hidden = !visible;
+      playlistVisible = visible;
+      app.classList.toggle("is-playlist-open", visible);
       playlistToggle.setAttribute("aria-expanded", String(visible));
+      playlistSection.setAttribute("aria-hidden", String(!visible));
 
       if (visible) {
         renderPlaylist();
+        const currentIndex = videos.findIndex((video) => video.id === currentId);
+        if (focus) focusPlaylistItem(currentIndex >= 0 ? currentIndex : 0);
         showUi(true);
-        if (focus) {
-          const currentIndex = videos.findIndex((video) => video.id === currentId);
-          focusPlaylistOption(currentIndex >= 0 ? currentIndex : 0);
-        }
       } else {
+        getPlaylistItems().forEach((item) => {
+          item.tabIndex = -1;
+        });
         if (returnFocus) playlistToggle.focus();
         hideUiAfterDelay();
       }
@@ -824,17 +734,17 @@
 
       updateNowPlaying(selected);
       renderPlaylist();
-      showOSD(`CH ${padChannel(selected.id)} • ${selected.title.toUpperCase()}`, 1500);
 
+      showOSD(`CH ${padChannel(selected.id)} • ${selected.title.toUpperCase()}`);
       await safePlay(true);
     }
 
     function stepChannel(step) {
       if (!videos.length) return;
       const currentIndex = getCurrentIndex();
-      const safe = currentIndex >= 0 ? currentIndex : 0;
-      const next = (safe + step + videos.length) % videos.length;
-      loadVideo(videos[next].id);
+      const safeIndex = currentIndex >= 0 ? currentIndex : 0;
+      const nextIndex = (safeIndex + step + videos.length) % videos.length;
+      loadVideo(videos[nextIndex].id);
     }
 
     function showUi(lock = false) {
@@ -845,47 +755,52 @@
 
     function hideUiAfterDelay() {
       clearTimeout(hideUiTimer);
-      if (player.paused || channelMenuVisible || isScrubbing) return;
+      if (player.paused || playlistVisible || isScrubbing) return;
       hideUiTimer = setTimeout(() => {
         app.classList.add("is-ui-hidden");
-      }, 2200);
+      }, 2000);
     }
 
-    function handlePlaylistKeyboard(event) {
-      if (!channelMenuVisible) return false;
-      const options = getPlaylistOptions();
-      if (!options.length) return false;
+    function isEditingTarget(target) {
+      if (!(target instanceof HTMLElement)) return false;
+      return /input|textarea|select/i.test(target.tagName);
+    }
 
-      const currentIndex = Math.max(0, options.findIndex((option) => option === document.activeElement));
+    function handlePlaylistKeys(event) {
+      if (!playlistVisible) return false;
+      const items = getPlaylistItems();
+      if (!items.length) return false;
 
-      if (event.key === "ArrowDown") {
+      const currentIndex = items.findIndex((item) => item === document.activeElement);
+      const safeCurrent = currentIndex >= 0 ? currentIndex : 0;
+
+      if (event.key === "ArrowRight") {
         event.preventDefault();
-        focusPlaylistOption(currentIndex + 1);
+        focusPlaylistItem(safeCurrent + 1);
         return true;
       }
 
-      if (event.key === "ArrowUp") {
+      if (event.key === "ArrowLeft") {
         event.preventDefault();
-        focusPlaylistOption(currentIndex - 1);
+        focusPlaylistItem(safeCurrent - 1);
         return true;
       }
 
       if (event.key === "Home") {
         event.preventDefault();
-        focusPlaylistOption(0);
+        focusPlaylistItem(0);
         return true;
       }
 
       if (event.key === "End") {
         event.preventDefault();
-        focusPlaylistOption(options.length - 1);
+        focusPlaylistItem(items.length - 1);
         return true;
       }
 
       if (event.key === "Enter" || event.key === " ") {
         event.preventDefault();
-        const active = currentIndex >= 0 ? options[currentIndex] : options[0];
-        active.click();
+        items[safeCurrent].click();
         return true;
       }
 
@@ -896,11 +811,6 @@
       }
 
       return false;
-    }
-
-    function isEditingTarget(target) {
-      if (!(target instanceof HTMLElement)) return false;
-      return /input|textarea|select|button/i.test(target.tagName);
     }
 
     function getFullscreenElement() {
@@ -1004,7 +914,7 @@
       });
 
       playlistToggle.addEventListener("click", () => {
-        setPlaylistVisible(!channelMenuVisible, { focus: !channelMenuVisible });
+        setPlaylistVisible(!playlistVisible, { focus: !playlistVisible });
       });
 
       fullscreenBtn.addEventListener("click", async () => {
@@ -1027,23 +937,20 @@
         const duration = Number.isFinite(player.duration) ? player.duration : 0;
         if (duration > 0) {
           player.currentTime = (Number(seekBar.value) / 1000) * duration;
-          updateTimeline();
         }
+        updateTimeline();
         showUi(true);
       });
 
       document.addEventListener("pointerdown", (event) => {
-        if (!channelMenuVisible) return;
+        if (!playlistVisible) return;
         if (!(event.target instanceof Node)) return;
-        if (playlistMenu.contains(event.target) || playlistToggle.contains(event.target)) return;
+        if (playlistSection.contains(event.target) || playlistToggle.contains(event.target)) return;
         setPlaylistVisible(false);
       });
 
       app.addEventListener("pointermove", () => showUi());
       app.addEventListener("pointerdown", () => showUi());
-
-      controlsShell.addEventListener("pointerenter", () => showUi(true));
-      controlsShell.addEventListener("pointerleave", () => hideUiAfterDelay());
 
       player.addEventListener("play", () => {
         setPlayButtonState(true);
@@ -1061,6 +968,10 @@
 
       player.addEventListener("volumechange", updateMuteButton);
 
+      player.addEventListener("ended", () => {
+        stepChannel(1);
+      });
+
       player.addEventListener("error", async () => {
         const currentVideo = videos.find((video) => video.id === currentId);
         if (!currentVideo || fallbackAttempted) return;
@@ -1069,27 +980,23 @@
         await safePlay(false);
       });
 
-      player.addEventListener("ended", () => {
-        stepChannel(1);
-      });
-
       document.addEventListener("keydown", async (event) => {
         showUi();
 
-        if (handlePlaylistKeyboard(event)) return;
+        if (handlePlaylistKeys(event)) return;
 
-        if (isEditingTarget(event.target) && event.target !== playBtn) return;
+        if (isEditingTarget(event.target)) return;
 
-        if (event.key === "Escape" && channelMenuVisible) {
+        if (event.key === "Escape" && playlistVisible) {
           event.preventDefault();
           setPlaylistVisible(false, { returnFocus: true });
           return;
         }
 
-        if (event.key === "ArrowRight") {
+        if (event.key === "ArrowRight" || event.key.toLowerCase() === "l") {
           event.preventDefault();
           forwardBtn.click();
-        } else if (event.key === "ArrowLeft") {
+        } else if (event.key === "ArrowLeft" || event.key.toLowerCase() === "j") {
           event.preventDefault();
           rewindBtn.click();
         } else if (event.key === " " || event.key.toLowerCase() === "k") {
@@ -1109,20 +1016,12 @@
           await toggleFullscreen();
         } else if (event.key.toLowerCase() === "c") {
           event.preventDefault();
-          setPlaylistVisible(!channelMenuVisible, { focus: !channelMenuVisible });
+          setPlaylistVisible(!playlistVisible, { focus: !playlistVisible });
         }
       });
 
       document.addEventListener("fullscreenchange", updateFullscreenButton);
       document.addEventListener("webkitfullscreenchange", updateFullscreenButton);
-
-      document.addEventListener("visibilitychange", () => {
-        if (document.hidden) {
-          clearTimeout(hideUiTimer);
-        } else {
-          showUi();
-        }
-      });
     }
 
     async function init() {
